@@ -7,6 +7,7 @@
 */
 // 1) Importazione del componente
 import AppHeader from './Header/AppHeader.vue';
+import CreationPage from './views/CreationPage.vue';
 
 export default {
   data() {
@@ -16,7 +17,8 @@ export default {
   },
   // 2) Dichiarazione del componente
   components: {
-    AppHeader
+    AppHeader,
+    CreationPage
   },
   methods: {
     incrementCount() {
@@ -30,7 +32,7 @@ export default {
   <div>
     <router-view></router-view>
     <AppHeader />
-    
+    <CreationPage />
     <main>
       <button @click="incrementCount()" class=" border-dashed border-black border-2">
         {{ count }}

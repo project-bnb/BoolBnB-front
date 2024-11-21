@@ -28,7 +28,7 @@ export default {
 
 <template>
   <div>
-    <!-- 3) Utilizzo del componente -->
+    <router-view></router-view>
     <AppHeader />
     
     <main>

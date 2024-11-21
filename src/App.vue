@@ -6,7 +6,7 @@
   3) Utilizzo del componente
 */
 // 1) Importazione del componente
-import AppHeader from './components/AppHeader.vue';
+import AppHeader from './Header/AppHeader.vue';
 
 export default {
   data() {

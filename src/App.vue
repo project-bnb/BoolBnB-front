@@ -30,13 +30,9 @@ export default {
 
 <template>
   <div>
-    <router-view></router-view>
-    <AppHeader />
-    <CreationPage />
     <main>
-      <button @click="incrementCount()" class=" border-dashed border-black border-2">
-        {{ count }}
-      </button>
+      <AppHeader />
+      <router-view></router-view>
     </main>
   </div>
 </template>

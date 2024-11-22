@@ -55,10 +55,10 @@
   </script>
   
 <template>
-    <div class="card" v-if="isVisible">
-      <img :src="image" alt="Property Image" class="card-image" />
-      <div class="card-content">
-        <h2>{{ title }}</h2>
+    <div class="border border-gray-300 rounded-lg p-4 m-4 flex flex-col items-center" v-if="isVisible">
+      <img :src="image" alt="Property Image" class="max-w-full rounded-lg" />
+      <div class="text-center">
+        <h2 class="text-lg font-bold">{{ title }}</h2>
         <p><strong>Rooms:</strong> {{ rooms }}</p>
         <p><strong>Beds:</strong> {{ beds }}</p>
         <p><strong>Bathrooms:</strong> {{ bathrooms }}</p>
@@ -69,24 +69,3 @@
     </div>
   </template>
   
-  
-  <style scoped>
-  .card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .card-image {
-    max-width: 100%;
-    border-radius: 8px;
-  }
-  
-  .card-content {
-    text-align: center;
-  }
-  </style>

@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-    <div class="card-list">
+    <div class="flex flex-wrap justify-center">
       <Card
         v-for="property in apartments"
         :key="property.user_id"
@@ -36,11 +36,3 @@ export default {
     </div>
   </template>
   
-
-  <style scoped>
-  .card-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  </style>

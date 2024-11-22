@@ -7,22 +7,21 @@ export default {
   },
   data() {
     return {
-      properties: [
-        {
-          user_id: 1,
-          title: 'Appartamento in centro',
-          rooms: 3,
-          beds: 2,
-          bathrooms: 1,
-          square_meters: 75,
-          address: 'Via Roma, 1',
-          latitude: 41.9028,
-          longitude: 12.4964,
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9VtbwGeAkgKli3BC9VShiFnUN7hcdO-YKfg&s',
-          is_visible: 1,
-        },
-      ],
+      apartments: [],
     };
+  },
+  mounted() {
+    this.fetchApartments();
+  },
+  methods: {
+    fetchApartments() {
+      fetch('http://127.0.0.1:8000/api/apartments')
+        .then(response => response.json())
+        .then(data => {
+          this.apartments = data;
+        })
+        .catch(error => console.error('Errore:', error));
+    }
   },
 };
 </script>
@@ -30,7 +29,7 @@ export default {
 <template>
     <div class="card-list">
       <Card
-        v-for="property in properties"
+        v-for="property in apartments"
         :key="property.user_id"
         v-bind="property"
       />

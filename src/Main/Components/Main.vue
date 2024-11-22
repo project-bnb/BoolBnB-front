@@ -1,23 +1,18 @@
 <script>
+import AppartmentList from '../../components/AppartmentList.vue';
+
 export default {
-  data() {
-    return { 
-
-    }
-  },
   components: {
-
+    AppartmentList, 
   },
-  methods: {
-
-  }
-}
+};
 </script>
 
 <template>
-
+  <div>
+    <AppartmentList />
+  </div>
 </template>
 
 <style scoped>
-
 </style>

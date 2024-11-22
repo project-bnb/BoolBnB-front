@@ -6,19 +6,11 @@
   3) Utilizzo del componente
 */
 // 1) Importazione del componente
-import AppHeader from './Header/AppHeader.vue';
-import CreationPage from './views/CreationPage.vue';
+import AppHeader from './components/AppHeader.vue';
 
 export default {
-  data() {
-    return { 
-      count: 0
-    }
-  },
-  // 2) Dichiarazione del componente
   components: {
-    AppHeader,
-    CreationPage
+    AppHeader
   },
   methods: {
     incrementCount() {
@@ -30,9 +22,13 @@ export default {
 
 <template>
   <div>
+    <!-- 3) Utilizzo del componente -->
+    <AppHeader />
+    
     <main>
-      <AppHeader />
-      <router-view></router-view>
+      <button @click="incrementCount()" class=" border-dashed border-black border-2">
+        {{ count }}
+      </button>
     </main>
   </div>
 </template>

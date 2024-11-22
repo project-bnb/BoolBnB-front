@@ -1,23 +1,18 @@
 <script>
+import AppMain from './Components/Main.vue';
+
 export default {
-  data() {
-    return { 
-
-    }
-  },
   components: {
-
+    AppMain, 
   },
-  methods: {
-
-  }
-}
+};
 </script>
 
 <template>
-
+  <div>
+    <AppMain />
+  </div>
 </template>
 
 <style scoped>
-
 </style>

@@ -30,7 +30,7 @@ export default {
     <div class="flex flex-wrap justify-center">
       <Card
         v-for="property in apartments"
-        :key="property.user_id"
+        :key="property.id"
         v-bind="property"
       />
     </div>

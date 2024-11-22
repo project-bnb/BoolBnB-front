@@ -45,55 +45,55 @@ export default {
         <div>
           <label for="title">Titolo</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="text" placeholder="Inserisci un titolo..." v-model="form.title">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="text" placeholder="Inserisci un titolo..." v-model="form.title">
       </div>
       <div class="py-4">
         <div>
           <label for="rooms">Stanze</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="number" placeholder="Inserisci il numero delle stanze..." v-model="form.rooms">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="number" placeholder="Inserisci il numero delle stanze..." v-model="form.rooms">
       </div>
       <div class="py-4">
         <div>
           <label for="beds">Letti</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="number" placeholder="Inserisci il numero di letti..." v-model="form.beds">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="number" placeholder="Inserisci il numero di letti..." v-model="form.beds">
       </div>
       <div class="py-4">
         <div>
           <label for="bathrooms">Bagni</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="number" placeholder="Inserisci il numero di bagni..." v-model="form.bathrooms">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="number" placeholder="Inserisci il numero di bagni..." v-model="form.bathrooms">
       </div>
       <div class="py-4">
         <div>
           <label for="square_meters">Metri quadri</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="number" placeholder="Inserisci i metri quadri..." v-model="form.square_meters">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="number" placeholder="Inserisci i metri quadri..." v-model="form.square_meters">
       </div>
       <div class="py-4">
         <div>
           <label for="address">Indirizzo</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="text" placeholder="Inserisci l'indirizzo..." v-model="form.address">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="text" placeholder="Inserisci l'indirizzo..." v-model="form.address">
       </div>
       <div class="py-4">
         <div>
           <label for="latitude">Latitudine</label>
         </div>
-        <input class="w-full shadow-md rounded" type="text" placeholder="Inserisci la latitudine..." v-model="form.latitude">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" type="text" placeholder="Inserisci la latitudine..." v-model="form.latitude">
       </div>
       <div class="py-4">
         <div>
           <label for="longitude">Longitudine</label>
         </div>
-        <input class="w-full shadow-md rounded" type="text" placeholder="Inserisci la longitudine..." v-model="form.longitude">
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" type="text" placeholder="Inserisci la longitudine..." v-model="form.longitude">
       </div>
       <div class="py-4">
         <div>
           <label for="image">Immagine (URL/Path)</label>
         </div>
-        <input class="w-full shadow-md rounded" required type="text" placeholder="Inserisci un'immagine dell'appartamento..." v-model="form.image" />
+        <input class="py-2 px-3 mt-1 w-full shadow-md rounded" required type="text" placeholder="Inserisci un'immagine dell'appartamento..." v-model="form.image" />
       </div>
       <div class="py-4">
         <label for="is_visible">Visibile</label>

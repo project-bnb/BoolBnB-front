@@ -66,6 +66,9 @@
         <p><strong>Address:</strong> {{ address }}</p>
         <p><strong>Coordinates:</strong> {{ latitude }}, {{ longitude }}</p>
       </div>
+      <router-link :to="{ name: 'update-apartment', params: { id: user_id }}">
+        <button class="bg-yellow-500 rounded shadow-lg px-4 py-2 my-3 text-white">Modifica</button>               
+      </router-link>      
     </div>
   </template>
 

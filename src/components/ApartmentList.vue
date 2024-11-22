@@ -32,18 +32,6 @@ export default {
       <ApartmentCard
         v-for="property in apartments"
         :key="property.id"
-        :id="property.id"
-        :user_id="property.user_id"
-        :title="property.title"
-        :rooms="property.rooms"
-        :beds="property.beds"
-        :bathrooms="property.bathrooms"
-        :square_meters="property.square_meters"
-        :address="property.address"
-        :latitude="property.latitude"
-        :longitude="property.longitude"
-        :image="property.image"
-        :is_visible="property.is_visible"
         v-bind="property"
       />
     </div>

@@ -4,7 +4,7 @@ import HomeView from './views/HomeView.vue';
 import CreationPage from './views/CreationPage.vue';
 import UpdatePage from './views/UpdatePage.vue';
 import NotFound from './views/NotFound.vue';
-import AppartmentList from './components/AppartmentList.vue';
+import ApartmentList from './components/ApartmentList.vue';
 
 const router = createRouter ({
     history: createWebHistory(),
@@ -17,7 +17,7 @@ const router = createRouter ({
         {
             path: '/apartment-list',
             name: 'apartment-list',
-            component: AppartmentList,
+            component: ApartmentList,
             props: true,
         },
         {

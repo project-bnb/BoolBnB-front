@@ -5,6 +5,7 @@ export default {
   data() {
     return {
       form: {
+        user_id: 1,
         title: '',
         rooms: 0,
         beds: 0,
@@ -16,17 +17,18 @@ export default {
         image: '',
         is_visible: false,
       },
-      created: null,
+      apartmentCreated: null,
     }
   },
 
   methods:{
     createApartment(){
+      console.log(this.form);
         axios
             .post('http://127.0.0.1:8000/api/apartments', this.form)
             .then((res) => {
-                this.created = res.data;
-                console.log(this.created);
+              this.apartmentCreated = res.data;
+              console.log('Appartamento creato con successo:', this.apartmentCreated);
             })
             .catch((err) => {
                 this.$router.push({ name: 'not-found' });
@@ -87,9 +89,9 @@ export default {
       </div>
     </form>
 
-    <div v-if="created">
-      <p>Il tuo appartamento è stato creato con successo!</p>
-      <p>{{ created }}</p>
+    <div v-if="apartmentCreated">
+      <p>Appartamento creato con successo!</p>
+      <p>{{ apartmentCreated }}</p>
     </div>
   </div>
 </template>
@@ -97,3 +99,4 @@ export default {
 <style scoped>
 
 </style>
+                     

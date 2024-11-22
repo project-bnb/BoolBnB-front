@@ -18,6 +18,7 @@ const router = createRouter ({
             path: '/apartment-list',
             name: 'apartment-list',
             component: AppartmentList,
+            props: true,
         },
         {
             path: '/create-apartment',

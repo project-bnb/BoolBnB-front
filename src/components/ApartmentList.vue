@@ -1,5 +1,5 @@
 <script>
-import Card from './AppartmentCard.vue';
+import Card from './ApartmentCard.vue';
 
 export default {
   components: {

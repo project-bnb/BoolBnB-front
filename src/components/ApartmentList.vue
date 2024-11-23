@@ -1,9 +1,9 @@
 <script>
-import ApartmentCard from './ApartmentCard.vue';
+import Card from './ApartmentCard.vue';
 
 export default {
   components: {
-    ApartmentCard,
+    Card,
   },
   data() {
     return {
@@ -19,20 +19,33 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.apartments = data;
-          console.log(this.apartments);
         })
         .catch(error => console.error('Errore:', error));
+    },
+    removeApartment(id) {
+      this.apartments = this.apartments.filter(apartment => apartment.id !== id); 
     }
   },
 };
 </script>
 
 <template>
-    <div class="flex flex-wrap justify-center">
-      <ApartmentCard
-        v-for="property in apartments"
-        :key="property.id"
-        v-bind="property"
-      />
-    </div>
-  </template>
+  <div class="flex flex-wrap justify-center">
+    <Card
+      v-for="property in apartments"
+      :key="property.id"
+      :id="property.id" 
+      :title="property.title"
+      :rooms="property.rooms"
+      :beds="property.beds"
+      :bathrooms="property.bathrooms"
+      :square_meters="property.square_meters"
+      :address="property.address"
+      :latitude="property.latitude"
+      :longitude="property.longitude"
+      :image="property.image"
+      :is_visible="property.is_visible"
+      @apartmentDeleted="removeApartment"
+    />
+  </div>
+</template>

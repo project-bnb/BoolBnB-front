@@ -31,37 +31,20 @@ export default {
 
     created() {
         const apartmentId = this.id || this.$route.params.id;
-        if (apartmentId) {
-           this.getApartment(apartmentId);
-        } else {
-            console.error("ID dell'appartamento non trovato!");
-        }
     },
 
   methods:{
-    getApartment(id){
-        axios
-            .get(`http://127.0.0.1:8000/api/apartments/${id}`)
-            .then((res) => {
-                Object.assign(this.form, res.data);
-                console.log(this.form);
-            })
-            .catch((err) => {
-                this.$router.push({ name: 'not-found' });
-			});
-        },
-
     updateApartment(){
         console.log(this.form);
         axios
-            .put(`http://127.0.0.1:8000/api/apartments/${this.id}`, this.form)
-            .then((res) => {
-                this.apartmentUpdated = true;
-                console.log('Appartamento aggiornato con successo:', this.form);
-            })
-            .catch((err) => {
-                this.$router.push({ name: 'not-found' });
-            });
+          .put(`http://127.0.0.1:8000/api/apartments/${this.id}`, this.form)
+          .then((res) => {
+              this.apartmentUpdated = true;
+              console.log('Appartamento aggiornato con successo:', this.form);
+          })
+          .catch((err) => {
+              this.$router.push({ name: 'not-found' });
+          });
         }
     },  
 }

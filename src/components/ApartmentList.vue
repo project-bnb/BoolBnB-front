@@ -17,8 +17,8 @@ export default {
     fetchApartments() {
       fetch('http://127.0.0.1:8000/api/apartments')
         .then(response => response.json())
-        .then(data => {
-          this.apartments = data;
+        .then(res => {
+          this.apartments = res.data;
         })
         .catch(error => console.error('Errore:', error));
     },

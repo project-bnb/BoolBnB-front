@@ -5,6 +5,10 @@ props: {
     type: Number,
     required: true, 
   },
+  user_id: { 
+    type: Number,
+    required: true, 
+  },
   title: {
     type: String,
     required: true,
@@ -95,6 +99,7 @@ methods: {
         {{ showDeleteForm ? 'Annulla' : 'Cancella Appartamento' }}
       </button>
       
+      <!-- Pulsante per modificare l'appartamento -->
       <router-link :to="{ name: 'update-apartment', params: { id: id } }">
         <button class="bg-yellow-500 rounded shadow-lg px-4 py-2 my-3 text-white">Modifica</button>               
       </router-link>      

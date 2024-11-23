@@ -6,7 +6,7 @@ export default {
     return {
       form: {
         id: '',
-        user_id:'',
+        user_id:'2',
         title: '',
         rooms: 0,
         beds: 0,
@@ -31,6 +31,7 @@ export default {
 
     created() {
         const apartmentId = this.id || this.$route.params.id;
+        this.form.id = apartmentId;
     },
 
   methods:{

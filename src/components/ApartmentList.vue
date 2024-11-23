@@ -35,6 +35,7 @@ export default {
       v-for="property in apartments"
       :key="property.id"
       :id="property.id" 
+      :user_id="property.user_id"
       :title="property.title"
       :rooms="property.rooms"
       :beds="property.beds"

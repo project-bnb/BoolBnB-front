@@ -1,4 +1,5 @@
 <script>
+
 export default {
 props: {
   id: { 
@@ -106,4 +107,3 @@ methods: {
     </div>
   </div>
 </template>
-

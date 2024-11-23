@@ -1,5 +1,3 @@
-<script>
-
 export default {
 props: {
   id: { 
@@ -95,6 +93,10 @@ methods: {
       <button @click="showDeleteForm = !showDeleteForm" class="bg-red-500 text-white rounded p-2 mt-4">
         {{ showDeleteForm ? 'Annulla' : 'Cancella Appartamento' }}
       </button>
+      
+      <router-link :to="{ name: 'update-apartment', params: { id: id } }">
+        <button class="bg-yellow-500 rounded shadow-lg px-4 py-2 my-3 text-white">Modifica</button>               
+      </router-link>      
 
       <!-- Modulo di cancellazione -->
       <div v-if="showDeleteForm" class="mt-4">

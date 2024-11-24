@@ -5,6 +5,7 @@ import CreationPage from './views/CreationPage.vue';
 import UpdatePage from './views/UpdatePage.vue';
 import NotFound from './views/NotFound.vue';
 import ApartmentList from './components/ApartmentList.vue';
+import ApartmentShow from './views/ApartmentShow.vue';
 import Login from './UserAuth/Login.vue';
 import Register from './UserAuth/Register.vue';
 
@@ -46,6 +47,12 @@ const router = createRouter ({
             path: '/:pathMatch(.*)*',
             name: 'not-found',
             component: NotFound,
+          },
+        {
+            path: '/apartment/:id',
+            name: 'apartment-show',
+            component: ApartmentShow,
+            props: true,
         },
     ]
 });

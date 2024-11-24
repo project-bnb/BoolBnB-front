@@ -10,6 +10,7 @@ import Login from './UserAuth/Login.vue';
 import Register from './UserAuth/Register.vue';
 import ConfirmDeletePage from './views/ConfirmDeletePage.vue';
 
+
 const router = createRouter ({
     history: createWebHistory(),
     routes: [

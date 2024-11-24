@@ -10,13 +10,13 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
-        birth_date:'',
+        birth_date: '',
       }
     };
   },
   methods: {
     handleRegister() {
-      if (this.password !== this.confirmPassword) {
+      if (this.formRegister.password !== this.formRegister.confirmPassword) {
         alert('Le password non coincidono');
         return;
       }
@@ -24,21 +24,22 @@ export default {
       console.log(this.formRegister);
       
       axios
-          .post('http://127.0.0.1:8000/register', this.formRegister)
-          .then((res) => {
-            this.formRegister = {
-              name: '',
-              cognome: '',
-              email: '',
-              password: '',
-              confirmPassword: '',
-              birth_date: '',
-            }
-          })
-          .catch((err) => {
-            alert('Si è verificato un errore durante la registrazione');
-			});
-
+        .post('http://127.0.0.1:8000/register', this.formRegister)
+        .then((res) => {
+          this.formRegister = {
+            name: '',
+            surname: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            birth_date: '',
+          };
+          this.$router.push('/login');
+        })
+        .catch((err) => {
+          alert('Si è verificato un errore durante la registrazione');
+          console.error(err); 
+        });
     },
   },
 };
@@ -50,7 +51,7 @@ export default {
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Crea un Nuovo Account</h2>
 
       <form @submit.prevent="handleRegister">
-
+        
         <!-- Campo Nome -->
         <div class="mb-4">
           <label for="name" class="block text-sm font-medium text-gray-700">
@@ -91,24 +92,23 @@ export default {
           />
         </div>
 
-
         <!-- Campo Password -->
         <div class="mb-4">
           <label for="password" class="block text-sm font-medium text-gray-700">
             Password <span class="text-red-500">*</span>
           </label>
           <input
-          type="password"
-          id="password"
-          v-model="formRegister.password"
-          required
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+            type="password"
+            id="password"
+            v-model="formRegister.password"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
 
         <!-- Campo Conferma Password -->
         <div class="mb-4">
-          <label for="password" class="block text-sm font-medium text-gray-700">
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
             Conferma Password <span class="text-red-500">*</span>
           </label>
           <input
@@ -119,7 +119,6 @@ export default {
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
-
 
         <!-- Campo Data di Nascita -->
         <div class="mb-6">

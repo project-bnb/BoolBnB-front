@@ -18,7 +18,7 @@ export default {
       fetch('http://127.0.0.1:8000/api/apartments')
         .then(response => response.json())
         .then(res => {
-          this.apartments = res.data;
+          this.apartments = res;
         })
         .catch(error => console.error('Errore:', error));
     },
@@ -34,21 +34,21 @@ export default {
     <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Lista Appartamenti</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <Card
-        v-for="property in apartments"
-        :key="property.id"
-        :id="property.id"
-        :user_id="property.user_id"
-        :title="property.title"
-        :rooms="property.rooms"
-        :beds="property.beds"
-        :bathrooms="property.bathrooms"
-        :square_meters="property.square_meters"
-        :address="property.address"
-        :latitude="property.latitude"
-        :longitude="property.longitude"
-        :image="property.image"
-        :is_visible="property.is_visible"
-        @apartmentDeleted="removeApartment"
+      v-for="property in apartments"
+      :key="property.id"
+      :id="property.id" 
+      :user_id="property.user_id"
+      :title="property.title"
+      :rooms="property.rooms"
+      :beds="property.beds"
+      :bathrooms="property.bathrooms"
+      :square_meters="property.square_meters"
+      :address="property.address"
+      :latitude="property.latitude"
+      :longitude="property.longitude"
+      :image="property.image"
+      :is_visible="Boolean(property.is_visible)"
+      @apartmentDeleted="removeApartment"
       />
     </div>
     <div v-if="apartments.length === 0" class="text-center mt-12">

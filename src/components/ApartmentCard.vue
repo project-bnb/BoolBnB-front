@@ -57,7 +57,7 @@ data() {
 },
 computed: {
   isVisible() {
-    return this.is_visible === 1; 
+    return this.is_visible === true; 
   },
 },
 methods: {

@@ -16,15 +16,15 @@ export default {
   methods: {
     fetchApartments() {
       fetch('http://127.0.0.1:8000/api/apartments')
-        .then(response => response.json())
-        .then(res => {
+        .then((response) => response.json())
+        .then((res) => {
           this.apartments = res.data;
         })
-        .catch(error => console.error('Errore:', error));
+        .catch((error) => console.error('Errore:', error));
     },
     removeApartment(id) {
-      this.apartments = this.apartments.filter(apartment => apartment.id !== id); 
-    }
+      this.apartments = this.apartments.filter((apartment) => apartment.id !== id);
+    },
   },
 };
 </script>
@@ -34,7 +34,7 @@ export default {
     <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Lista Appartamenti</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <Card
-        v-for="property in apartments"
+        v-for="(property, index) in apartments"
         :key="property.id"
         :id="property.id"
         :user_id="property.user_id"
@@ -49,6 +49,7 @@ export default {
         :image="property.image"
         :is_visible="property.is_visible"
         @apartmentDeleted="removeApartment"
+        :class="['transform transition duration-500 ease-in-out animate-fade-right']"
       />
     </div>
     <div v-if="apartments.length === 0" class="text-center mt-12">
@@ -56,3 +57,20 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-right {
+  animation: fadeInRight 0.8s ease-out forwards;
+}
+</style>

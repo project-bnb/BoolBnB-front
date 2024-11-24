@@ -29,7 +29,6 @@ const router = createRouter ({
             path: '/update-apartment/:id',
             name: 'update-apartment',
             component: UpdatePage,
-            props: true,
         },
         {
             path: '/:pathMatch(.*)*',

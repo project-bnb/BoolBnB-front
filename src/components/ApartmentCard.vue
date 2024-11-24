@@ -95,14 +95,14 @@ methods: {
     <div class="p-4">
       <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ title }}</h2>
       <div class="flex items-center text-gray-600 text-sm mb-2">
-        <span class="mr-2"><strong>Rooms:</strong> {{ rooms }}</span>
-        <span class="mr-2"><strong>Beds:</strong> {{ beds }}</span>
-        <span><strong>Bathrooms:</strong> {{ bathrooms }}</span>
+        <span class="mr-2"><strong>Stanze:</strong> {{ rooms }}</span>
+        <span class="mr-2"><strong>Letti:</strong> {{ beds }}</span>
+        <span><strong>Bagni:</strong> {{ bathrooms }}</span>
       </div>
       <div class="text-gray-600 text-sm">
-        <p><strong>Square Meters:</strong> {{ square_meters }} m²</p>
-        <p><strong>Address:</strong> {{ address }}</p>
-        <p><strong>Coordinates:</strong> {{ latitude }}, {{ longitude }}</p>
+        <p><strong>Metri Quadri:</strong> {{ square_meters }} m²</p>
+        <p><strong>Indirizzo:</strong> {{ address }}</p>
+        <p><strong>Coordinate:</strong> {{ latitude }}, {{ longitude }}</p>
       </div>
     </div>
     <div class="px-4 pb-4 flex justify-between items-center">

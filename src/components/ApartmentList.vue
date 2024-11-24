@@ -1,5 +1,6 @@
 <script>
 import Card from './ApartmentCard.vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -15,10 +16,10 @@ export default {
   },
   methods: {
     fetchApartments() {
-      fetch('http://127.0.0.1:8000/api/apartments')
-        .then((response) => response.json())
+      axios
+        .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
-          this.apartments = res.data;
+          this.apartments = res.data.data;
         })
         .catch((error) => console.error('Errore:', error));
     },
@@ -48,7 +49,7 @@ export default {
         :longitude="property.longitude"
         :image="property.image"
         :is_visible="Boolean(property.is_visible)"
-        @apartmentDeleted="removeApartment"
+        @delete-apartment="removeApartment"
         :class="['transform transition duration-500 ease-in-out animate-fade-right']"
       />
     </div>

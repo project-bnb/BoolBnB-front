@@ -65,21 +65,7 @@ methods: {
       this.$router.push({ name: 'apartment-show', params: { id: this.id } });
     },
     deleteApartment() {
-      fetch(`http://127.0.0.1:8000/api/apartments/${this.id}`, { 
-        method: 'DELETE', 
-      })
-      .then(response => {
-        if (response.ok) {
-          alert('Appartamento cancellato con successo!');
-          this.$emit('apartmentDeleted', this.id); 
-        } else {
-          alert('Errore nella cancellazione dell\'appartamento.');
-        }
-      })
-      .catch(error => {
-        console.error('Errore:', error);
-        alert('Si è verificato un errore nella richiesta.');
-      });
+      this.$emit('delete-apartment', this.id);
     },
   },
 };
@@ -87,7 +73,7 @@ methods: {
 
 <template>
   <div
-    class="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+    class="w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
     v-if="isVisible"
     @click="goToApartment"
   >
@@ -108,39 +94,12 @@ methods: {
         <p><strong>Indirizzo:</strong> {{ address }}</p>
         <p><strong>Coordinate:</strong> {{ latitude }}, {{ longitude }}</p>
       </div>
-    </div>
-    <div class="px-4 pb-4 flex justify-between items-center">
-      <!-- Edit Button -->
-      <router-link :to="{ name: 'update-apartment', params: { id: id } }">
-        <button class="bg-yellow-500 text-white px-4 py-2 rounded shadow hover:bg-yellow-600">
+      <div class="mt-4 flex justify-between">
+        <router-link :to="{ name: 'update-apartment', params: { id } }" class="bg-yellow-500 text-white px-4 py-2 rounded mr-2" @click.stop>
           Modifica
-        </button>
-      </router-link>
-
-      <!-- Delete Button -->
-      <button
-        @click="showDeleteForm = !showDeleteForm"
-        class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600"
-      >
-        {{ showDeleteForm ? 'Annulla' : 'Cancella' }}
-      </button>
-    </div>
-    <div
-      v-if="showDeleteForm"
-      class="bg-gray-50 p-4 border-t border-gray-200"
-    >
-      <h3 class="text-gray-700 text-lg font-semibold mb-2">
-        Conferma Cancellazione
-      </h3>
-      <p class="text-gray-600 text-sm mb-4">
-        Sei sicuro di voler cancellare l'appartamento con ID: {{ id }}?
-      </p>
-      <div class="flex justify-end">
-        <button
-          @click="deleteApartment"
-          class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600"
-        >
-          Conferma
+        </router-link>
+        <button class="bg-red-500 text-white px-4 py-2 rounded" @click.stop="deleteApartment">
+          Cancella
         </button>
       </div>
     </div>

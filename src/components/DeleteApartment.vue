@@ -8,20 +8,17 @@ export default {
   },
   methods: {
     deleteApartment() {
-      fetch(`http://127.0.0.1:8000/api/apartments/${this.apartmentId}`, {
-        method: 'DELETE', 
-      })
-        .then(response => {
-          if (response.ok) {
+      axios
+        .delete(`http://127.0.0.1:8000/api/apartments/${this.apartmentId}`)
+        .then((response) => {
+          if (response.status === 200) {
             this.message = 'Appartamento cancellato con successo!';
-            this.$emit('apartmentDeleted', this.apartmentId); 
+            this.$emit('apartmentDeleted', this.apartmentId);
           } else {
-            return response.json().then(err => {
-              this.message = `Errore nella cancellazione: ${err.message}`;
-            });
+            this.message = 'Errore nella cancellazione dell\'appartamento.';
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Errore:', error);
           this.message = 'Si è verificato un errore nella richiesta.';
         });

@@ -18,7 +18,7 @@ export default {
       fetch('http://127.0.0.1:8000/api/apartments')
         .then(response => response.json())
         .then(res => {
-          this.apartments = res;
+          this.apartments = res.data;
         })
         .catch(error => console.error('Errore:', error));
     },
@@ -34,7 +34,7 @@ export default {
     <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Lista Appartamenti</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <Card
-      v-for="property in apartments"
+        v-for="property in apartments"
       :key="property.id"
       :id="property.id" 
       :user_id="property.user_id"

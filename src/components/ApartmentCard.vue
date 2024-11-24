@@ -61,31 +61,35 @@ computed: {
   },
 },
 methods: {
-  deleteApartment() {
-    fetch(`http://127.0.0.1:8000/api/apartments/${this.id}`, { 
-      method: 'DELETE', 
-    })
-    .then(response => {
-      if (response.ok) {
-        alert('Appartamento cancellato con successo!');
-        this.$emit('apartmentDeleted', this.id); 
-      } else {
-        alert('Errore nella cancellazione dell\'appartamento.');
-      }
-    })
-    .catch(error => {
-      console.error('Errore:', error);
-      alert('Si è verificato un errore nella richiesta.');
-    });
+  goToApartment() {
+      this.$router.push({ name: 'apartment-show', params: { id: this.id } });
+    },
+    deleteApartment() {
+      fetch(`http://127.0.0.1:8000/api/apartments/${this.id}`, { 
+        method: 'DELETE', 
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Appartamento cancellato con successo!');
+          this.$emit('apartmentDeleted', this.id); 
+        } else {
+          alert('Errore nella cancellazione dell\'appartamento.');
+        }
+      })
+      .catch(error => {
+        console.error('Errore:', error);
+        alert('Si è verificato un errore nella richiesta.');
+      });
+    },
   },
-},
 };
 </script>
 
 <template>
   <div
-    class="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
+    class="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
     v-if="isVisible"
+    @click="goToApartment"
   >
     <img
       :src="image"

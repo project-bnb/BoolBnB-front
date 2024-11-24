@@ -5,6 +5,7 @@ import CreationPage from './views/CreationPage.vue';
 import UpdatePage from './views/UpdatePage.vue';
 import NotFound from './views/NotFound.vue';
 import ApartmentList from './components/ApartmentList.vue';
+import ApartmentShow from './views/ApartmentShow.vue';
 
 const router = createRouter ({
     history: createWebHistory(),
@@ -36,6 +37,12 @@ const router = createRouter ({
             name: 'not-found',
             component: NotFound,
           },
+        {
+            path: '/apartment/:id',
+            name: 'apartment-show',
+            component: ApartmentShow,
+            props: true,
+        },
     ]
 });
 

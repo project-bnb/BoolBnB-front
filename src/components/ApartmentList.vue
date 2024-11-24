@@ -47,7 +47,7 @@ export default {
         :latitude="property.latitude"
         :longitude="property.longitude"
         :image="property.image"
-        :is_visible="property.is_visible"
+        :is_visible="Boolean(property.is_visible)"
         @apartmentDeleted="removeApartment"
         :class="['transform transition duration-500 ease-in-out animate-fade-right']"
       />

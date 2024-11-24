@@ -1,13 +1,17 @@
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      name: '',
-      cognome: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      birthDate:'',
+      formRegister: {
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        birth_date:'',
+      }
     };
   },
   methods: {
@@ -16,6 +20,25 @@ export default {
         alert('Le password non coincidono');
         return;
       }
+
+      console.log(this.formRegister);
+      
+      axios
+          .post('http://127.0.0.1:8000/register', this.formRegister)
+          .then((res) => {
+            this.formRegister = {
+              name: '',
+              cognome: '',
+              email: '',
+              password: '',
+              confirmPassword: '',
+              birth_date: '',
+            }
+          })
+          .catch((err) => {
+            alert('Si è verificato un errore durante la registrazione');
+			});
+
     },
   },
 };
@@ -27,33 +50,6 @@ export default {
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Crea un Nuovo Account</h2>
 
       <form @submit.prevent="handleRegister">
-        <!-- Campo Email -->
-        <div class="mb-4">
-          <label for="email" class="block text-sm font-medium text-gray-700">
-            Email <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            v-model="email"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-          />
-        </div>
-
-        <!-- Campo Password -->
-        <div class="mb-4">
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Password <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-          />
-        </div>
 
         <!-- Campo Nome -->
         <div class="mb-4">
@@ -63,7 +59,7 @@ export default {
           <input
             type="text"
             id="name"
-            v-model="name"
+            v-model="formRegister.name"
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
@@ -76,20 +72,64 @@ export default {
           <input
             type="text"
             id="surname"
-            v-model="surname"
+            v-model="formRegister.surname"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+          />
+        </div>
+        
+        <!-- Campo Email -->
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700">
+            Email <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            v-model="formRegister.email"
+            required
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
 
+
+        <!-- Campo Password -->
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Password <span class="text-red-500">*</span>
+          </label>
+          <input
+          type="password"
+          id="password"
+          v-model="formRegister.password"
+          required
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+          />
+        </div>
+
+        <!-- Campo Conferma Password -->
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Conferma Password <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            v-model="formRegister.confirmPassword"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+          />
+        </div>
+
+
         <!-- Campo Data di Nascita -->
         <div class="mb-6">
-          <label for="birthDate" class="block text-sm font-medium text-gray-700">
+          <label for="birth_date" class="block text-sm font-medium text-gray-700">
             Data di Nascita
           </label>
           <input
             type="date"
-            id="birthDate"
-            v-model="birthDate"
+            id="birth_date"
+            v-model="formRegister.birth_date"
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
           />
         </div>

@@ -50,47 +50,6 @@ export default {
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Crea un Nuovo Account</h2>
 
       <form @submit.prevent="handleRegister">
-        <!-- Campo Email -->
-        <div class="mb-4">
-          <label for="email" class="block text-sm font-medium text-gray-700">
-            Email <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            v-model="formRegister.email"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-          />
-        </div>
-
-        <!-- Campo Password -->
-        <div class="mb-4">
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Password <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="password"
-            id="password"
-            v-model="formRegister.password"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-          />
-        </div>
-
-        <!-- Campo Conferma Password -->
-        <div class="mb-4">
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Conferma Password <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            v-model="formRegister.confirmPassword"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-          />
-        </div>
 
         <!-- Campo Nome -->
         <div class="mb-4">
@@ -117,6 +76,50 @@ export default {
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
+        
+        <!-- Campo Email -->
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700">
+            Email <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            v-model="formRegister.email"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+          />
+        </div>
+
+
+        <!-- Campo Password -->
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Password <span class="text-red-500">*</span>
+          </label>
+          <input
+          type="password"
+          id="password"
+          v-model="formRegister.password"
+          required
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+          />
+        </div>
+
+        <!-- Campo Conferma Password -->
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Conferma Password <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            v-model="formRegister.confirmPassword"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+          />
+        </div>
+
 
         <!-- Campo Data di Nascita -->
         <div class="mb-6">

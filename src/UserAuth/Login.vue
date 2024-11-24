@@ -1,4 +1,6 @@
 <script>
+import axios from 'axios';
+
   export default {
     data() {
       return {
@@ -8,10 +10,7 @@
     },
     methods: {
       handleLogin() {
-        // Logica per il login
-        console.log('Email:', this.email);
-        console.log('Password:', this.password);
-        // Puoi aggiungere qui la logica per inviare i dati del form a un API
+        
       },
     },
   };

@@ -31,10 +31,20 @@ const router = createRouter ({
             component: UpdatePage,
         },
         {
+            path: '/login',
+            name: 'login',
+            component: LoginPage,
+        },
+        {
+            path: '/registration',
+            name: 'registration',
+            component: UpdatePage,
+        },
+        {
             path: '/:pathMatch(.*)*',
             name: 'not-found',
             component: NotFound,
-          },
+        },
     ]
 });
 

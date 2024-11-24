@@ -6,6 +6,8 @@ import UpdatePage from './views/UpdatePage.vue';
 import NotFound from './views/NotFound.vue';
 import ApartmentList from './components/ApartmentList.vue';
 import ApartmentShow from './views/ApartmentShow.vue';
+import Login from './UserAuth/Login.vue';
+import Register from './UserAuth/Register.vue';
 
 const router = createRouter ({
     history: createWebHistory(),
@@ -30,7 +32,16 @@ const router = createRouter ({
             path: '/update-apartment/:id',
             name: 'update-apartment',
             component: UpdatePage,
-            props: true,
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login,
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: Register,
         },
         {
             path: '/:pathMatch(.*)*',

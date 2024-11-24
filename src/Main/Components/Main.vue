@@ -1,16 +1,15 @@
 <script>
-import ApartmentList from '../../components/ApartmentList.vue';
 
 export default {
   components: {
-    ApartmentList, 
+
   },
 };
 </script>
 
 <template>
   <div>
-    <ApartmentList />
+
   </div>
 </template>
 

@@ -13,9 +13,7 @@ export default {
     AppHeader,
   },
   methods: {
-    incrementCount() {
-      this.count++;
-    }
+
   }
 }
 </script>
@@ -26,9 +24,7 @@ export default {
     <AppHeader />
     <router-view></router-view>
     <main>
-      <button @click="incrementCount()" class=" border-dashed border-black border-2">
-        {{ count }}
-      </button>
+      
     </main>
   </div>
 </template>

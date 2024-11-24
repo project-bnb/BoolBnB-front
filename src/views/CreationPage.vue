@@ -23,7 +23,6 @@ export default {
 
   methods:{
     createApartment(){
-      console.log(this.form);
         axios
             .post('http://127.0.0.1:8000/api/apartments', this.form)
             .then((res) => {
@@ -51,7 +50,7 @@ export default {
             id="title"
             v-model="form.title"
             placeholder="Inserisci un titolo..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>
@@ -64,7 +63,7 @@ export default {
             id="rooms"
             v-model="form.rooms"
             placeholder="Inserisci il numero di stanze..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>
@@ -77,7 +76,7 @@ export default {
             id="beds"
             v-model="form.beds"
             placeholder="Inserisci il numero di letti..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>
@@ -90,7 +89,7 @@ export default {
             id="bathrooms"
             v-model="form.bathrooms"
             placeholder="Inserisci il numero di bagni..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>
@@ -103,7 +102,7 @@ export default {
             id="square_meters"
             v-model="form.square_meters"
             placeholder="Inserisci i metri quadri..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>
@@ -116,7 +115,7 @@ export default {
             id="address"
             v-model="form.address"
             placeholder="Inserisci l'indirizzo..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>
@@ -129,7 +128,7 @@ export default {
             id="latitude"
             v-model="form.latitude"
             placeholder="Inserisci la latitudine..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
           />
         </div>
 
@@ -141,7 +140,7 @@ export default {
             id="longitude"
             v-model="form.longitude"
             placeholder="Inserisci la longitudine..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
           />
         </div>
 
@@ -153,7 +152,7 @@ export default {
             id="image"
             v-model="form.image"
             placeholder="Inserisci l'URL dell'immagine..."
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+            class="p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
             required
           />
         </div>

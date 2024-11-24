@@ -1,71 +1,69 @@
 <script>
+
 export default {
-props: {
-  id: { 
-    type: Number,
-    required: true, 
-  },
-  user_id: { 
-    type: Number,
-    required: true, 
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  rooms: {
-    type: Number,
-    required: true,
-  },
-  beds: {
-    type: Number,
-    required: true,
-  },
-  bathrooms: {
-    type: Number,
-    required: true,
-  },
-  square_meters: {
-    type: Number,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  latitude: {
-    type: Number,
-    required: true,
-  },
-  longitude: {
-    type: Number,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  is_visible: {
-    type: Boolean,
-    required: true,
-  },
-},
-data() {
-  return {
-    showDeleteForm: false, 
-  };
-},
-computed: {
-  isVisible() {
-    return this.is_visible === true; 
-  },
-},
-methods: {
-  goToApartment() {
-      this.$router.push({ name: 'apartment-show', params: { id: this.id } });
+  props: {
+    id: { 
+      type: Number,
+      required: true, 
     },
-    deleteApartment() {
-      this.$emit('delete-apartment', this.id);
+    user_id: { 
+      type: Number,
+      required: true, 
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    rooms: {
+      type: Number,
+      required: true,
+    },
+    beds: {
+      type: Number,
+      required: true,
+    },
+    bathrooms: {
+      type: Number,
+      required: true,
+    },
+    square_meters: {
+      type: Number,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    latitude: {
+      type: Number,
+      required: true,
+    },
+    longitude: {
+      type: Number,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    is_visible: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      showDeleteModal: false,
+    };
+  },
+  computed: {
+    isVisible() {
+      return this.is_visible === true; 
+    },
+  },
+  methods: {
+    goToApartment() {
+      this.$router.push({ name: 'apartment-show', params: { id: this.id } });
     },
   },
 };
@@ -98,9 +96,9 @@ methods: {
         <router-link :to="{ name: 'update-apartment', params: { id } }" class="bg-yellow-500 text-white px-4 py-2 rounded mr-2" @click.stop>
           Modifica
         </router-link>
-        <button class="bg-red-500 text-white px-4 py-2 rounded" @click.stop="deleteApartment">
+        <router-link :to="{ name: 'confirm-delete', params: { id } }" class="bg-red-500 text-white px-4 py-2 rounded" @click.stop>
           Cancella
-        </button>
+        </router-link>
       </div>
     </div>
   </div>

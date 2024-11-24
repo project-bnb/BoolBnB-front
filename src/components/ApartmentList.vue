@@ -50,7 +50,6 @@ export default {
         :image="property.image"
         :is_visible="Boolean(property.is_visible)"
         @delete-apartment="removeApartment"
-        :class="['transform transition duration-500 ease-in-out animate-fade-right']"
       />
     </div>
     <div v-if="apartments.length === 0" class="text-center mt-12">

@@ -29,13 +29,22 @@ const router = createRouter ({
             path: '/update-apartment/:id',
             name: 'update-apartment',
             component: UpdatePage,
-            props: true,
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: LoginPage,
+        },
+        {
+            path: '/registration',
+            name: 'registration',
+            component: UpdatePage,
         },
         {
             path: '/:pathMatch(.*)*',
             name: 'not-found',
             component: NotFound,
-          },
+        },
     ]
 });
 

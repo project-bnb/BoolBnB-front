@@ -1,7 +1,7 @@
 export const jumbos = [
     {
         position:'absolute inset-0 flex flex-col items-center justify-center text-white text-center ',
-        button:'bg-teal-600 text-white font-bold py-4 px-8 rounded mt-4 animate__animated animate__fadeInUpBig animate__delay-5s',
+        button:'router-link-active router-link-exact-active bg-teal-600 text-white font-bold py-4 px-8 rounded mt-4 animate__animated animate__fadeInUpBig animate__delay-5s',
         date:'text-lg font-bold mb-10 animate__animated animate__zoomIn animate__delay-4s',
         social:'text-6xl text-teal-600 font-extrabold mb-10 animate__animated animate__zoomIn animate__delay-2s',
         meet:'text-4xl mb-10 animate__animated animate__fadeInDown animate__delay-1s',
@@ -11,12 +11,12 @@ export const jumbos = [
         subtitle: 'BOOLBNB',
         details: 'ESCLUSIVO /CONVENIENTE / INDIMENTICABILE',
         buttonText: 'REGISTRATI ONLINE',
-        buttonLink: '#',
+        buttonLink: '/register',
         hr:'1',
     },
     {
         position:'absolute inset-0 flex flex-col items-center justify-center text-white text-center ml-96',
-        button:'bg-teal-600 text-white font-bold py-3 px-6 rounded mt-4 animate__animated animate__fadeInUp animate__delay-4s',
+        button:'router-link-active router-link-exact-active bg-teal-600 text-white font-bold py-3 px-6 rounded mt-4 animate__animated animate__fadeInUp animate__delay-4s',
         date:'mt-4 text-lg animate__animated animate__fadeIn animate__delay-3s',
         social:'text-6xl font-bold animate__animated animate__fadeIn animate__delay-2s',
         meet:'text-8xl font-extrabold text-teal-600 mb-4 animate__animated animate__flip animate__delay-1s',
@@ -26,7 +26,7 @@ export const jumbos = [
         subtitle: 'IN TUTTO IL MONDO',
         details: 'Nel confort più assoluto',
         buttonText: 'ACCEDI',
-        buttonLink: '#',
+        buttonLink: '/login',
     },
     {
         position:'absolute inset-0 flex flex-col items-center justify-center text-white text-center ',

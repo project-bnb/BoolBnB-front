@@ -1,14 +1,20 @@
 <script>
-import Main from '../Main/AppMain.vue';
+import Jumbotron from '../Header/Components/Jumbotron.vue';
+import Main from '../Main/Components/Main.vue';
+
 export default {
   components: {
-    Main, 
+    Jumbotron,
+    Main,
   },
 };
 </script>
 
 <template>
-    <div>
-      <Main />
-    </div>
+  <div>
+    <Jumbotron/>
+  </div>
+  <dir>
+    <Main/>
+  </dir>
   </template>

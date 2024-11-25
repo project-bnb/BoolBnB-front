@@ -1,10 +1,14 @@
 <script>
+import { store } from '../../store';
+
 export default {
   data() {
     return {
+      store,
       isScrolled: false,
     };
   },
+
   created() {
     window.addEventListener("scroll", this.handleScroll);
   },
@@ -22,53 +26,48 @@ export default {
 <template>
   <header
     :class="[ 
-      'fixed top-0 left-0 right-0 w-full transition-all duration-200 ease-in-out z-50 shadow-md',
-      isScrolled ? 'w-1/4 rounded-full py-3 px-6 mx-auto mt-3 bg-teal-600 shadow-scroll' : 'w-full py-4 mx-0 mt-0 bg-white',
+      'w-full z-50 transition-all duration-300 shadow-md fixed top-0 left-0 right-0',
+      isScrolled ? 'bg-teal-600 mx-auto mt-5 shadow-scroll rounded-full py-3 px-6 w-max' : 'bg-white py-4'
     ]"
   >
-    <div
-      :class="[ 
-        'container mx-auto flex items-center transition-all duration-200',
-        isScrolled ? 'justify-center' : 'justify-between px-6',
-      ]"
-    >
+    <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
+      
       <!-- Logo -->
-      <div
-        v-if="!isScrolled"
-        :class="[
-          'text-xl font-bold transition-all duration-200',
-          'text-teal-600 text-2xl',
-        ]"
-      >
+      <div v-if="!isScrolled" class="text-teal-600 text-2xl font-bold">
         <router-link to="/">
           BoolBnB
         </router-link>
       </div>
 
-      <!-- Menu di navigazione -->
-      <nav :class="[isScrolled ? 'space-x-4' : 'space-x-6']" class="flex md:flex md:space-x-6">
-        
-      </nav>
+      <!-- Barra di ricerca -->
+      <div class="relative w-full max-w-lg mx-auto">
+        <input
+          type="search"
+          placeholder="Cerca appartamenti..."
+          v-model="store.searchInput"
+          class="w-full rounded-full px-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 transition duration-200 shadow-sm"
+        />
+        <!-- Icona di ricerca -->
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+      </div>
 
       <!-- Pulsante di accesso -->
       <router-link
-        v-if="!isScrolled"
         to="/login"
-        :class="[ 
-          'rounded-lg shadow-md px-4 py-2 transition-all duration-200',
-          'bg-teal-600 text-white hover:bg-teal-700',
-        ]"
+        v-if="!isScrolled"
+        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
       >
         Accedi
       </router-link>
+
     </div>
   </header>
 </template>
 
 <style scoped>
-
-.shadow-scroll{
-  box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.425);
+.shadow-scroll {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
 }
-
 </style>

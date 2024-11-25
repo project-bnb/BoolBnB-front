@@ -1,18 +1,22 @@
 <script>
-import HomeView from '../../views/HomeView.vue';
 
 export default {
   components: {
-    HomeView,
+
   },
 };
 </script>
 
 <template>
   <div>
-    <HomeView/>
+    <router-view></router-view>
   </div>
 </template>
 
 <style scoped>
+
+div{
+  margin-top: 90px;
+}
+
 </style>

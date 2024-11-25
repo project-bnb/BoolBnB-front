@@ -1,5 +1,4 @@
 <script>
-import axios from 'axios';
 import ApartmentList from '../components/ApartmentList.vue';
 
 export default {

@@ -14,7 +14,7 @@ export default {
     getApartment() {
       const apartmentId = this.$route.params.id;
       axios
-        .get(`http://192.168.1.101:9000/api/apartments/${apartmentId}`)
+        .get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`)
         .then((res) => {
           this.apartment = res.data.data;
         })
@@ -40,7 +40,7 @@ export default {
       <p class="text-lg"><strong>Coordinate:</strong> {{ apartment.latitude }}, {{ apartment.longitude }}</p>
       <p class="text-lg"><strong>Visibilità:</strong> {{ apartment.is_visible ? 'Visibile' : 'Non Visibile' }}</p>
     </div>
-    <router-link to="/apartment-list" class="text-blue-500 hover:underline">Torna alla lista degli appartamenti</router-link>
+    <router-link to="/" class="text-blue-500 hover:underline">Torna alla lista degli appartamenti</router-link>
   </div>
 </template>
 

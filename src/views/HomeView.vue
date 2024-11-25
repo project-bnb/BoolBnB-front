@@ -1,14 +1,27 @@
 <script>
-import Main from '../Main/AppMain.vue';
+import axios from 'axios';
+import ApartmentList from '../components/ApartmentList.vue';
+
 export default {
   components: {
-    Main, 
+    ApartmentList
+  },
+  data() {
+    return {
+      
+    };
+  },
+  
+  methods: {
+    
   },
 };
 </script>
 
 <template>
-    <div>
-      <Main />
-    </div>
-  </template>
+  <ApartmentList/>
+</template>
+
+<style scoped>
+
+</style>

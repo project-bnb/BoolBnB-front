@@ -93,13 +93,7 @@ export default {
         <p><strong>Coordinate:</strong> {{ latitude }}, {{ longitude }}</p>
       </div>
       <div class="mt-4 flex justify-between">
-        <router-link :to="{ name: 'update-apartment', params: { id } }" class="bg-yellow-500 text-white px-4 py-2 rounded mr-2" @click.stop>
-          Modifica
-        </router-link>
-        <router-link :to="{ name: 'confirm-delete', params: { id } }" class="bg-red-500 text-white px-4 py-2 rounded" @click.stop>
-          Cancella
-        </router-link>
-      </div>
+    </div>
     </div>
   </div>
 </template>

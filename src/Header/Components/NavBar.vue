@@ -3,16 +3,6 @@ export default {
   data() {
     return {
       isScrolled: false,
-      menuItems: [
-        {
-          label: "Home",
-          path: "/",
-        },
-        {
-          label: "Appartamenti",
-          path: "/apartment-list",
-        },
-      ],
     };
   },
   created() {
@@ -57,17 +47,7 @@ export default {
 
       <!-- Menu di navigazione -->
       <nav :class="[isScrolled ? 'space-x-4' : 'space-x-6']" class="flex md:flex md:space-x-6">
-        <router-link
-          v-for="item in menuItems"
-          :key="item.label"
-          :to="item.path"
-          :class="[ 
-            'transition-colors duration-200 text-md font-medium',
-            isScrolled ? 'text-white hover:text-teal-300' : 'text-gray-600 hover:text-teal-800',
-          ]"
-        >
-          {{ item.label }}
-        </router-link>
+        
       </nav>
 
       <!-- Pulsante di accesso -->

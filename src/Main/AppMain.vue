@@ -1,16 +1,16 @@
 <script>
-import AppMain from './Components/Main.vue';
+import Main from './Components/Main.vue';
 
 export default {
   components: {
-    AppMain, 
+    Main, 
   },
 };
 </script>
 
 <template>
   <div>
-    <AppMain />
+    <Main />
   </div>
 </template>
 

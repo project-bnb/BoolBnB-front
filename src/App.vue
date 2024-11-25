@@ -14,7 +14,7 @@ export default {
     AppHeader,
   },
   mounted() {
-    axios.get('http://192.168.1.101:9000/api/users')
+    axios.get('http://192.168.1.101:9000/api/user')
     .then((res) => {
       console.log(res);
       })

@@ -16,10 +16,17 @@ import axios from 'axios';
         axios
           .post('http://192.168.1.101:9000/login', this.formLogin)
           .then((res) => {
+            this.getUser();
             console.log(res);
             console.log(res.data);
           });
       },
+      getUser() {
+        axios.get('http://192.168.1.101:9000/api/user')
+        .then((res) => {
+          console.log(res);
+        });
+      }
     },
   };
 </script>

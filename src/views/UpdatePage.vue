@@ -34,7 +34,7 @@ export default {
   methods:{
     getApartment(){
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${this.form.id}`)
+        .get(`http://192.168.1.101:9000/api/apartments/${this.form.id}`)
         .then((res) => {
             this.form = res.data.data;
             console.log(this.form);
@@ -46,7 +46,7 @@ export default {
 
     updateApartment(){
         axios
-          .put(`http://127.0.0.1:8000/api/apartments/${this.form.id}`, this.form)
+          .put(`http://192.168.1.101:9000/api/apartments/${this.form.id}`, this.form)
           .then((res) => {
               this.apartmentUpdated = true;
               console.log('Appartamento aggiornato con successo:', this.form);

@@ -5,16 +5,31 @@ export default {
   data() {
     return {
       formRegister: {
-        name: '',
-        surname: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        birth_date:'',
+        name: 'asd',
+        surname: 'asd',
+        email: 'dimasdah11009@gmail.com',
+        password: 'Sonofico123',
+        confirmPassword: 'Sonofico123',
+        birth_date:'2024-11-24',
       }
     };
   },
   methods: {
+    logout(){
+      axios
+        .post('http://192.168.1.101:9000/logout')
+        .then((res) => {
+          console.log(res);
+          console.log(res.data);
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            alert('Non sei autorizzato a disconnetterti.');
+          } else {
+            alert('Si è verificato un errore durante il logout.');
+          }
+        });
+    },
     handleRegister() {
       if (this.password !== this.confirmPassword) {
         alert('Le password non coincidono');
@@ -24,8 +39,11 @@ export default {
       console.log(this.formRegister);
       
       axios
-          .post('http://127.0.0.1:8000/register', this.formRegister)
+          .post('http://192.168.1.101:9000/register', this.formRegister)
           .then((res) => {
+
+            console.log(res);
+            console.log(res.data);
             this.formRegister = {
               name: '',
               cognome: '',
@@ -150,12 +168,14 @@ export default {
           Accedi
         </router-link>
       </p>
+      <button @click="logout">bottone</button>
 
       <!-- Nota per i Campi Obbligatori -->
       <p class="mt-4 text-center text-sm text-gray-500 italic">
         Sono contrassegnati con <span class="text-red-500">*</span> i dati obbligatori.
       </p>
     </div>
+
   </div>
 </template>
 

@@ -4,13 +4,21 @@ import axios from 'axios';
   export default {
     data() {
       return {
-        email: '',
-        password: '',
+        formLogin: {
+          email: 'dimajosh11009@gmail.com',
+          password: 'Sonofico123',
+        },
       };
     },
     methods: {
       handleLogin() {
-        
+        console.log(this.formLogin);
+        axios
+          .post('http://192.168.1.101:9000/login', this.formLogin)
+          .then((res) => {
+            console.log(res);
+            console.log(res.data);
+          });
       },
     },
   };
@@ -27,7 +35,7 @@ import axios from 'axios';
             <input
               type="email"
               id="email"
-              v-model="email"
+              v-model="formLogin.email"
               required
               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
             />
@@ -39,7 +47,7 @@ import axios from 'axios';
             <input
               type="password"
               id="password"
-              v-model="password"
+              v-model="formLogin.password"
               required
               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
             />

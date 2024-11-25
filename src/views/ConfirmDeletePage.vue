@@ -26,7 +26,7 @@
       },
       confirmDelete() {
         axios
-          .delete(`http://127.0.0.1:8000/api/apartments/${this.apartmentId}`)
+          .delete(`http://192.168.1.101:9000/api/apartments/${this.apartmentId}`)
           .then((response) => {
             if (response.status === 200) {
               this.$router.push({ name: 'apartment-list' }); 

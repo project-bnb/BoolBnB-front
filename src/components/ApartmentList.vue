@@ -16,10 +16,13 @@ export default {
   },
   methods: {
     fetchApartments() {
+      console.log('funziona');
       axios
-        .get('http://127.0.0.1:8000/api/apartments')
+        .get('http://192.168.1.101:9000/api/apartments')
         .then((res) => {
+          console.log(res);
           this.apartments = res.data.data;
+          console.log(this.apartments);
         })
         .catch((error) => console.error('Errore:', error));
     },

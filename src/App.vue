@@ -6,14 +6,21 @@
   3) Utilizzo del componente
 */
 // 1) Importazione del componente
-import AppHeader from './header/AppHeader.vue';
+import AppHeader from './Header/AppHeader.vue';
+import axios from 'axios';
 
 export default {
   components: {
     AppHeader,
   },
+  mounted() {
+    axios.get('http://192.168.1.101:9000/api/users')
+    .then((res) => {
+      console.log(res);
+      })
+      .catch((error) => console.error('Errore:', error));
+  },
   methods: {
-
   }
 }
 </script>

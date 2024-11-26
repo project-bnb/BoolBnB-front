@@ -1,20 +1,33 @@
 <script>
+import ApartmentList from '../components/ApartmentList.vue';
 import Jumbotron from '../Header/Components/Jumbotron.vue';
 import Main from '../Main/Components/Main.vue';
 
 export default {
-  components: {
-    Jumbotron,
-    Main,
+  data() {
+    return {
+      
+    };
   },
-};
+  components: {
+    ApartmentList,
+    Jumbotron,
+    Main
+  }
+}
 </script>
 
 <template>
   <div>
+    <ApartmentList/>
+  </div>
+  <div>
     <Jumbotron/>
   </div>
-  <dir>
+  <div>
     <Main/>
-  </dir>
-  </template>
+  </div>
+</template>
+<style scoped>
+
+</style>

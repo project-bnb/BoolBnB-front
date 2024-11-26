@@ -8,6 +8,7 @@ export default {
     return {
       store,
       isScrolled: false,
+      selected: false
     };
   },
 
@@ -20,18 +21,18 @@ export default {
 
   methods: {
     getSuggestion: debounce(function () {
+      this.selected = false;
       axios
         .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
           this.store.suggestions = res.data.data;
           console.log(this.store.suggestions);
           this.store.filteredSuggestions = this.store.suggestions
-          .filter(suggestion => 
-            typeof suggestion.address === 'string')
           .filter(suggestion =>
             suggestion.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
           )
-          .map(suggestion => suggestion.address);
+          .map(suggestion => suggestion.address)
+          .slice(0, 10);
 
           if (this.store.filteredSuggestions.length === 0) {
             this.store.filteredSuggestions = ['Nessun risultato trovato'];
@@ -46,13 +47,10 @@ export default {
       this.isScrolled = window.scrollY > 50;
     },
 
-    clearSuggestions() {
-      this.store.filteredSuggestions = [];
-    },
-
     selectSuggestion(suggestion) {
       this.store.searchInput = suggestion;
-      this.clearSuggestions();
+      this.store.filteredSuggestions = [];
+      this.selected = true;
     },
   },
 };
@@ -70,7 +68,7 @@ export default {
       <!-- Logo -->
       <div v-if="!isScrolled" class="text-teal-600 text-2xl font-bold">
         <router-link to="/">
-          BoolBnB
+          MilanBnB
         </router-link>
       </div>
 
@@ -91,8 +89,11 @@ export default {
         </span>
 
         <!-- Suggerimenti di ricerca -->
-        <ul
+        <ul v-if="this.store.searchInput.length > 0"
           class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+          :class="[
+            this.selected === true ? 'hidden' : 'block'
+          ]"
         >
           <li
             v-for="(suggestion, index) in store.filteredSuggestions"

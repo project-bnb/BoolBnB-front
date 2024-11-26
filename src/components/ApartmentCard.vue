@@ -90,7 +90,6 @@ export default {
       <div class="text-gray-600 text-sm">
         <p><strong>Metri Quadri:</strong> {{ square_meters }} m²</p>
         <p><strong>Indirizzo:</strong> {{ address }}</p>
-        <p><strong>Coordinate:</strong> {{ latitude }}, {{ longitude }}</p>
       </div>
       <div class="mt-4 flex justify-between">
     </div>

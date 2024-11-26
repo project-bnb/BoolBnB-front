@@ -29,11 +29,7 @@ export default {
     getApartments() {
       console.log('funziona');
       axios
-        .get('http://127.0.0.1:8000/api/apartments', {
-          params: {
-            // title: store.searchInput,
-          }
-        })
+        .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
           console.log(res);
           this.apartments = res.data.data;

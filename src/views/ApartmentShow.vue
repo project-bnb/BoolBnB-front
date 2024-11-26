@@ -37,7 +37,6 @@ export default {
       <p class="text-lg"><strong>Bagni:</strong> {{ apartment.bathrooms }}</p>
       <p class="text-lg"><strong>Metri Quadri:</strong> {{ apartment.square_meters }} m²</p>
       <p class="text-lg"><strong>Indirizzo:</strong> {{ apartment.address }}</p>
-      <p class="text-lg"><strong>Coordinate:</strong> {{ apartment.latitude }}, {{ apartment.longitude }}</p>
       <p class="text-lg"><strong>Visibilità:</strong> {{ apartment.is_visible ? 'Visibile' : 'Non Visibile' }}</p>
     </div>
     <router-link to="/" class="text-blue-500 hover:underline">Torna alla lista degli appartamenti</router-link>

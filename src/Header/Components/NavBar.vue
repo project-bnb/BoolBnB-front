@@ -14,7 +14,9 @@ export default {
 
   created() {
     window.addEventListener("scroll", this.handleScroll);
+    this.isAuthenticated = !!localStorage.getItem('AuthToken');
   },
+
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
   },
@@ -58,7 +60,7 @@ export default {
 
 <template>
   <header
-    :class="[ 
+    :class="[
       'w-full z-50 transition-all duration-300 shadow-md fixed top-0 left-0 right-0',
       isScrolled ? 'bg-teal-600 mx-auto mt-5 shadow-scroll rounded-full py-3 px-6 w-max' : 'bg-white py-4'
     ]"
@@ -124,3 +126,4 @@ export default {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
 }
 </style>
+

@@ -5,6 +5,7 @@ import NotFound from './views/NotFound.vue';
 import ApartmentShow from './views/ApartmentShow.vue';
 
 
+
 const router = createRouter ({
     history: createWebHistory(),
     routes: [

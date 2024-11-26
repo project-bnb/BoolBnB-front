@@ -1,5 +1,7 @@
 <script>
+import axios from 'axios';
 import { store } from '../../store';
+import debounce from 'lodash/debounce';
 
 export default {
   data() {
@@ -15,9 +17,42 @@ export default {
   beforeDestroy() {
     window.removeEventListener("scroll", this.handleScroll);
   },
+
   methods: {
+    getSuggestion: debounce(function () {
+      axios
+        .get('http://127.0.0.1:8000/api/apartments')
+        .then((res) => {
+          this.store.suggestions = res.data.data;
+          console.log(this.store.suggestions);
+          this.store.filteredSuggestions = this.store.suggestions
+          .filter(suggestion => 
+            typeof suggestion.address === 'string')
+          .filter(suggestion =>
+            suggestion.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
+          )
+          .map(suggestion => suggestion.address);
+
+          if (this.store.filteredSuggestions.length === 0) {
+            this.store.filteredSuggestions = ['Nessun risultato trovato'];
+          }
+        })
+        .catch((error) => {
+          console.error('Errore nel recupero dei suggerimenti:', error);
+        });
+    }, 300),
+
     handleScroll() {
       this.isScrolled = window.scrollY > 50;
+    },
+
+    clearSuggestions() {
+      this.store.filteredSuggestions = [];
+    },
+
+    selectSuggestion(suggestion) {
+      this.store.searchInput = suggestion;
+      this.clearSuggestions();
     },
   },
 };
@@ -44,15 +79,32 @@ export default {
         <input
           type="search"
           placeholder="Cerca appartamenti..."
+          @input="getSuggestion"
+          @blur="clearSuggestions"
           v-model="store.searchInput"
           class="w-full rounded-full px-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 transition duration-200 shadow-sm"
         />
+
         <!-- Icona di ricerca -->
         <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
           <i class="fa-solid fa-magnifying-glass"></i>
         </span>
-      </div>
 
+        <!-- Suggerimenti di ricerca -->
+        <ul
+          class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+        >
+          <li
+            v-for="(suggestion, index) in store.filteredSuggestions"
+            :key="index"
+            @click="selectSuggestion(suggestion)"
+            class="px-4 py-2 hover:bg-teal-100 cursor-pointer"
+          >
+            {{ suggestion }}
+          </li>
+        </ul>
+      </div>
+      
       <!-- Pulsante di accesso -->
       <router-link
         to="/login"
@@ -61,10 +113,10 @@ export default {
       >
         Accedi
       </router-link>
-
     </div>
   </header>
 </template>
+
 
 <style scoped>
 .shadow-scroll {

@@ -7,29 +7,39 @@ export default {
   data() {
     return {
       store,
+      apartments: [],
     }
   },
 
   components: {
     Card,
   },
-  data() {
-    return {
-      apartments: [],
-    };
-  },
+
   mounted() {
     this.getApartments();
   },
+
+  watch: {
+    'store.searchInput': function(newVal) {
+      this.getApartments();
+    },
+  },
+  
   methods: {
     getApartments() {
       console.log('funziona');
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${store.searchInput}`)
+        .get('http://127.0.0.1:8000/api/apartments', {
+          params: {
+            // title: store.searchInput,
+          }
+        })
         .then((res) => {
           console.log(res);
           this.apartments = res.data.data;
           console.log(this.apartments);
+          store.suggestions = this.apartments.map(apartment => apartment.address);
+          console.log(store.suggestions);
         })
         .catch((error) => console.error('Errore:', error));
     },

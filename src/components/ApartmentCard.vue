@@ -46,6 +46,10 @@ export default {
       type: String,
       required: true,
     },
+    services: {
+      type: Array,
+      required: true,
+    },
     is_visible: {
       type: Boolean,
       required: true,
@@ -90,6 +94,13 @@ export default {
       <div class="text-gray-600 text-sm">
         <p><strong>Metri Quadri:</strong> {{ square_meters }} m²</p>
         <p><strong>Indirizzo:</strong> {{ address }}</p>
+      </div>
+      <div class="text-gray-600 text-sm">
+        <p><strong>Servizi: </strong> 
+          <span v-for="(service, index) in services" :key="index">
+            {{ service.name }}<span v-if="index < services.length - 1"> | </span>
+          </span>
+        </p>
       </div>
       <div class="mt-4 flex justify-between">
     </div>

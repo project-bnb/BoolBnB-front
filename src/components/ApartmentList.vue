@@ -60,6 +60,7 @@ export default {
         :latitude="property.latitude"
         :longitude="property.longitude"
         :image="property.image"
+        :services="property.services"
         :is_visible="Boolean(property.is_visible)"
       />
     </div>

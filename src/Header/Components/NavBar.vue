@@ -56,6 +56,11 @@ export default {
     }, 300),
 
     handleScroll() {
+      // Se siamo sulla pagina ApartmentShow, non fare nulla
+      if (this.isApartmentShowPage) {
+        return;
+      }
+
       this.isScrolled = window.scrollY > 50;
     },
 
@@ -83,14 +88,15 @@ export default {
 
 <template>
   <header
-    :class="[
+    :class="[ 
       'w-full z-50 transition-all duration-300 shadow-md fixed top-0 left-0 right-0',
-      isScrolled ? 'bg-teal-600 mx-auto mt-5 shadow-scroll rounded-full py-3 px-6 w-max' : 'bg-white py-4'
+      // Se non siamo in ApartmentShow, permetti l'effetto di scroll sull'header
+      isScrolled && !isApartmentShowPage ? 'bg-teal-600 mx-auto mt-5 shadow-scroll rounded-full py-3 px-6 w-max' : 'bg-white py-4'
     ]"
   >
     <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
       <!-- Logo -->
-      <div v-if="!isScrolled" class="text-teal-600 text-2xl font-bold">
+      <div class="text-teal-600 text-2xl font-bold">
         <router-link to="/">
           MilanBnB
         </router-link>
@@ -117,10 +123,7 @@ export default {
         <ul
           v-if="store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
           class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
-          :class="[
-            selected ? 'hidden' : 'block',
-            submit ? 'hidden' : 'block'
-          ]"
+          :class="[selected || submit ? 'hidden' : 'block']"
         >
           <li
             v-for="(suggestion, index) in store.filteredSuggestions"
@@ -133,6 +136,7 @@ export default {
         </ul>
       </div>
 
+      <!-- Pulsante di accesso (Visibile solo se non siamo in scroll e non siamo su ApartmentShow) -->
       <a
         href="http://192.168.1.101:9000/login"
         v-if="!isScrolled"

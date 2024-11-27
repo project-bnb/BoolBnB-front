@@ -20,14 +20,14 @@ export default {
   },
 
   watch: {
-    'store.searchInput': function (newVal) {
+    'store.searchInput': function () {
       this.getApartments();
     },
   },
 
   methods: {
     getApartments() {
-      console.log('funziona');
+      console.log('Recupero degli appartamenti in corso...');
       axios
         .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
@@ -40,13 +40,32 @@ export default {
 
   computed: {
     filteredApartments() {
-      if (!this.store.searchInput) {
-        return this.apartments;
-      } else {
-        return this.apartments.filter((apartment) =>
+      let filtered = this.apartments;
+
+      if (this.store.searchInput) {
+        filtered = filtered.filter((apartment) =>
           apartment.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
         );
       }
+
+      if (this.store.filters.minRooms) {
+        filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
+      }
+
+      if (this.store.filters.minBeds) {
+        filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
+      }
+
+      if (this.store.filters.selectedServices.length > 0) {
+        filtered = filtered.filter((apartment) => {
+          const apartmentServices = apartment.services.map((service) => service.name);
+          return this.store.filters.selectedServices.every((service) =>
+            apartmentServices.includes(service)
+          );
+        });
+      }
+
+      return filtered;
     },
   },
 };

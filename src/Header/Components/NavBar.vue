@@ -127,13 +127,12 @@ export default {
       </div>
 
       <!-- Pulsante di accesso -->
-      <router-link
-        to="/login"
+      <a href="http://127.0.0.1:8000/login" 
         v-if="!isScrolled"
         class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
       >
         Accedi
-      </router-link>
+      </a>
     </div>
   </header>
 </template>

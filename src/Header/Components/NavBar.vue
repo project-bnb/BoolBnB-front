@@ -35,8 +35,9 @@ export default {
       axios
         .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
-          this.store.suggestions = res.data.data;
+          this.store.suggestions = res.data.data.filter(apartment => apartment.is_visible === 1);
           console.log(this.store.suggestions);
+
           this.store.filteredSuggestions = this.store.suggestions
             .filter((suggestion) =>
               suggestion.address
@@ -56,7 +57,6 @@ export default {
     }, 300),
 
     handleScroll() {
-      // Se siamo sulla pagina ApartmentShow, non fare nulla
       if (this.isApartmentShowPage) {
         return;
       }
@@ -90,7 +90,6 @@ export default {
   <header
     :class="[ 
       'w-full z-50 transition-all duration-300 shadow-md fixed top-0 left-0 right-0',
-      // Se non siamo in ApartmentShow, permetti l'effetto di scroll sull'header
       isScrolled && !isApartmentShowPage ? 'bg-teal-600 mx-auto mt-5 shadow-scroll rounded-full py-3 px-6 w-max' : 'bg-white py-4'
     ]"
   >

@@ -29,9 +29,10 @@ export default {
     getApartments() {
       console.log('funziona');
       axios
-        .get('http://127.0.0.1:8000/api/apartments')
+        .get('http://192.168.1.101:9000/api/apartments')
         .then((res) => {
           this.apartments = res.data.data;
+          console.log(this.apartments);
           store.suggestions = this.apartments.map((apartment) => apartment.address);
         })
         .catch((error) => console.error('Errore:', error));
@@ -41,9 +42,10 @@ export default {
   computed: {
     filteredApartments() {
       if (!this.store.searchInput) {
-        return this.apartments;
+        return this.apartments.filter(apartment => apartment.is_visible === 1);
       } else {
         return this.apartments.filter((apartment) =>
+          apartment.is_visible === 1 && 
           apartment.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
         );
       }

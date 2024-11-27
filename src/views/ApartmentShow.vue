@@ -17,10 +17,10 @@ export default {
       const longitude = parseFloat(this.apartment.longitude);
 
       const map = tt.map({
-        key: 'Irf8l6OPFsBoDiu0iaO59pMzerbATx7k',
+        key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7',
         container: 'map',
         center: [longitude, latitude], 
-        zoom: 14
+        zoom: 16
       });
 
       new tt.Marker()
@@ -30,7 +30,7 @@ export default {
     getApartment() {
       const apartmentId = this.$route.params.id;
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`)
+        .get(`http://192.168.1.101:9000/api/apartments/${apartmentId}`)
         .then((res) => {
           this.apartment = res.data.data;
           console.log('Appartamento:', this.apartment);
@@ -64,7 +64,7 @@ export default {
     </div>
     <div id="map" class="w-full h-96 mt-6 rounded-lg shadow-md transition-shadow duration-500 hover:shadow-xl"></div>
     <div class="text-center mt-8">
-      <router-link to="/apartment-list" class="inline-block bg-teal-600 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-teal-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+      <router-link to="/" class="inline-block bg-teal-600 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-teal-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
         Torna alla lista degli appartamenti
       </router-link>
     </div>

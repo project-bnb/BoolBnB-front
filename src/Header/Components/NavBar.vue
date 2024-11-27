@@ -27,7 +27,7 @@ export default {
       this.submit = false;
       this.selected = false;
       axios
-        .get('http://127.0.0.1:8000/api/apartments')
+        .get('http://192.168.1.101:9000/api/apartments')
         .then((res) => {
           this.store.suggestions = res.data.data;
           console.log(this.store.suggestions);
@@ -126,14 +126,22 @@ export default {
         </ul>
       </div>
 
-      <!-- Pulsante di accesso -->
-      <router-link
-        to="/login"
+      <a
+        href="http://192.168.1.101:9000/login"
         v-if="!isScrolled"
         class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
       >
         Accedi
-      </router-link>
+      </a>
+
+      <!-- Pulsante di accesso -->
+      <!-- <router-link
+        to="http://192.168.1.101:9000/login"
+        v-if="!isScrolled"
+        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
+      >
+        Accedi
+      </router-link> -->
     </div>
   </header>
 </template>

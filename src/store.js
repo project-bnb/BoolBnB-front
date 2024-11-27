@@ -46,5 +46,5 @@ export const store = reactive({
             buttonText: '',
             buttonLink: '',
         },
-    ]
+    ],
 });

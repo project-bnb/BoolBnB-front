@@ -8,21 +8,23 @@ export default {
     return {
       store,
       isScrolled: false,
-      selected: false
+      selected: false,
+      submit: false,
     };
   },
 
   created() {
-    window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener('scroll', this.handleScroll);
     this.isAuthenticated = !!localStorage.getItem('AuthToken');
   },
 
   beforeDestroy() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);
   },
 
   methods: {
     getSuggestion: debounce(function () {
+      this.submit = false;
       this.selected = false;
       axios
         .get('http://127.0.0.1:8000/api/apartments')
@@ -30,11 +32,13 @@ export default {
           this.store.suggestions = res.data.data;
           console.log(this.store.suggestions);
           this.store.filteredSuggestions = this.store.suggestions
-          .filter(suggestion =>
-            suggestion.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
-          )
-          .map(suggestion => suggestion.address)
-          .slice(0, 10);
+            .filter((suggestion) =>
+              suggestion.address
+                .toLowerCase()
+                .includes(this.store.searchInput.toLowerCase())
+            )
+            .map((suggestion) => suggestion.address)
+            .slice(0, 10);
 
           if (this.store.filteredSuggestions.length === 0) {
             this.store.filteredSuggestions = ['Nessun risultato trovato'];
@@ -49,10 +53,23 @@ export default {
       this.isScrolled = window.scrollY > 50;
     },
 
+    clearSuggestions() {
+      setTimeout(() => {
+        this.store.filteredSuggestions = [];
+      }, 200);
+    },
+
     selectSuggestion(suggestion) {
       this.store.searchInput = suggestion;
       this.store.filteredSuggestions = [];
       this.selected = true;
+      this.filterApartments();
+    },
+
+    submittingSearch() {
+      this.submit = true;
+      this.store.filteredSuggestions = [];
+      this.filterApartments();
     },
   },
 };
@@ -66,7 +83,6 @@ export default {
     ]"
   >
     <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
-      
       <!-- Logo -->
       <div v-if="!isScrolled" class="text-teal-600 text-2xl font-bold">
         <router-link to="/">
@@ -81,6 +97,7 @@ export default {
           placeholder="Cerca appartamenti..."
           @input="getSuggestion"
           @blur="clearSuggestions"
+          @keydown.enter.prevent="submittingSearch"
           v-model="store.searchInput"
           class="w-full rounded-full px-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 transition duration-200 shadow-sm"
         />
@@ -91,10 +108,11 @@ export default {
         </span>
 
         <!-- Suggerimenti di ricerca -->
-        <ul v-if="this.store.searchInput.length > 0"
+        <ul v-if="this.store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
           class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
           :class="[
-            this.selected === true ? 'hidden' : 'block'
+            this.selected === true ? 'hidden' : 'block',
+            this.submit === true ? 'hidden' : 'block'
           ]"
         >
           <li
@@ -107,7 +125,7 @@ export default {
           </li>
         </ul>
       </div>
-      
+
       <!-- Pulsante di accesso -->
       <router-link
         to="/login"
@@ -120,10 +138,8 @@ export default {
   </header>
 </template>
 
-
 <style scoped>
 .shadow-scroll {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
 }
 </style>
-

@@ -8,7 +8,7 @@ export default {
     return {
       store,
       apartments: [],
-    }
+    };
   },
 
   components: {
@@ -20,24 +20,33 @@ export default {
   },
 
   watch: {
-    'store.searchInput': function(newVal) {
+    'store.searchInput': function (newVal) {
       this.getApartments();
     },
   },
-  
+
   methods: {
     getApartments() {
       console.log('funziona');
       axios
         .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
-          console.log(res);
           this.apartments = res.data.data;
-          console.log(this.apartments);
-          store.suggestions = this.apartments.map(apartment => apartment.address);
-          console.log(store.suggestions);
+          store.suggestions = this.apartments.map((apartment) => apartment.address);
         })
         .catch((error) => console.error('Errore:', error));
+    },
+  },
+
+  computed: {
+    filteredApartments() {
+      if (!this.store.searchInput) {
+        return this.apartments;
+      } else {
+        return this.apartments.filter((apartment) =>
+          apartment.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
+        );
+      }
     },
   },
 };
@@ -45,9 +54,13 @@ export default {
 
 <template>
   <div class="max-w-7xl mx-auto p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-right">
+    <transition-group
+      name="fade"
+      tag="div"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    >
       <Card
-        v-for="(property, index) in apartments"
+        v-for="(property, index) in filteredApartments"
         :key="property.id"
         :id="property.id"
         :user_id="property.user_id"
@@ -62,10 +75,14 @@ export default {
         :image="property.image"
         :services="property.services"
         :is_visible="Boolean(property.is_visible)"
+        class="transform transition duration-500 ease-in-out"
       />
-    </div>
-    <div v-if="apartments.length === 0" class="text-center mt-12">
-      <p class="text-gray-500 text-lg">Nessun appartamento disponibile.</p>
+    </transition-group>
+
+    <div v-if="filteredApartments.length === 0" class="text-center mt-12">
+      <p class="text-gray-500 text-lg">
+        Nessun appartamento disponibile.
+      </p>
     </div>
   </div>
 </template>
@@ -84,5 +101,22 @@ export default {
 
 .animate-fade-right {
   animation: fadeInRight 0.8s ease-out forwards;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

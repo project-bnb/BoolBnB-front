@@ -46,6 +46,10 @@ export default {
       type: String,
       required: true,
     },
+    services: {
+      type: Array,
+      required: true,
+    },
     is_visible: {
       type: Boolean,
       required: true,
@@ -90,16 +94,16 @@ export default {
       <div class="text-gray-600 text-sm">
         <p><strong>Metri Quadri:</strong> {{ square_meters }} m²</p>
         <p><strong>Indirizzo:</strong> {{ address }}</p>
-        <p><strong>Coordinate:</strong> {{ latitude }}, {{ longitude }}</p>
+      </div>
+      <div class="text-gray-600 text-sm">
+        <p><strong>Servizi: </strong> 
+          <span v-for="(service, index) in services" :key="index">
+            {{ service.name }}<span v-if="index < services.length - 1"> | </span>
+          </span>
+        </p>
       </div>
       <div class="mt-4 flex justify-between">
-        <router-link :to="{ name: 'update-apartment', params: { id } }" class="bg-yellow-500 text-white px-4 py-2 rounded mr-2" @click.stop>
-          Modifica
-        </router-link>
-        <router-link :to="{ name: 'confirm-delete', params: { id } }" class="bg-red-500 text-white px-4 py-2 rounded" @click.stop>
-          Cancella
-        </router-link>
-      </div>
+    </div>
     </div>
   </div>
 </template>

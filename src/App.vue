@@ -1,36 +1,25 @@
 <script>
-/* 
-  Per importare ed utilizzare un componente dentro un altro devo SEMPRE seguire questi 3 passi:
-  1) Importazione del componente
-  2) Dichiarazione del componente
-  3) Utilizzo del componente
-*/
-// 1) Importazione del componente
-import AppHeader from './header/AppHeader.vue';
+import AppHeader from './Header/AppHeader.vue';
+import AppMain from './Main/AppMain.vue';
+import AppFooter from './Footer/AppFooter.vue';
 
 export default {
   components: {
     AppHeader,
+    AppMain,
+    AppFooter
   },
-  methods: {
-
-  }
-}
+};
 </script>
 
 <template>
-  <div>
-    <!-- 3) Utilizzo del componente -->
-    <AppHeader />
-    <router-view></router-view>
+    <header>  
+      <AppHeader/>
+    </header>
     <main>
-      
+      <AppMain/>
     </main>
-  </div>
-</template>
-
-<style scoped>
-main {
-  text-align: center;
-}
-</style>
+    <footer>
+      <AppFooter/>
+    </footer>
+  </template>

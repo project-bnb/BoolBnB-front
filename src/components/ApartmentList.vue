@@ -1,30 +1,43 @@
 <script>
 import Card from './ApartmentCard.vue';
 import axios from 'axios';
+import { store } from '../store';
 
 export default {
+  data() {
+    return {
+      store,
+      apartments: [],
+    }
+  },
+
   components: {
     Card,
   },
-  data() {
-    return {
-      apartments: [],
-    };
-  },
+
   mounted() {
-    this.fetchApartments();
+    this.getApartments();
   },
+
+  watch: {
+    'store.searchInput': function(newVal) {
+      this.getApartments();
+    },
+  },
+  
   methods: {
-    fetchApartments() {
+    getApartments() {
+      console.log('funziona');
       axios
         .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
+          console.log(res);
           this.apartments = res.data.data;
+          console.log(this.apartments);
+          store.suggestions = this.apartments.map(apartment => apartment.address);
+          console.log(store.suggestions);
         })
         .catch((error) => console.error('Errore:', error));
-    },
-    removeApartment(id) {
-      this.apartments = this.apartments.filter((apartment) => apartment.id !== id);
     },
   },
 };
@@ -32,8 +45,7 @@ export default {
 
 <template>
   <div class="max-w-7xl mx-auto p-6">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Lista Appartamenti</h1>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-right">
       <Card
         v-for="(property, index) in apartments"
         :key="property.id"
@@ -48,8 +60,8 @@ export default {
         :latitude="property.latitude"
         :longitude="property.longitude"
         :image="property.image"
+        :services="property.services"
         :is_visible="Boolean(property.is_visible)"
-        @delete-apartment="removeApartment"
       />
     </div>
     <div v-if="apartments.length === 0" class="text-center mt-12">

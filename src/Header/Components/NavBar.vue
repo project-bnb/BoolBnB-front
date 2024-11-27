@@ -1,21 +1,17 @@
 <script>
+import axios from 'axios';
+import { store } from '../../store';
+import debounce from 'lodash/debounce';
+
 export default {
   data() {
     return {
-      isAuthenticated: false,
+      store,
       isScrolled: false,
-      menuItems: [
-        {
-          label: "Home",
-          path: "/",
-        },
-        {
-          label: "Appartamenti",
-          path: "/apartment-list",
-        },
-      ],
+      selected: false
     };
   },
+
   created() {
     window.addEventListener("scroll", this.handleScroll);
     this.isAuthenticated = !!localStorage.getItem('AuthToken');
@@ -26,113 +22,108 @@ export default {
   },
 
   methods: {
+    getSuggestion: debounce(function () {
+      this.selected = false;
+      axios
+        .get('http://127.0.0.1:8000/api/apartments')
+        .then((res) => {
+          this.store.suggestions = res.data.data;
+          console.log(this.store.suggestions);
+          this.store.filteredSuggestions = this.store.suggestions
+          .filter(suggestion =>
+            suggestion.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
+          )
+          .map(suggestion => suggestion.address)
+          .slice(0, 10);
+
+          if (this.store.filteredSuggestions.length === 0) {
+            this.store.filteredSuggestions = ['Nessun risultato trovato'];
+          }
+        })
+        .catch((error) => {
+          console.error('Errore nel recupero dei suggerimenti:', error);
+        });
+    }, 300),
+
     handleScroll() {
       this.isScrolled = window.scrollY > 50;
     },
 
-    handleLogout() {
-      localStorage.removeItem('authToken');
-      this.isAuthenticated = false;
-      this.$router.push('/login');
+    selectSuggestion(suggestion) {
+      this.store.searchInput = suggestion;
+      this.store.filteredSuggestions = [];
+      this.selected = true;
     },
-  }
+  },
 };
 </script>
 
 <template>
   <header
-    :class="[ 
-      'transition-all duration-200 ease-in-out z-50 shadow-md',
-      isScrolled ? ' rounded-full py-3 px-6 mt-5 bg-teal-600 shadow-scroll mx-auto fixed top-0 right-0 left-0 w-min' : 'w-full py-4 mx-0 mt-0 bg-white',
+    :class="[
+      'w-full z-50 transition-all duration-300 shadow-md fixed top-0 left-0 right-0',
+      isScrolled ? 'bg-teal-600 mx-auto mt-5 shadow-scroll rounded-full py-3 px-6 w-max' : 'bg-white py-4'
     ]"
   >
-    <div
-      :class="[ 
-        'container mx-auto flex items-center transition-all duration-200',
-        isScrolled ? 'justify-center' : 'justify-between px-6',
-      ]"
-    >
+    <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
+      
       <!-- Logo -->
-      <div
-        v-if="!isScrolled"
-        :class="[
-          'text-xl font-bold transition-all duration-200',
-          'text-teal-600 text-2xl',
-        ]"
-      >
+      <div v-if="!isScrolled" class="text-teal-600 text-2xl font-bold">
         <router-link to="/">
-          BoolBnB
+          MilanBnB
         </router-link>
       </div>
 
-      <!-- Menu di navigazione -->
-      <nav class="flex md:flex md:space-x-6" :class="[isScrolled ? 'space-x-0 divide-x divide-white' : 'space-x-6']">
-        <router-link
-          v-for="item in menuItems"
-          :key="item.label"
-          :to="item.path"
-          :class="[ 
-            'transition-colors duration-200 text-md font-medium px-4',
-            isScrolled ? 'text-white hover:text-teal-300' : 'text-gray-600 hover:text-teal-800'
+      <!-- Barra di ricerca -->
+      <div class="relative w-full max-w-lg mx-auto">
+        <input
+          type="search"
+          placeholder="Cerca appartamenti..."
+          @input="getSuggestion"
+          @blur="clearSuggestions"
+          v-model="store.searchInput"
+          class="w-full rounded-full px-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 transition duration-200 shadow-sm"
+        />
+
+        <!-- Icona di ricerca -->
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+
+        <!-- Suggerimenti di ricerca -->
+        <ul v-if="this.store.searchInput.length > 0"
+          class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+          :class="[
+            this.selected === true ? 'hidden' : 'block'
           ]"
         >
-          {{ item.label }}
-        </router-link>
-      </nav>
-
-      <!-- Pulsante di accesso -->
-
-      <div v-if="!isAuthenticated">
-        <router-link
-          v-if="!isScrolled"
-          to="/login"
-          :class="[ 
-            'rounded-lg shadow-md px-4 py-2 transition-all duration-200',
-            'bg-teal-600 text-white hover:bg-teal-700',
-          ]"
-        >
-          Accedi
-        </router-link>
+          <li
+            v-for="(suggestion, index) in store.filteredSuggestions"
+            :key="index"
+            @click="selectSuggestion(suggestion)"
+            class="px-4 py-2 hover:bg-teal-100 cursor-pointer"
+          >
+            {{ suggestion }}
+          </li>
+        </ul>
       </div>
-
+      
       <!-- Pulsante di accesso -->
-
-      <div v-if="isAuthenticated">
-        <div class="relative">
-          <!-- Icona del Profilo Utente -->
-          <img
-            :src="profileImageUrl"
-            alt="Profilo Utente"
-            class="w-10 h-10 rounded-full cursor-pointer"
-            @click="toggleMenu"
-          />
-
-          <!-- Menu a tendina -->
-          <div v-if="isMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-md">
-            <ul>
-              <li>
-                <router-link to="/profile" class="block px-4 py-2 hover:bg-gray-100">Profilo</router-link>
-              </li>
-              <li>
-                <router-link to="/settings" class="block px-4 py-2 hover:bg-gray-100">Impostazioni</router-link>
-              </li>
-              <li>
-                <button @click="handleLogout" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <router-link
+        to="/login"
+        v-if="!isScrolled"
+        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
+      >
+        Accedi
+      </router-link>
     </div>
   </header>
 </template>
 
+
 <style scoped>
-
-.shadow-scroll{
-  box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.425);
+.shadow-scroll {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
 }
-
 </style>
+

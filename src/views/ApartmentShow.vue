@@ -64,7 +64,7 @@ export default {
     </div>
     <div id="map" class="w-full h-96 mt-6 rounded-lg shadow-md transition-shadow duration-500 hover:shadow-xl"></div>
     <div class="text-center mt-8">
-      <router-link to="/apartment-list" class="inline-block bg-teal-600 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-teal-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+      <router-link to="/" class="inline-block bg-teal-600 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-teal-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
         Torna alla lista degli appartamenti
       </router-link>
     </div>

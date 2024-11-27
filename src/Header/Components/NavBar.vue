@@ -127,7 +127,7 @@ export default {
       </div>
 
       <!-- Pulsante di accesso -->
-      <a href="http://127.0.0.1:8000/login" 
+      <a href="http://127.0.0.1:8000/registration" 
         v-if="!isScrolled"
         class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
       >

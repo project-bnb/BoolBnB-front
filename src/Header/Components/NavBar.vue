@@ -8,7 +8,8 @@ export default {
     return {
       store,
       isScrolled: false,
-      selected: false
+      selected: false,
+      submit: false
     };
   },
 
@@ -23,6 +24,7 @@ export default {
 
   methods: {
     getSuggestion: debounce(function () {
+      this.submit = false;
       this.selected = false;
       axios
         .get('http://127.0.0.1:8000/api/apartments')
@@ -54,6 +56,11 @@ export default {
       this.store.filteredSuggestions = [];
       this.selected = true;
     },
+
+    submittingSearch(){
+      this.submit = true;
+      this.store.filteredSuggestions = [];
+    }
   },
 };
 </script>
@@ -81,6 +88,7 @@ export default {
           placeholder="Cerca appartamenti..."
           @input="getSuggestion"
           @blur="clearSuggestions"
+          @keydown.enter.prevent="submittingSearch"
           v-model="store.searchInput"
           class="w-full rounded-full px-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 transition duration-200 shadow-sm"
         />
@@ -94,7 +102,8 @@ export default {
         <ul v-if="this.store.searchInput.length > 0"
           class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
           :class="[
-            this.selected === true ? 'hidden' : 'block'
+            this.selected === true ? 'hidden' : 'block',
+            this.submit === true ? 'hidden' : 'block',
           ]"
         >
           <li

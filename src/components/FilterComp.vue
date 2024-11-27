@@ -51,7 +51,7 @@ export default {
     <transition name="expand">
       <div 
       :class="[ 
-        isExpanded ? 'z-0 fixed left-[0] top-[0] h-screen w-[11%] bg-teal-600 filter-bar shadow-md transition-all duration-{3000}ease-in-out' : 'transition-all duration-{3000} ease-in-out rounded-full h-0 w-0 fixed left-[16px] top-[100px]'
+        isExpanded ? 'z-0 fixed left-[0] top-[0] h-screen w-[11%] bg-teal-600 filter-bar shadow-filter transition-all duration-{3000}ease-in-out' : 'transition-all duration-{3000} ease-in-out rounded-full h-0 w-0 fixed left-[16px] top-[100px]'
       ]">
         <div v-if="isExpanded" class="grid">
           <div
@@ -66,5 +66,7 @@ export default {
 </template>
 
 <style scoped>
-
+.shadow-filter{
+    box-shadow: 0 7px 7px rgba(0, 0, 0, 0.562);
+}
 </style>

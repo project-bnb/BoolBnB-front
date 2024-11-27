@@ -22,6 +22,12 @@ export default {
     window.removeEventListener('scroll', this.handleScroll);
   },
 
+  computed: {
+    isApartmentShowPage() {
+      return this.$route.name === 'apartment-show';
+    },
+  },
+
   methods: {
     getSuggestion: debounce(function () {
       this.submit = false;
@@ -90,8 +96,8 @@ export default {
         </router-link>
       </div>
 
-      <!-- Barra di ricerca -->
-      <div class="relative w-full max-w-lg mx-auto">
+      <!-- Barra di ricerca (Mostrata solo se NON siamo sulla pagina ApartmentShow) -->
+      <div v-if="!isApartmentShowPage" class="relative w-full max-w-lg mx-auto">
         <input
           type="search"
           placeholder="Cerca appartamenti..."
@@ -108,11 +114,12 @@ export default {
         </span>
 
         <!-- Suggerimenti di ricerca -->
-        <ul v-if="this.store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
+        <ul
+          v-if="store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
           class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
           :class="[
-            this.selected === true ? 'hidden' : 'block',
-            this.submit === true ? 'hidden' : 'block'
+            selected ? 'hidden' : 'block',
+            submit ? 'hidden' : 'block'
           ]"
         >
           <li
@@ -127,7 +134,8 @@ export default {
       </div>
 
       <!-- Pulsante di accesso -->
-      <a href="http://127.0.0.1:8000/registration" 
+      <a
+        href="http://127.0.0.1:8000/login"
         v-if="!isScrolled"
         class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-teal-600 text-white hover:bg-teal-700 hover:text-gray-100"
       >

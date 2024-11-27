@@ -17,7 +17,7 @@ export default {
       const longitude = parseFloat(this.apartment.longitude);
 
       const map = tt.map({
-        key: 'Irf8l6OPFsBoDiu0iaO59pMzerbATx7k',
+        key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7',
         container: 'map',
         center: [longitude, latitude], 
         zoom: 14

@@ -95,7 +95,7 @@ export default {
   >
     <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
       <!-- Logo -->
-      <div class="text-teal-600 text-2xl font-bold">
+      <div v-if="!isScrolled" class="text-teal-600 text-2xl font-bold">
         <router-link to="/">
           MilanBnB
         </router-link>

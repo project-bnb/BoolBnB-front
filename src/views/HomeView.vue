@@ -1,6 +1,7 @@
 <script>
 import ApartmentList from '../components/ApartmentList.vue';
-import Jumbotron from '../Header/Components/Jumbotron.vue';
+import FilterComp from '../components/FilterComp.vue';
+// import Jumbotron from '../Header/Components/Jumbotron.vue';
 import Main from '../Main/Components/Main.vue';
 
 export default {
@@ -11,18 +12,20 @@ export default {
   },
   components: {
     ApartmentList,
-    Jumbotron,
-    Main
+    // Jumbotron,
+    Main,
+    FilterComp
   }
 }
 </script>
 
 <template>
   <div>
+    <FilterComp/>
     <ApartmentList/>
   </div>
   <div>
-    <Jumbotron/>
+    <!-- <Jumbotron/> -->
   </div>
   <div>
     <Main/>

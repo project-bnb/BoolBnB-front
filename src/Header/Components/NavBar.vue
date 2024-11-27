@@ -22,6 +22,12 @@ export default {
     window.removeEventListener('scroll', this.handleScroll);
   },
 
+  computed: {
+    isApartmentShowPage() {
+      return this.$route.name === 'apartment-show';
+    },
+  },
+
   methods: {
     getSuggestion: debounce(function () {
       this.submit = false;
@@ -90,8 +96,8 @@ export default {
         </router-link>
       </div>
 
-      <!-- Barra di ricerca -->
-      <div class="relative w-full max-w-lg mx-auto">
+      <!-- Barra di ricerca (Mostrata solo se NON siamo sulla pagina ApartmentShow) -->
+      <div v-if="!isApartmentShowPage" class="relative w-full max-w-lg mx-auto">
         <input
           type="search"
           placeholder="Cerca appartamenti..."
@@ -108,11 +114,12 @@ export default {
         </span>
 
         <!-- Suggerimenti di ricerca -->
-        <ul v-if="this.store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
+        <ul
+          v-if="store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
           class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
           :class="[
-            this.selected === true ? 'hidden' : 'block',
-            this.submit === true ? 'hidden' : 'block'
+            selected ? 'hidden' : 'block',
+            submit ? 'hidden' : 'block'
           ]"
         >
           <li

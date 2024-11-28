@@ -50,6 +50,10 @@ export default {
       type: Array,
       required: true,
     },
+    sponsorships: {
+      type: Array,
+      required: true,
+    },
     is_visible: {
       type: Boolean,
       required: true,
@@ -102,6 +106,12 @@ export default {
           </span>
         </p>
       </div>
+
+      <span class="text-gray-600 text-sm" v-if="sponsorships.length > 0">
+        <strong>Sponsorizzato: </strong>
+        <span v-for="(sponsor, index) in sponsorships" :key="index"> {{ sponsor.name }}<span v-if="index < sponsorships.length - 1"> | </span></span>
+      </span>
+
       <div class="mt-4 flex justify-between">
     </div>
     </div>

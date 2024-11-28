@@ -52,5 +52,6 @@ export const store = reactive({
         minBeds: 1,          
         radius: 20,      
         selectedServices: [],
+        filteredApartments: [],
       },
 });

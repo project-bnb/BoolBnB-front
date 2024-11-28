@@ -66,6 +66,13 @@ export default {
         });
       }
 
+      // filtra gli appartamenti in base ai nomi degli appartamenti dentro il raggio
+      if (this.store.filters.filteredApartments.length > 0) {
+        console.log('filteredApartments:', this.store.filters.filteredApartments);
+
+        return this.store.filters.filteredApartments;
+      }
+
       return filtered;
     },
   },
@@ -94,6 +101,7 @@ export default {
         :longitude="property.longitude"
         :image="property.image"
         :services="property.services"
+        :sponsorships="property.sponsorships"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out"
       />

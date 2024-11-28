@@ -72,6 +72,16 @@ export default {
       </ul>
     </div>
 
+    <!-- Sponsorizzato da -->
+    <div v-if="apartment.sponsorships && apartment.sponsorships.length > 0" class="bg-teal-50 p-6 rounded-lg shadow-md mb-8">
+      <h2 class="text-2xl font-bold text-teal-700 mb-4">Sponsorizzato da</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li v-for="(sponsor, index) in apartment.sponsorships" :key="index" class="text-gray-700 font-semibold">
+          {{ sponsor.name }}
+        </li>
+      </ul>
+    </div>
+
     <!-- Mappa -->
     <div id="map" class="w-full h-96 mt-6 rounded-lg shadow-md transition-shadow duration-500 hover:shadow-xl"></div>
 

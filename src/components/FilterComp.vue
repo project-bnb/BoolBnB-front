@@ -1,6 +1,6 @@
 <script>
 import { store } from '../store';
-
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -21,6 +21,28 @@ export default {
     };
   },
   methods: {
+
+    // 20 km da centro milano 45.4685° N, 9.1824° E
+    isWithinRadius(lat1, lon1, radius) {
+      const milanoLat = 45.4685;
+      const milanoLon = 9.1824;
+
+      const haversine = (lat1, lon1) => {
+        const R = 6371; // raggio della terra in km
+        const toRad = (deg) => deg * (Math.PI / 180);
+        const dLat = toRad(lat1 - milanoLat);
+        const dLon = toRad(lon1 - milanoLon);
+        const a = Math.sin(dLat / 2) ** 2 +
+                  Math.cos(toRad(lat1)) * Math.cos(toRad(milanoLat)) *
+                  Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // distanza in km
+      };
+      // return true se la distanza tra le due coordinate è minore o uguale al raggio
+      return haversine(lat1, lon1) <= radius;
+    },
+
+
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
     },
@@ -38,7 +60,32 @@ export default {
       store.filters.radius = this.radius;
       store.filters.selectedServices = [...this.selectedServices];
 
-      console.log("Filtri applicati:", store.filters);
+      // Filtra tramite radius
+      axios.get('http://192.168.1.101:9000/api/apartments')
+      .then((res) => {
+
+        const filteredApartments = [];
+    
+        store.filters.filteredSuggestions = [];
+        for (let i = 0; i < res.data.data.length; i++) {
+          const apartment = res.data.data[i];
+          const isInRadius = this.isWithinRadius(apartment.latitude, apartment.longitude, this.radius);
+          
+          // se l'appartamento è dentro il raggio, lo aggiungiamo all'array dei filtri
+          if (isInRadius) {
+            store.filters.filteredSuggestions.push(apartment);
+            // pushamo gli elementi in array
+            filteredApartments.push(apartment);
+            store.filters.filteredApartments = filteredApartments;
+          }
+        }
+      })
+
+      .catch((error) => console.error('error:', error));
+
+
+
+      console.log("filters applied:", store.filters);
     },
 
     resetFilters() {
@@ -160,6 +207,7 @@ export default {
 
             <!-- Bottone per resettare i filtri -->
             <button
+
               @click="resetFilters"
               class="w-full bg-white text-teal-600 py-2 px-4 rounded-lg shadow-md mt-3 hover:bg-red-500 hover:text-white transition duration-300"
             >

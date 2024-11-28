@@ -20,7 +20,7 @@ const router = createRouter ({
             props: true,
         },
         {
-            path: '/filtered-page',
+            path: '/apartments',
             name: 'filtered-page',
             component: FilteredPage,
         },

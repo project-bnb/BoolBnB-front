@@ -63,7 +63,7 @@ export default {
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Home
         </router-link>
-        <router-link to="/filtered-page" class="transition-all ease-in-out duration-300 hover:opacity-70">
+        <router-link to="/apartments" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Appartamenti
         </router-link>
         <router-link to="/contact" class="transition-all ease-in-out duration-300 hover:opacity-70">

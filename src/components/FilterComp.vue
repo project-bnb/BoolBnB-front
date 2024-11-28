@@ -19,9 +19,16 @@ export default {
         "Parcheggio",
         "Aria Condizionata"
       ],
-      clickedServices: [] 
+      clickedServices: [],
+      radius: store.filters.radius
     };
   },
+  watch: {
+    radius(newRadius) {
+      store.filters.radius = newRadius;
+    },
+  },
+
   methods: {
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
@@ -61,7 +68,7 @@ export default {
 
 <template>
   <div class="relative">
-    <div class="fixed ml-3 left-0 bottom-[45px] w-14 h-14 z-50">
+    <div class="fixed ml-5 left-0 bottom-[45px] w-14 h-14 z-50">
       <!-- Pulsante di Espansione del Menu Filtri -->
       <button
         ref="bounceButton"
@@ -69,12 +76,12 @@ export default {
         @mouseover="hovering = true"
         @mouseleave="hovering = false"
         class="w-14 h-14 bg-[#B49578] z-50 text-white rounded-full flex items-center justify-center shadow-md transition-all duration-500 ease-in-out"
-        :class="[isExpanded ? 'bg-[#EDEEF0] hover:bg-[#BDAFA2] translate-x-2' : 'hover:bg-[#B49578] hover:translate-x-2']"
+        :class="[isExpanded ? 'bg-[#EDEEF0] hover:opacity-70 translate-x-2' : 'hover:bg-[#B49578] hover:translate-x-2']"
       >
         <i class="fa-solid fa-wand-magic-sparkles" :class="[isExpanded ? 'text-[#B49578]' : '']"></i>
       </button>
       <span
-        class="absolute z-10 bottom-[20px] left-16 font-bold transition-all duration-500 ease-in-out"
+        class="absolute z-10 bottom-[15px] left-16 font-bold transition-all duration-500 ease-in-out"
         :class="[isExpanded ? 'text-white translate-x-5' : (hovering ? 'translate-x-5 text-[#B49578]' : 'text-transparent -translate-x-5')]"
       >
         Filtri
@@ -115,14 +122,23 @@ export default {
 
           <!-- Raggio di ricerca -->
           <div class="mt-4">
-            <label for="radius" class="block text-sm font-bold">Raggio di ricerca (km):</label>
-            <input
-              type="number"
-              v-model="radius"
-              id="radius"
-              min="1"
-              class="w-full rounded text-[#B49578] mt-1 p-1"
-            />
+            <label for="radius" class="block text-sm font-bold mb-2">Raggio di ricerca (km):</label>
+            
+            <!-- Contenitore per l'input range e il valore -->
+            <div class="flex items-center gap-4">
+              <!-- Input range migliorato esteticamente -->
+              <input
+                type="range"
+                v-model="radius"
+                id="radius"
+                min="1"
+                max="100"
+                class="w-full range-slider"
+              />
+              
+              <!-- Mostra il valore del raggio in km -->
+              <span class="font-semibold text-[#B49578]">{{ radius }} km</span>
+            </div>
           </div>
 
           <!-- Servizi aggiuntivi -->
@@ -134,8 +150,11 @@ export default {
                 :id="service"
                 :value="service"
                 @click="toggleService(service)"
-                class="mr-2 rounded-full py-3 px-6 w-full bg-[#EDEEF0] text-[#BDAFA2] transition-all duration-300 ease-in-out"
-                :class="{ 'shadow-click': clickedServices.includes(service) }"
+                class="mr-2 rounded-full py-3 px-6 w-full transition-all text-[#BDAFA2] duration-300 ease-in-out transform"
+                :style="{
+                  backgroundColor: clickedServices.includes(service) ? '#E5E7EB' : 'white',
+                  boxShadow: clickedServices.includes(service) ? 'inset 0 0 6px rgba(0, 0, 0, 0.712)' : '0 4px 8px rgba(0, 0, 0, 0.2)',
+                }"
               >
                 {{ service }}
               </button>
@@ -145,7 +164,7 @@ export default {
           <!-- Bottone per applicare i filtri -->
           <button
             @click="applyFilters"
-            class="w-full bg-[#EDEEF0] text-[#B49578] py-2 px-4 rounded-lg shadow-md mt-6 hover:bg-[#B49578] hover:text-[#EDEEF0] transition duration-300"
+            class="w-full bg-[#EDEEF0] text-[#B49578] py-2 px-4 rounded-lg shadow-md mt-6 hover:bg-[#B49578] hover:text-[#EDEEF0] transition-all ease-in-out duration-300 border-2 border-transparent hover:border-white"
           >
             Applica Filtri
           </button>
@@ -164,6 +183,47 @@ export default {
 </template>
 
 <style scoped>
+
+.range-slider {
+  -webkit-appearance: none; 
+  width: 100%;
+  height: 10px;
+  background: white;
+  border-radius: 5px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #B49578;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-in-out;
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #B49578;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-in-out;
+}
+
+.range-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
 .shadow-filter {
   box-shadow: 0 7px 7px rgba(0, 0, 0, 0.562);
 }
@@ -193,5 +253,9 @@ export default {
 
 .shadow-click {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.712);
+}
+
+.border-filter{
+  border: 1px solid white;
 }
 </style>

@@ -11,13 +11,11 @@ export default {
   components: {
     SearchBar
   },
-
   computed: {
     isApartmentShowPage() {
       return this.$route.name === 'apartment-show';
     },
   },
-
 }
 </script>
 
@@ -25,11 +23,11 @@ export default {
   <div class="h-[800px] w-full relative overflow-hidden">
     <!-- SearchBar -->
     <SearchBar class="absolute top-[30%] z-20"/>
-    
+
     <!-- Sfondo -->
     <img 
       class="object-cover object-center w-full h-full transition-all duration-500 ease-in-out" 
-      :class="{ 'blur-sm': store.SearchFocus, 'blur-sm': isApartmentShowPage}"
+      :class="{ 'blur-sm': store.SearchFocus || isApartmentShowPage }"
       :src="store.jumboStaticImg.img" 
       alt="Immagine Jumbotron"
     >

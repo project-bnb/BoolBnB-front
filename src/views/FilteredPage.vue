@@ -1,5 +1,6 @@
 <script>
-import Card from './ApartmentCard.vue';
+import FilterComp from '../components/FilterComp.vue';
+import Card from '../components/ApartmentCard.vue';
 import axios from 'axios';
 import { store } from '../store';
 
@@ -13,6 +14,7 @@ export default {
 
   components: {
     Card,
+    FilterComp
   },
 
   mounted() {
@@ -36,10 +38,42 @@ export default {
         .catch((error) => console.error('Errore:', error));
     },
   },
+
+  computed: {
+    filteredApartments() {
+      let filtered = this.apartments;
+
+      if (this.store.searchInput) {
+        filtered = filtered.filter((apartment) =>
+          apartment.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
+        );
+      }
+
+      if (this.store.filters.minRooms) {
+        filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
+      }
+
+      if (this.store.filters.minBeds) {
+        filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
+      }
+
+      if (this.store.filters.selectedServices.length > 0) {
+        filtered = filtered.filter((apartment) => {
+          const apartmentServices = apartment.services.map((service) => service.name);
+          return this.store.filters.selectedServices.every((service) =>
+            apartmentServices.includes(service)
+          );
+        });
+      }
+
+      return filtered;
+    },
+  },
 };
 </script>
 
 <template>
+    <FilterComp/>
   <div class="max-w-7xl mx-auto p-6">
     <transition-group
       name="fade"
@@ -47,7 +81,7 @@ export default {
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
     >
       <Card
-        v-for="(property, index) in apartments"
+        v-for="(property, index) in filteredApartments"
         :key="property.id"
         :id="property.id"
         :user_id="property.user_id"
@@ -66,7 +100,7 @@ export default {
       />
     </transition-group>
 
-    <div v-if="apartments.length === 0" class="text-center mt-12">
+    <div v-if="filteredApartments.length === 0" class="text-center mt-12">
       <p class="text-gray-500 text-lg">
         Nessun appartamento disponibile.
       </p>

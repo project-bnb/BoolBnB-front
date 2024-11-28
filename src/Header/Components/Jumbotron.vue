@@ -1,11 +1,11 @@
 <script>
 import 'animate.css';
-import { jumbos } from '../../store.js';
+import { store } from '../../store.js';
 
 export default {
     data() {
         return {
-            jumbos,
+            store,
             currentIndex: 0,
         };
     },
@@ -14,13 +14,13 @@ export default {
 <template>
     <div class="relative">
       <div class="absolute top-14 left-1/2 transform -translate-x-1/2 flex gap-2 space-x-2 z-10">
-            <span v-for="(item, index) in jumbos" :key="index" 
+            <span v-for="(item, index) in store.jumbos" :key="index" 
                   @click="currentIndex = index" 
                   class="cursor-pointer w-3 h-3 rounded-full" 
                   :class="{'bg-teal-600': currentIndex === index, 'bg-gray-500': currentIndex !== index}"></span>
         </div>
         <div class="carousel">
-            <div v-for="(jumbo, index) in jumbos" :key="index" v-show="currentIndex === index" class="carousel-item animate__animated animate__fadeInRight">
+            <div v-for="(jumbo, index) in store.jumbos" :key="index" v-show="currentIndex === index" class="carousel-item animate__animated animate__fadeInRight">
                 <div :style="{ backgroundImage: `url(${jumbo.src})` }" :alt="jumbo.alt" class="w-full bg-cover h-screen">
                     <div :class="jumbo.position">
                         <p :class="jumbo.meet">{{ jumbo.title }}</p>
@@ -35,7 +35,7 @@ export default {
             </div>
         </div>
         <div class="absolute bottom-14 left-1/2 transform -translate-x-1/2 flex gap-2 space-x-2">
-            <span v-for="(item, index) in jumbos" :key="index" 
+            <span v-for="(item, index) in store.jumbos" :key="index" 
                   @click="currentIndex = index" 
                   class="cursor-pointer w-3 h-3 rounded-full" 
                   :class="{'bg-teal-600': currentIndex === index, 'bg-gray-500': currentIndex !== index}"></span>

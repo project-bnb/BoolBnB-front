@@ -3,8 +3,7 @@ import {createRouter, createWebHistory} from 'vue-router';
 import HomeView from './views/HomeView.vue';
 import NotFound from './views/NotFound.vue';
 import ApartmentShow from './views/ApartmentShow.vue';
-
-
+import FilteredPage from './views/FilteredPage.vue';
 
 const router = createRouter ({
     history: createWebHistory(),
@@ -19,6 +18,11 @@ const router = createRouter ({
             name: 'apartment-show',
             component: ApartmentShow,
             props: true,
+        },
+        {
+            path: '/filtered-page',
+            name: 'filtered-page',
+            component: FilteredPage,
         },
         {
             path: '/:pathMatch(.*)*',

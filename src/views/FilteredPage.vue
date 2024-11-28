@@ -3,6 +3,7 @@ import FilterComp from '../components/FilterComp.vue';
 import Card from '../components/ApartmentCard.vue';
 import axios from 'axios';
 import { store } from '../store';
+import TurnUp from '../components/TurnUp.vue';
 
 export default {
   data() {
@@ -14,7 +15,8 @@ export default {
 
   components: {
     Card,
-    FilterComp
+    FilterComp,
+    TurnUp,
   },
 
   mounted() {
@@ -73,7 +75,7 @@ export default {
 </script>
 
 <template>
-    <FilterComp/>
+  <FilterComp />
   <div class="max-w-7xl mx-auto p-6">
     <transition-group
       name="fade"
@@ -105,6 +107,9 @@ export default {
         Nessun appartamento disponibile.
       </p>
     </div>
+
+    <!-- Posizionamento fisso del pulsante TurnUp in basso a destra -->
+    <TurnUp class="fixed right-8 bottom-8" />
   </div>
 </template>
 

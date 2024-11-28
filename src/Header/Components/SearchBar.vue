@@ -138,7 +138,7 @@ export default {
           @keydown="handleKeydown"
           @focus="handleFocus"
           v-model="store.searchInput"
-          class="w-full rounded-full px-12 py-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#097A88] transition duration-200 shadow-sm text-gray-700"
+          class="w-full rounded-full px-12 py-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#B49578] transition duration-200 shadow-sm text-gray-700"
         />
 
         <!-- Icona di ricerca -->
@@ -156,8 +156,8 @@ export default {
             v-for="(suggestion, index) in store.filteredSuggestions"
             :key="index"
             @click="selectSuggestion(suggestion)"
-            class="px-4 py-2 hover:bg-[#097A88] hover:text-white cursor-pointer"
-            :class="{ 'bg-[#097A88] text-white': index === selectedIndex }" 
+            class="px-4 py-2 hover:bg-[#B49578] hover:text-white cursor-pointer"
+            :class="{ 'bg-[#B49578] text-white': index === selectedIndex }" 
           >
             {{ suggestion }}
           </li>

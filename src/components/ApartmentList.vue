@@ -67,7 +67,7 @@ export default {
     </transition-group>
 
     <div v-if="apartments.length === 0" class="text-center mt-12">
-      <p class="text-gray-500 text-lg">
+      <p class="text-[#EDEEF0] text-lg">
         Nessun appartamento disponibile.
       </p>
     </div>

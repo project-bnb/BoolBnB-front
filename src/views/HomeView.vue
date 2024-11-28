@@ -17,7 +17,7 @@ export default {
 
 <template>
   <div>
-    <ApartmentList class="-translate-y-[204px]"/>
+    <ApartmentList class="-translate-y-[290px]"/>
   </div>
   <div>
     <Main/>

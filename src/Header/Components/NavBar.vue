@@ -48,20 +48,39 @@ export default {
 
 <template>
   <header
-    class= 'w-full z-50 transition-all duration-300 shadow-nav fixed top-0 left-0 right-0 bg-[#097A88] py-4'>
+    class='w-full z-50 transition-all duration-300 shadow-nav fixed top-0 left-0 right-0 bg-[#B49578] py-4'>
     <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
 
       <!-- Logo -->
-      <div class="text-white text-2xl font-bold">
-        <router-link to="/" class="text-white transition-all ease-in-out duration-300 hover:text-gray-200">
+      <div class="text-[#EDEEF0] text-2xl font-bold">
+        <router-link to="/" class="text-[#EDEEF0] transition-all ease-in-out duration-300 hover:opacity-70">
           MilanBnB
+        </router-link>
+      </div>
+
+      <!-- Link Route -->
+      <div class="flex space-x-6 text-[#EDEEF0] text-sm font-medium">
+        <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
+          Home
+        </router-link>
+        <router-link to="/filtered-page" class="transition-all ease-in-out duration-300 hover:opacity-70">
+          Appartamenti
+        </router-link>
+        <router-link to="/contact" class="transition-all ease-in-out duration-300 hover:opacity-70">
+          Contatti
+        </router-link>
+        <router-link to="/services" class="transition-all ease-in-out duration-300 hover:opacity-70">
+          Servizi
+        </router-link>
+        <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
+          Chi Siamo
         </router-link>
       </div>
 
       <!-- Pulsante di accesso -->
       <a
         href="http://127.0.0.1:8000/login"
-        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-white text-[#097A88] hover:bg-gray-200"
+        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-[#EDEEF0] text-[#B49578] hover:bg-opacity-70"
       >
         Accedi
       </a>
@@ -70,11 +89,7 @@ export default {
 </template>
 
 <style scoped>
-.shadow-nav{
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
-}
-
-.shadow-scroll {
+.shadow-nav {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
 }
 </style>

@@ -74,7 +74,7 @@ export default {
 
 <template>
   <div
-    class="w-full mx-auto bg-apartment-card shadow-ap-card rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+    class="w-full mx-auto bg-[#BDAFA2] shadow-ap-card rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
     v-if="isVisible"
     @click="goToApartment"
   >
@@ -84,17 +84,17 @@ export default {
       class="w-full h-48 object-cover"
     />
     <div class="p-4">
-      <h2 class="text-2xl font-bold text-white mb-2">{{ title }}</h2>
-      <div class="flex items-center text-gray-50 text-sm mb-2">
+      <h2 class="text-2xl font-bold text-[#EDEEF0] mb-2">{{ title }}</h2>
+      <div class="flex items-center text-[#EDEEF0] text-sm mb-2">
         <span class="mr-2"><strong>Stanze:</strong> {{ rooms }}</span>
         <span class="mr-2"><strong>Letti:</strong> {{ beds }}</span>
         <span><strong>Bagni:</strong> {{ bathrooms }}</span>
       </div>
-      <div class="text-gray-50 text-sm">
+      <div class="text-[#EDEEF0] text-sm">
         <p><strong>Metri Quadri:</strong> {{ square_meters }} m²</p>
         <p><strong>Indirizzo:</strong> {{ address }}</p>
       </div>
-      <div class="text-gray-50 text-sm mt-2">
+      <div class="text-[#EDEEF0] text-sm mt-2">
         <p><strong>Servizi:</strong> 
           <span v-for="(service, index) in services" :key="index">
             {{ service.name }}<span v-if="index < services.length - 1"> | </span>
@@ -111,6 +111,6 @@ export default {
 }
 
 .bg-apartment-card {
-  background-color: #097A88;
+  background-color: #BDAFA2;
 }
 </style>

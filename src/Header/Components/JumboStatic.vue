@@ -10,7 +10,14 @@ export default {
   },
   components: {
     SearchBar
-  }
+  },
+
+  computed: {
+    isApartmentShowPage() {
+      return this.$route.name === 'apartment-show';
+    },
+  },
+
 }
 </script>
 
@@ -22,7 +29,7 @@ export default {
     <!-- Sfondo -->
     <img 
       class="object-cover object-center w-full h-full transition-all duration-500 ease-in-out" 
-      :class="{ 'blur-sm': store.SearchFocus }"
+      :class="{ 'blur-sm': store.SearchFocus, 'blur-sm': isApartmentShowPage}"
       :src="store.jumboStaticImg.img" 
       alt="Immagine Jumbotron"
     >

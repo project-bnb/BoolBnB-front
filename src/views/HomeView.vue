@@ -1,6 +1,5 @@
 <script>
 import ApartmentList from '../components/ApartmentList.vue';
-import JumboStatic from '../Header/Components/JumboStatic.vue';
 import Main from '../Main/Components/Main.vue';
 
 export default {
@@ -11,7 +10,6 @@ export default {
   },
   components: {
     ApartmentList,
-    JumboStatic,
     Main,
   }
 }
@@ -19,10 +17,7 @@ export default {
 
 <template>
   <div>
-    <JumboStatic/>
-  </div>
-  <div>
-    <ApartmentList/>
+    <ApartmentList class="-translate-y-[204px]"/>
   </div>
   <div>
     <Main/>

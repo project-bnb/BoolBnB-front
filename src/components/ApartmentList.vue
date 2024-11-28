@@ -31,7 +31,7 @@ export default {
         .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
           this.apartments = res.data.data;
-          store.suggestions = this.apartments.map((apartment) => apartment.address);
+          store.suggestions = this.apartments.map((apartment) => apartment.address)
         })
         .catch((error) => console.error('Errore:', error));
     },
@@ -40,14 +40,14 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-6">
+  <div class="max-w-7xl mx-auto">
     <transition-group
       name="fade"
       tag="div"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
     >
       <Card
-        v-for="(property, index) in apartments"
+        v-for="(property, index) in apartments.filter(apartment => apartment.is_visible).slice(0, 4)"
         :key="property.id"
         :id="property.id"
         :user_id="property.user_id"

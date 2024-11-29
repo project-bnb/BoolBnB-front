@@ -54,8 +54,4 @@ export const store = reactive({
         radius: 20,      
         selectedServices: [],
     },
-
-    jumboStaticImg: {
-        img: 'src/assets/image/Jumbo.jpg',
-    },
 });

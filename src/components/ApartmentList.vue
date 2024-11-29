@@ -11,6 +11,7 @@ export default {
       perPage: 4,
       currentPage: 0,
       hasAnimated: false, 
+      transition: false
     };
   },
 
@@ -77,7 +78,9 @@ export default {
 <template>
   <div class="max-w-7xl mx-auto h-[432px] relative">
     <!-- Visualizzazione degli appartamenti -->
-    <div
+    <transition-group
+      name="fade"
+      tag="div"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       :key="currentPage"
     >
@@ -98,15 +101,13 @@ export default {
         :services="property.services"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out hover:scale-105"
-        :class="{ 'animate-fade-in opacity-0': !hasAnimated && currentPage === 0}"
-
       />
-    </div>
+    </transition-group>
 
     <!-- Bottone per la pagina precedente -->
     <button 
       @click="PrevPage" 
-      class="absolute top-1/2 -left-20 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all duration-300 ease-in-out"
+      class="absolute top-1/2 -left-20 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all hover:-translate-x-1 duration-300 ease-in-out"
     >
       <span class="text-xl font-bold">
         <i class="fa-solid fa-arrow-left"></i>
@@ -116,7 +117,7 @@ export default {
     <!-- Bottone per la pagina successiva -->
     <button 
       @click="NextPage" 
-      class="absolute top-1/2 -right-20 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all duration-300 ease-in-out"
+      class="absolute top-1/2 -right-20 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all hover:translate-x-1 duration-300 ease-in-out"
     >
       <span class="text-xl font-bold">
         <i class="fa-solid fa-arrow-right"></i>
@@ -146,5 +147,14 @@ export default {
 
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
 }
 </style>

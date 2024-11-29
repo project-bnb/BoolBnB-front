@@ -54,7 +54,7 @@ export default {
       <!-- Logo -->
       <div class="text-[#EDEEF0] text-2xl w-14 h-10 font-bold">
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70 flex items-center">
-          <img src="../../assets/image/logo.png" alt="Logo" class="h-full object-cover">
+          <img src="/images/logo.png" alt="Logo" class="h-full object-cover">
           <span>MilanBnB</span>
         </router-link>
       </div>

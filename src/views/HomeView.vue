@@ -1,6 +1,5 @@
 <script>
 import ApartmentList from '../components/ApartmentList.vue';
-import Main from '../Main/Components/Main.vue';
 
 export default {
   data() {
@@ -10,7 +9,6 @@ export default {
   },
   components: {
     ApartmentList,
-    Main,
   }
 }
 </script>
@@ -18,9 +16,6 @@ export default {
 <template>
   <div>
     <ApartmentList class="-translate-y-[290px]"/>
-  </div>
-  <div>
-    <Main/>
   </div>
 </template>
 <style scoped>

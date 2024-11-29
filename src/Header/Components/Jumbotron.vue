@@ -17,7 +17,8 @@ export default {
             <span v-for="(item, index) in store.jumbos" :key="index" 
                   @click="currentIndex = index" 
                   class="cursor-pointer w-3 h-3 rounded-full" 
-                  :class="{'bg-teal-600': currentIndex === index, 'bg-gray-500': currentIndex !== index}"></span>
+                  :class="{'bg-teal-600': currentIndex === index, 'bg-gray-500': currentIndex !== index}">
+            </span>
         </div>
         <div class="carousel">
             <div v-for="(jumbo, index) in store.jumbos" :key="index" v-show="currentIndex === index" class="carousel-item animate__animated animate__fadeInRight">

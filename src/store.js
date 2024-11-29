@@ -4,7 +4,8 @@ export const store = reactive({
     searchInput: "",
     suggestions: [],
     filteredSuggestions: [],
-    
+    SearchFocus : false,
+
     jumbos : [
         {
             position:'absolute inset-0 flex flex-col items-center justify-center text-white text-center ',
@@ -16,7 +17,7 @@ export const store = reactive({
             alt: 'Image 1',
             title: 'PRENOTA SU',
             subtitle: 'BOOLBNB',
-            details: 'ESCLUSIVO /CONVENIENTE / INDIMENTICABILE',
+            details: 'ESCLUSIVO / CONVENIENTE / INDIMENTICABILE',
             buttonText: 'REGISTRATI ONLINE',
             buttonLink: '/register',
             hr:'1',
@@ -52,5 +53,9 @@ export const store = reactive({
         minBeds: 1,          
         radius: 20,      
         selectedServices: [],
-      },
+    },
+
+    jumboStaticImg: {
+        img: 'src/assets/image/Jumbo.jpg',
+    }
 });

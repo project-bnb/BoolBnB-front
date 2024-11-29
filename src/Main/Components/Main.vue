@@ -15,8 +15,4 @@ export default {
 
 <style scoped>
 
-div{
-  margin-top: 90px;
-}
-
 </style>

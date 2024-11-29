@@ -3,6 +3,7 @@ import FilterComp from '../components/FilterComp.vue';
 import Card from '../components/ApartmentCard.vue';
 import axios from 'axios';
 import { store } from '../store';
+import TurnUp from '../components/TurnUp.vue';
 
 export default {
   data() {
@@ -14,7 +15,8 @@ export default {
 
   components: {
     Card,
-    FilterComp
+    FilterComp,
+    TurnUp,
   },
 
   mounted() {
@@ -73,8 +75,8 @@ export default {
 </script>
 
 <template>
-    <FilterComp/>
-  <div class="max-w-7xl mx-auto p-6">
+  <FilterComp />
+  <div class="max-w-7xl mx-auto p-6 pt-0 transform -translate-y-[290px]">
     <transition-group
       name="fade"
       tag="div"
@@ -93,7 +95,7 @@ export default {
         :address="property.address"
         :latitude="property.latitude"
         :longitude="property.longitude"
-        :image="property.image"
+        :image="property. cover_image"
         :services="property.services"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out"
@@ -106,6 +108,7 @@ export default {
       </p>
     </div>
   </div>
+  <TurnUp class="fixed right-8 bottom-8"/>
 </template>
 
 <style scoped>

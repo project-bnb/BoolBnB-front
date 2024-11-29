@@ -1,4 +1,7 @@
 <script>
+import TopFooter from './Components/TopFooter.vue';
+import BottFooter from './Components/BottFooter.vue';
+
 export default {
   data() {
     return { 
@@ -6,7 +9,8 @@ export default {
     }
   },
   components: {
-
+    TopFooter,
+    BottFooter
   },
   methods: {
 
@@ -15,7 +19,12 @@ export default {
 </script>
 
 <template>
-
+  <div>
+    <TopFooter/>
+  </div>
+  <div>
+    <BottFooter/>
+  </div>
 </template>
 
 <style scoped>

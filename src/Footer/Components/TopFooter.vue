@@ -6,9 +6,7 @@ export default {
     }
   },
   methods: {
-    handleRegister() {
-      this.$router.push({ name: 'register' });
-    },
+
   },
 };
 </script>
@@ -27,12 +25,13 @@ export default {
         </p>
       </div>
       <!-- Pulsante di Azione -->
-      <button
-        @click="handleRegister"
-        class="px-6 py-3 rounded-full bg-white text-[#B49578] font-semibold shadow-lg transition-all duration-300 ease-in-out hover:bg-[#B49578] hover:text-white hover:shadow-lg hover:-translate-y-1"
-      >
-        Inizia Ora
-      </button>
+      <a href="http://127.0.0.1:8000/register">
+        <button
+          class="px-6 py-3 rounded-full bg-white text-[#B49578] font-semibold shadow-lg transition-all duration-300 ease-in-out hover:bg-[#B49578] hover:text-white hover:shadow-lg hover:-translate-y-1"
+        >
+          Inizia Ora
+        </button>
+      </a>
     </div>
   </div>
 </template>

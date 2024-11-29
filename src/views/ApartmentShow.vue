@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import Carousel from '../components/Carousel.vue';
 
 export default {
   data() {
@@ -7,6 +8,11 @@ export default {
       apartment: {},
     };
   },
+
+  components:{
+    Carousel
+  },
+
   mounted() {
     this.getApartment();
   },
@@ -48,8 +54,9 @@ export default {
 <template>
   <div class="max-w-5xl mx-auto p-8 mt-12 bg-[#EDEEF0] shadow-lg rounded-lg absolute top-[100px] right-0 left-[0]">
     <h1 class="text-4xl font-extrabold text-[#BFAFA2] mb-8 text-center tracking-wide">{{ apartment.title }}</h1>
-    <img :src="apartment.cover_image" alt="Property Image" class="w-full h-80 object-cover mb-6 rounded-lg shadow-md">
-
+    <div>
+      <Carousel class="mb-7"/>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <div class="p-4 bg-[#EDEEF0] rounded-lg shadow-inner">
         <p class="text-lg font-semibold text-[#BFAFA2]"><strong>Stanze:</strong> {{ apartment.rooms }}</p>

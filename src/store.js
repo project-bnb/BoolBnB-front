@@ -57,5 +57,5 @@ export const store = reactive({
 
     jumboStaticImg: {
         img: 'src/assets/image/Jumbo.jpg',
-    }
+    },
 });

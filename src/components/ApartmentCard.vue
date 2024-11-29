@@ -59,6 +59,10 @@ export default {
       showDeleteModal: false,
     };
   },
+  components: {
+
+  },
+  
   computed: {
     isVisible() {
       return this.is_visible === true; 
@@ -95,7 +99,7 @@ export default {
         <p><strong>Indirizzo:</strong> {{ address }}</p>
       </div>
       <div class="text-[#EDEEF0] text-sm mt-2">
-        <p><strong>Servizi:</strong> 
+        <p><strong>Servizi: </strong> 
           <span v-for="(service, index) in services" :key="index">
             {{ service.name }}<span v-if="index < services.length - 1"> | </span>
           </span>

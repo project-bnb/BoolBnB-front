@@ -13,7 +13,7 @@ export default {
     };
   },
 };
-</script>
+</script>+
 
 <template>
   <!-- Divider -->

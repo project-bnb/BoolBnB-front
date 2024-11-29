@@ -19,11 +19,13 @@ export default {
 </script>
 
 <template>
-  <div>
-    <TopFooter/>
-  </div>
-  <div>
-    <BottFooter/>
+  <div class="bg-gradient-to-b from-[#BDAFA2] to-[#B49578]">
+    <div>
+      <TopFooter/>
+    </div>
+    <div>
+      <BottFooter/>
+    </div>
   </div>
 </template>
 

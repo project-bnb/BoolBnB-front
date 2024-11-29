@@ -38,33 +38,37 @@ export default {
   },
 
   methods: {
-    getSuggestion: debounce(function () {
-      this.submit = false;
-      this.selected = false;
-      axios
-        .get('http://127.0.0.1:8000/api/apartments')
-        .then((res) => {
-          this.store.suggestions = res.data.data.filter(apartment => apartment.is_visible === 1);
-          console.log(this.store.suggestions);
+    getSuggestions: debounce(function () {
+      if (this.store.searchInput.length > 0) {
+        axios
+          .get('http://127.0.0.1:8000/api/apartments')
+          .then((response) => {
+            const apartments = response.data.data.filter(apartment => apartment.is_visible === 1);
+            const searchTerms = this.store.searchInput.toLowerCase().split(' ');
+            
+            // Filtra gli appartamenti che corrispondono a tutti i termini di ricerca
+            this.store.filteredSuggestions = apartments
+              .filter((apartment) => {
+                const apartmentText = `${apartment.title} ${apartment.address}`.toLowerCase();
+                // Verifica che tutti i termini di ricerca siano presenti
+                return searchTerms.every(term => apartmentText.includes(term));
+              })
+              .map((apartment) => ({
+                text: `${apartment.title} ${apartment.address}`,
+                value: apartment.address
+              }))
+              .slice(0, 5);
 
-          this.store.filteredSuggestions = this.store.suggestions
-            .filter((suggestion) =>
-              suggestion.address
-                .toLowerCase()
-                .includes(this.store.searchInput.toLowerCase())
-            )
-            .map((suggestion) => suggestion.address)
-            .slice(0, 5);
-
-          if (this.store.filteredSuggestions.length === 0) {
-            this.store.filteredSuggestions = ['Nessun risultato trovato'];
-          }
-
-          this.selectedIndex = -1;
-        })
-        .catch((error) => {
-          console.error('Errore nel recupero dei suggerimenti:', error);
-        });
+            if (this.store.filteredSuggestions.length === 0) {
+              this.store.filteredSuggestions = ['Nessun risultato trovato'];
+            }
+          })
+          .catch((error) => {
+            console.error('Errore nel recupero dei suggerimenti:', error);
+          });
+      } else {
+        this.store.filteredSuggestions = [];
+      }
     }, 300),
 
     clearSuggestions() {
@@ -76,8 +80,12 @@ export default {
     },
 
     selectSuggestion(suggestion) {
+      if (typeof suggestion === 'object') {
+        this.store.searchInput = suggestion.text;
+      } else {
+        this.store.searchInput = suggestion;
+      }
       this.$router.push({ name: 'filtered-page' });
-      this.store.searchInput = suggestion;
       this.store.filteredSuggestions = [];
       this.selected = true;
       this.filterApartments();
@@ -132,8 +140,8 @@ export default {
     <div v-if="!isApartmentShowPage" class="relative scale-125 max-w-lg mx-auto">
         <input
           type="search"
-          placeholder="Inserisci indirizzo..."
-          @input="getSuggestion"
+          placeholder="Inserisci nome o indirizzo..."
+          @input="getSuggestions"
           @blur="clearSuggestions"
           @keydown="handleKeydown"
           @focus="handleFocus"
@@ -159,7 +167,7 @@ export default {
             class="px-4 py-2 hover:bg-[#B49578] hover:text-white cursor-pointer"
             :class="{ 'bg-[#B49578] text-white': index === selectedIndex }" 
           >
-            {{ suggestion }}
+            {{ suggestion.text }}
           </li>
         </ul>
       </div>

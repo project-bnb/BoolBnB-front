@@ -52,9 +52,10 @@ export default {
     <div class="container mx-auto flex items-center justify-between px-4 md:px-8">
 
       <!-- Logo -->
-      <div class="text-[#EDEEF0] text-2xl font-bold">
-        <router-link to="/" class="text-[#EDEEF0] transition-all ease-in-out duration-300 hover:opacity-70">
-          MilanBnB
+      <div class="text-[#EDEEF0] text-2xl w-14 h-10 font-bold">
+        <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70 flex items-center">
+          <img src="../../assets/image/logo.png" alt="Logo" class="h-full object-cover">
+          <span>MilanBnB</span>
         </router-link>
       </div>
 

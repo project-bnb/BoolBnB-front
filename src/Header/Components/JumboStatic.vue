@@ -15,6 +15,9 @@ export default {
     isApartmentShowPage() {
       return this.$route.name === 'apartment-show';
     },
+    isFilteredPage() {
+      return this.$route.name === 'filtered-page';
+    },
   },
 }
 </script>
@@ -27,7 +30,7 @@ export default {
     <!-- Sfondo -->
     <img 
       class="object-cover object-center w-full h-full transition-all duration-500 ease-in-out" 
-      :class="{ 'blur-sm': store.SearchFocus || isApartmentShowPage }"
+      :class="{ 'blur-sm': store.SearchFocus || isApartmentShowPage || isFilteredPage }"
       :src="store.jumboStaticImg.img" 
       alt="Immagine Jumbotron"
     >

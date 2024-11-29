@@ -137,7 +137,7 @@ export default {
               />
               
               <!-- Mostra il valore del raggio in km -->
-              <span class="font-semibold text-[#B49578]">{{ radius }} km</span>
+              <span class="font-semibold text-white">{{ radius }}</span>
             </div>
           </div>
 

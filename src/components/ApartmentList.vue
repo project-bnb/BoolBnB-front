@@ -59,7 +59,7 @@ export default {
         :address="property.address"
         :latitude="property.latitude"
         :longitude="property.longitude"
-        :image="property.image"
+        :image="property.cover_images"
         :services="property.services"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out"

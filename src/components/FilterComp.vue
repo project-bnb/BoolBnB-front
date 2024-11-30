@@ -1,5 +1,6 @@
 <script>
 import { store } from '../store';
+import axios from 'axios';
 
 export default {
   data() {
@@ -20,16 +21,57 @@ export default {
         "Aria Condizionata"
       ],
       clickedServices: [],
-      radius: store.filters.radius
     };
   },
   watch: {
     radius(newRadius) {
       store.filters.radius = newRadius;
+      this.saveFilters();
     },
   },
-
+  created() {
+    // Carica i filtri dal localStorage quando il componente è creato
+    this.loadFilters();
+  },
   methods: {
+    loadFilters() {
+      // Carica i filtri salvati nel localStorage (se presenti)
+      const savedFilters = JSON.parse(localStorage.getItem('filters'));
+      if (savedFilters) {
+        this.minRooms = savedFilters.minRooms || 1;
+        this.minBeds = savedFilters.minBeds || 1;
+        this.radius = savedFilters.radius || 20;
+        this.clickedServices = savedFilters.selectedServices || [];
+      }
+    },
+
+    saveFilters() {
+      // Salva i filtri nel localStorage per renderli persistenti
+      store.filters.minRooms = this.minRooms;
+      store.filters.minBeds = this.minBeds;
+      store.filters.radius = this.radius;
+      store.filters.selectedServices = [...this.clickedServices];
+      localStorage.setItem('filters', JSON.stringify(store.filters));
+    },
+
+    isWithinRadius(lat1, lon1, radius) {
+      const milanoLat = 45.4685;
+      const milanoLon = 9.1824;
+
+      const haversine = (lat1, lon1) => {
+        const R = 6371; // raggio della terra in km
+        const toRad = (deg) => deg * (Math.PI / 180);
+        const dLat = toRad(lat1 - milanoLat);
+        const dLon = toRad(lon1 - milanoLon);
+        const a = Math.sin(dLat / 2) ** 2 +
+                  Math.cos(toRad(lat1)) * Math.cos(toRad(milanoLat)) *
+                  Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // distanza in km
+      };
+      return haversine(lat1, lon1) <= radius;
+    },
+
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
     },
@@ -40,15 +82,32 @@ export default {
       } else {
         this.clickedServices.push(service);
       }
+      this.saveFilters(); // Salva i filtri ogni volta che cambia il servizio selezionato
     },
 
     applyFilters() {
-      store.filters.minRooms = this.minRooms;
-      store.filters.minBeds = this.minBeds;
-      store.filters.radius = this.radius;
-      store.filters.selectedServices = [...this.clickedServices];
+      this.saveFilters(); // Salva tutti i filtri prima di applicarli
 
-      console.log("Filtri applicati:", store.filters);
+      // Filtra tramite radius e salva gli appartamenti filtrati
+      axios.get('http://127.0.0.1:8000/api/apartments')
+        .then((res) => {
+          const filteredApartments = [];
+
+          store.filters.filteredSuggestions = [];
+          for (let i = 0; i < res.data.data.length; i++) {
+            const apartment = res.data.data[i];
+            const isInRadius = this.isWithinRadius(apartment.latitude, apartment.longitude, this.radius);
+
+            if (isInRadius) {
+              store.filters.filteredSuggestions.push(apartment);
+              filteredApartments.push(apartment);
+              store.filters.filteredApartments = filteredApartments;
+            }
+          }
+        })
+        .catch((error) => console.error('error:', error));
+
+      console.log("filters applied:", store.filters);
     },
 
     resetFilters() {
@@ -61,6 +120,8 @@ export default {
       store.filters.minBeds = this.minBeds;
       store.filters.radius = this.radius;
       store.filters.selectedServices = [];
+
+      this.saveFilters(); // Salva i filtri resettati nel localStorage
     }
   },
 };
@@ -68,7 +129,7 @@ export default {
 
 <template>
   <div class="relative">
-    <div class="fixed ml-5 left-0 bottom-[45px] w-14 h-14 z-50">
+    <div class="fixed ml-5 left-0 bottom-[45px] w-14 h-14 z-50 slide-in">
       <!-- Pulsante di Espansione del Menu Filtri -->
       <button
         ref="bounceButton"
@@ -92,7 +153,7 @@ export default {
     <transition name="slide">
       <div
         v-if="isExpanded"
-        class="z-0 fixed left-0 top-0 h-filter w-[11%] bg-[#B49578] filter-bar p-4 text-white transition-all duration-500 ease-in-out"
+        class="z-0 fixed left-0 top-0 h-filter w-[11%] bg-[#B49578] filter-bar p-4 text-white transition-all duration-500 ease-in-out slide-in"
       >
         <!-- Filtri per l'utente -->
         <div>
@@ -150,10 +211,10 @@ export default {
                 :id="service"
                 :value="service"
                 @click="toggleService(service)"
-                class="mr-2 rounded-full py-3 px-6 w-full transition-all text-[#BDAFA2] duration-300 ease-in-out transform hover:scale-105"
-                :style="{
-                  backgroundColor: clickedServices.includes(service) ? '#E5E7EB' : 'white',
-                  boxShadow: clickedServices.includes(service) ? 'inset 0 0 6px rgba(0, 0, 0, 0.712)' : '0 4px 8px rgba(0, 0, 0, 0.2)',
+                class="mr-2 rounded-full py-3 px-6 w-full transition-all duration-300 ease-in-out transform hover:scale-105"
+                :class="{
+                  'bg-[#E5E7EB] text-[#B49578] shadow-click': clickedServices.includes(service),
+                  'bg-white text-[#BDAFA2]': !clickedServices.includes(service),
                 }"
               >
                 {{ service }}
@@ -183,6 +244,21 @@ export default {
 </template>
 
 <style scoped>
+
+.slide-in {
+  animation: SlideIn 0.5s ease-in-out;
+}
+
+@keyframes SlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .outline-filter{
   box-shadow: 0 0 5px #ffffff inset;

@@ -32,14 +32,14 @@ const router = createRouter ({
             component: SearchResults,
         },
         {
-            path: '/:pathMatch(.*)*',
-            name: 'not-found',
-            component: NotFound,
-        },
-        {
             path: '/about',
             name: 'AboutUs',
             component: AboutUs
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            component: NotFound,
         },
     ]
 });

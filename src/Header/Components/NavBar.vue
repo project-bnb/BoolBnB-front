@@ -67,12 +67,6 @@ export default {
         <router-link to="/apartments" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Appartamenti
         </router-link>
-        <router-link to="/contact" class="transition-all ease-in-out duration-300 hover:opacity-70">
-          Contatti
-        </router-link>
-        <router-link to="/services" class="transition-all ease-in-out duration-300 hover:opacity-70">
-          Servizi
-        </router-link>
         <router-link to="/about" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Chi Siamo
         </router-link>

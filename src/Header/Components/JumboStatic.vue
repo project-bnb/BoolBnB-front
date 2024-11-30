@@ -18,12 +18,15 @@ export default {
     isFilteredPage() {
       return this.$route.name === 'filtered-page';
     },
+    isAboutUsPage() {
+      return this.$route.name === 'AboutUs';
+    },
   },
 };
 </script>
 
 <template>
-  <div class="h-[800px] w-full relative overflow-hidden">
+  <div v-if="!isAboutUsPage" class="h-[800px] w-full relative overflow-hidden">
     <!-- Sfondo -->
     <div
       class="absolute top-0 left-0 right-0 bottom-0 w-full h-full bg-cover bg-center transition-all duration-500 ease-in-out"

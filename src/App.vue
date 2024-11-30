@@ -13,6 +13,10 @@ export default {
     isApartmentShowPage() {
       return this.$route.name === 'apartment-show';
     },
+
+    isAboutUsPage() {
+      return this.$route.name === 'AboutUs';
+    },
   }
 };
 </script>
@@ -22,10 +26,10 @@ export default {
     <header>  
       <AppHeader/>
     </header>
-    <main :class="[ !isApartmentShowPage ? 'mt-[500px]' : '']">
+    <main :class="[ !isAboutUsPage && !isApartmentShowPage  ? 'mt-[500px]' : '']">
       <AppMain/>
     </main>
-    <footer class="mt-[100px]">
+    <footer :class="{'mt-[100px]' : !isAboutUsPage}">
       <AppFooter/>
     </footer>
   </template>

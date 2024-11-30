@@ -81,6 +81,13 @@ export default {
         return priority[aSponsor] - priority[bSponsor];
       });
 
+      // filtra gli appartamenti in base ai nomi degli appartamenti dentro il raggio
+      if (this.store.filters.filteredApartments.length > 0) {
+        console.log('filteredApartments:', this.store.filters.filteredApartments);
+
+        return this.store.filters.filteredApartments;
+      }
+
       return filtered;
     },
   },

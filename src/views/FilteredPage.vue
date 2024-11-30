@@ -45,20 +45,24 @@ export default {
     filteredApartments() {
       let filtered = this.apartments;
 
+      // Filtrare in base alla ricerca per indirizzo
       if (this.store.searchInput) {
         filtered = filtered.filter((apartment) =>
           apartment.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
         );
       }
 
+      // Filtrare in base al numero minimo di stanze
       if (this.store.filters.minRooms) {
         filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
       }
 
+      // Filtrare in base al numero minimo di letti
       if (this.store.filters.minBeds) {
         filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
       }
 
+      // Filtrare in base ai servizi selezionati
       if (this.store.filters.selectedServices.length > 0) {
         filtered = filtered.filter((apartment) => {
           const apartmentServices = apartment.services.map((service) => service.name);
@@ -67,6 +71,18 @@ export default {
           );
         });
       }
+
+      // Ordinare gli appartamenti in base alla sponsorizzazione
+      filtered.sort((a, b) => {
+        const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
+        
+        // Ottenere il tipo di sponsorizzazione per ogni appartamento
+        const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
+        const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
+        
+        // Ordinare gli appartamenti in base alla priorità di sponsorizzazione
+        return priority[aSponsor] - priority[bSponsor];
+      });
 
       return filtered;
     },
@@ -95,7 +111,7 @@ export default {
         :address="property.address"
         :latitude="property.latitude"
         :longitude="property.longitude"
-        :image="property. cover_image"
+        :image="property.cover_image"
         :services="property.services"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out"

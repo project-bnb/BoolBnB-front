@@ -39,7 +39,7 @@ export default {
 
     <!-- Sfumatura graduale in basso -->
     <div
-      class="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-white to-transparent opacity-100"
+      class="absolute bottom-0 left-0 right-0 h-[250px] bg-gradient-to-t from-white to-transparent opacity-100"
     ></div>
   </div>
 </template>

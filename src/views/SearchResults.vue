@@ -1,58 +1,14 @@
-<template>
-  <div class="max-w-7xl mx-auto p-6">
-    <!-- Loading state -->
-    <div v-if="loading" class="text-center py-8">
-      <p class="text-gray-500">Caricamento appartamenti...</p>
-    </div>
-
-    <!-- Error state -->
-    <div v-else-if="error" class="text-center py-8 text-red-500">
-      {{ error }}
-    </div>
-
-    <div v-else>
-      <transition-group
-        name="fade"
-        tag="div"
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-      >
-        <Card
-          v-for="apartment in filteredApartments"
-          :key="apartment.id"
-          :id="apartment.id"
-          :user_id="apartment.user_id"
-          :title="apartment.title"
-          :rooms="apartment.rooms"
-          :beds="apartment.beds"
-          :bathrooms="apartment.bathrooms"
-          :square_meters="apartment.square_meters"
-          :address="apartment.address"
-          :latitude="apartment.latitude"
-          :longitude="apartment.longitude"
-          :image="apartment.cover_image"
-          :services="apartment.services"
-          :is_visible="Boolean(apartment.is_visible)"
-          class="transform transition duration-500 ease-in-out"
-        />
-      </transition-group>
-
-      <div v-if="filteredApartments.length === 0" class="text-center py-8">
-        <p class="text-gray-500">
-          Nessun appartamento trovato vicino a "{{ $route.query.address }}"
-        </p>
-      </div>
-    </div>
-  </div>
-</template>
 
 <script>
 import { store } from '../store';
 import Card from '../components/ApartmentCard.vue';
 import axios from 'axios';
+import JumboStatic from '../Header/Components/JumboStatic.vue';
 
 export default {
   components: {
-    Card
+    Card,
+    JumboStatic,
   },
 
   data() {
@@ -146,6 +102,54 @@ export default {
   }
 };
 </script>
+
+<template>
+    <JumboStatic />
+  <div class="max-w-7xl mx-auto p-6">
+    <!-- Loading state -->
+    <div v-if="loading" class="text-center py-8">
+      <p class="text-gray-500">Caricamento appartamenti...</p>
+    </div>
+
+    <!-- Error state -->
+    <div v-else-if="error" class="text-center py-8 text-red-500">
+      {{ error }}
+    </div>
+
+    <div v-else>
+      <transition-group
+        name="fade"
+        tag="div"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 -translate-y-[290px]"
+      >
+        <Card
+          v-for="apartment in filteredApartments"
+          :key="apartment.id"
+          :id="apartment.id"
+          :user_id="apartment.user_id"
+          :title="apartment.title"
+          :rooms="apartment.rooms"
+          :beds="apartment.beds"
+          :bathrooms="apartment.bathrooms"
+          :square_meters="apartment.square_meters"
+          :address="apartment.address"
+          :latitude="apartment.latitude"
+          :longitude="apartment.longitude"
+          :image="apartment.cover_image"
+          :services="apartment.services"
+          :is_visible="Boolean(apartment.is_visible)"
+          class="transform transition duration-500 ease-in-out"
+        />
+      </transition-group>
+
+      <div v-if="filteredApartments.length === 0" class="text-center py-8">
+        <p class="text-gray-500">
+          Nessun appartamento trovato vicino a "{{ $route.query.address }}"
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .fade-enter-active,

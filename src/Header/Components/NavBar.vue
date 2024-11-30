@@ -73,7 +73,7 @@ export default {
         <router-link to="/services" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Servizi
         </router-link>
-        <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
+        <router-link to="/about" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Chi Siamo
         </router-link>
       </div>

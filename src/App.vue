@@ -9,17 +9,23 @@ export default {
     AppMain,
     AppFooter
   },
+  computed: {
+    isApartmentShowPage() {
+      return this.$route.name === 'apartment-show';
+    },
+  }
 };
 </script>
+
 
 <template>
     <header>  
       <AppHeader/>
     </header>
-    <main>
+    <main :class="[ !isApartmentShowPage ? 'mt-[500px]' : '']">
       <AppMain/>
     </main>
-    <footer>
+    <footer class="mt-[100px]">
       <AppFooter/>
     </footer>
   </template>

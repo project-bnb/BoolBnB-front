@@ -87,7 +87,7 @@ export default {
 
 <template>
   <FilterComp />
-  <div class="max-w-7xl mx-auto p-6 pt-0 transform -translate-y-[290px]">
+  <div class="max-w-7xl mx-auto p-6 pt-0">
     <transition-group
       name="fade"
       tag="div"

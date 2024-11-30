@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto p-8 tranform bg-[#EDEEF0] shadow-lg rounded-lg absolute top-28 left-0 right-0">
+  <div class="max-w-5xl mx-auto p-8 tranform bg-[#EDEEF0] shadow-lg rounded-lg relative mt-[130px]">
     <h1 class="text-4xl font-extrabold text-[#BFAFA2] mb-8 text-center tracking-wide">{{ apartment.title }}</h1>
     <div>
       <Carousel class="mb-7"/>

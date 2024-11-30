@@ -20,7 +20,7 @@ export default {
 <template>
   <JumboStatic />
   <div>
-    <ApartmentList class="-translate-y-[290px]"/>
+    <ApartmentList/>
   </div>
 </template>
 <style scoped>

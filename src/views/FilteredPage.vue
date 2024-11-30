@@ -72,6 +72,15 @@ export default {
         });
       }
 
+      filtered.sort((a, b) => {
+        const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
+        
+        const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
+        const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
+
+        return priority[aSponsor] - priority[bSponsor];
+      });
+
       return filtered;
     },
   },
@@ -81,7 +90,7 @@ export default {
 <template>
   <JumboStatic />
   <FilterComp />
-  <div class="max-w-7xl mx-auto p-6 pt-0 transform -translate-y-[290px]">
+  <div class="max-w-7xl mx-auto p-6 pt-0">
     <transition-group
       name="fade"
       tag="div"
@@ -100,7 +109,7 @@ export default {
         :address="property.address"
         :latitude="property.latitude"
         :longitude="property.longitude"
-        :image="property. cover_image"
+        :image="property.cover_image"
         :services="property.services"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out"

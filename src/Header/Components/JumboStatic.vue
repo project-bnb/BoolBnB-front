@@ -35,11 +35,11 @@ export default {
     ></div>
 
     <!-- SearchBar -->
-    <SearchBar class="absolute top-[30%] z-20" />
+    <SearchBar class="absolute top-[25%] z-20" />
 
     <!-- Sfumatura graduale in basso -->
     <div
-      class="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-white to-transparent opacity-100"
+      class="absolute bottom-0 left-0 right-0 h-[300px] bg-gradient-to-t from-white to-transparent opacity-100"
     ></div>
   </div>
 </template>

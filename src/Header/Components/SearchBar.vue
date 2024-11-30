@@ -48,18 +48,32 @@ export default {
           .then((response) => {
             const apartments = response.data.data.filter(apartment => apartment.is_visible === 1);
             const searchTerms = this.store.searchInput.toLowerCase().split(' ');
-            
+
             // Filtra gli appartamenti solo per indirizzo
-            this.store.filteredSuggestions = apartments
-              .filter((apartment) => {
-                // Estraiamo città e via dall'indirizzo completo
-                const addressParts = apartment.address.toLowerCase().split(',').map(part => part.trim());
-                
-                // Verifica che tutti i termini di ricerca corrispondano a parti dell'indirizzo
-                return searchTerms.every(term => 
-                  addressParts.some(part => part.includes(term))
-                );
-              })
+            let filteredApartments = apartments.filter((apartment) => {
+              // Estraiamo città e via dall'indirizzo completo
+              const addressParts = apartment.address.toLowerCase().split(',').map(part => part.trim());
+              
+              // Verifica che tutti i termini di ricerca corrispondano a parti dell'indirizzo
+              return searchTerms.every(term => 
+                addressParts.some(part => part.includes(term))
+              );
+            });
+
+            // Ordinamento delle sponsorizzazioni: Gold, Silver, Bronze, Nessuna sponsorizzazione
+            filteredApartments.sort((a, b) => {
+              const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
+              
+              // Ottenere il tipo di sponsorizzazione per ogni appartamento
+              const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
+              const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
+              
+              // Ordinare gli appartamenti in base alla priorità di sponsorizzazione
+              return priority[aSponsor] - priority[bSponsor];
+            });
+
+            // Creazione dei suggerimenti da visualizzare
+            this.store.filteredSuggestions = filteredApartments
               .map((apartment) => ({
                 text: apartment.address,  // Mostra solo l'indirizzo nei suggerimenti
                 value: apartment.address
@@ -84,7 +98,7 @@ export default {
     }, 300),
 
     clearSuggestions() {
-        store.SearchFocus = false;
+      store.SearchFocus = false;
       setTimeout(() => {
         this.store.filteredSuggestions = [];
         this.selectedIndex = -1;
@@ -96,7 +110,6 @@ export default {
         this.store.searchInput = suggestion.text;
         
         try {
-          // Usiamo l'istanza specifica per TomTom
           const geocodingResponse = await this.tomtomAxios.get(
             `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion.text)}.json`,
             {
@@ -108,7 +121,6 @@ export default {
 
           const { lat, lon } = geocodingResponse.data.results[0].position;
           
-          // Navighiamo alla pagina filtrata con le coordinate
           this.$router.push({ 
             name: 'filtered-page',
             query: { 
@@ -198,6 +210,7 @@ export default {
 }
 </script>
 
+
 <template>
     <!-- Barra di ricerca -->
     <div v-if="!isApartmentShowPage" class="relative scale-125 max-w-lg mx-auto">
@@ -235,3 +248,6 @@ export default {
         </ul>
       </div>
 </template>
+
+<style scoped>
+</style>

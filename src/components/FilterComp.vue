@@ -150,7 +150,7 @@ export default {
                 :id="service"
                 :value="service"
                 @click="toggleService(service)"
-                class="mr-2 rounded-full py-3 px-6 w-full transition-all text-[#BDAFA2] duration-300 ease-in-out transform"
+                class="mr-2 rounded-full py-3 px-6 w-full transition-all text-[#BDAFA2] duration-300 ease-in-out transform hover:scale-105"
                 :style="{
                   backgroundColor: clickedServices.includes(service) ? '#E5E7EB' : 'white',
                   boxShadow: clickedServices.includes(service) ? 'inset 0 0 6px rgba(0, 0, 0, 0.712)' : '0 4px 8px rgba(0, 0, 0, 0.2)',

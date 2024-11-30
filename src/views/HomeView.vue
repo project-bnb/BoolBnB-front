@@ -22,9 +22,6 @@ export default {
   <div>
     <ApartmentList class="-translate-y-[290px]"/>
   </div>
-  <div>
-    <Main/>
-  </div>
 </template>
 <style scoped>
 

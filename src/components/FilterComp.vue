@@ -164,7 +164,7 @@ export default {
           <!-- Bottone per applicare i filtri -->
           <button
             @click="applyFilters"
-            class="w-full bg-[#EDEEF0] text-[#B49578] py-2 px-4 rounded-lg shadow-md mt-6 hover:bg-[#B49578] hover:text-[#EDEEF0] transition-all ease-in-out duration-300 border-2 border-transparent hover:border-white"
+            class="w-full bg-[#EDEEF0] text-[#B49578] py-2 px-4 rounded-lg shadow-md mt-6 hover:bg-[#B49578] hover:text-[#EDEEF0] transition-all ease-in-out duration-300 outline-filter"
           >
             Applica Filtri
           </button>
@@ -183,6 +183,10 @@ export default {
 </template>
 
 <style scoped>
+
+.outline-filter{
+  box-shadow: 0 0 5px #ffffff inset;
+}
 
 .range-slider {
   -webkit-appearance: none; 

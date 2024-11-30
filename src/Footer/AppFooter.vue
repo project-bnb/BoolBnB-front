@@ -12,6 +12,13 @@ export default {
     TopFooter,
     BottFooter
   },
+
+  computed:{
+    isApartmentShowPage() {
+      return this.$route.name === 'apartment-show';
+    },
+  },
+
   methods: {
 
   }
@@ -19,11 +26,16 @@ export default {
 </script>
 
 <template>
-  <div>
-    <TopFooter/>
-  </div>
-  <div>
-    <BottFooter/>
+  <div 
+    class="bg-gradient-to-b from-[#BDAFA2] to-[#B49578]"
+    :class="[isApartmentShowPage ? 'mt-[800px]' : '' ]"
+  >
+    <div>
+      <TopFooter/>
+    </div>
+    <div>
+      <BottFooter/>
+    </div>
   </div>
 </template>
 

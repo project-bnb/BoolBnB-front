@@ -1,18 +1,16 @@
 <script>
 import axios from 'axios';
-import Carousel from '../components/Carousel.vue';
 import ContactForm from '../components/ContactForm.vue';
-
 
 export default {
   data() {
     return {
       apartment: {},
+      selectedImage: null, // Stato per immagine selezionata
     };
   },
   components: {
-    ContactForm,
-    Carousel
+    ContactForm
   },
   mounted() {
     this.getApartment();
@@ -48,50 +46,75 @@ export default {
           this.$router.push({ name: 'not-found' });
         });
     },
+    enlargeImage(image) {
+      this.selectedImage = image;
+    },
   },
 };
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto p-8 tranform bg-[#EDEEF0] shadow-lg rounded-lg relative mt-[130px]">
-    <h1 class="text-4xl font-extrabold text-[#BFAFA2] mb-8 text-center tracking-wide">{{ apartment.title }}</h1>
-    <div>
-      <Carousel class="mb-7"/>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-      <div class="p-4 bg-[#EDEEF0] rounded-lg shadow-inner">
-        <p class="text-lg font-semibold text-[#BFAFA2]"><strong>Stanze:</strong> {{ apartment.rooms }}</p>
-        <p class="text-lg font-semibold text-[#BFAFA2]"><strong>Letti:</strong> {{ apartment.beds }}</p>
-        <p class="text-lg font-semibold text-[#BFAFA2]"><strong>Bagni:</strong> {{ apartment.bathrooms }}</p>
+  <div class="max-w-7xl mx-auto p-8 bg-white shadow-lg rounded-lg relative mt-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <!-- Immagini con possibilità di selezione -->
+    <div class="flex flex-col space-y-4">
+      <div class="w-full h-80 mb-4">
+        <!-- Immagine Selezionata Grande -->
+        <img :src="selectedImage ? selectedImage.image_path : (apartment.images && apartment.images.length > 0 ? apartment.images[0].image_path : '')" 
+             alt="Selected Apartment Image" 
+             class="w-full h-full object-cover rounded-lg">
       </div>
-      <div class="p-4 bg-[#EDEEF0] rounded-lg shadow-inner">
-        <p class="text-lg font-semibold text-[#BFAFA2]"><strong>Indirizzo:</strong> {{ apartment.address }}</p>
-        <p class="text-lg font-semibold text-[#BFAFA2]"><strong>Metri Quadri:</strong> {{ apartment.square_meters }} m²</p>
+      <div class="flex flex-wrap space-x-4">
+        <!-- Thumbnail delle Immagini -->
+        <img v-for="(image, index) in apartment.images" 
+             :key="index" 
+             :src="image.image_path" 
+             alt="Apartment Image Thumbnail" 
+             class="w-[180px] h-[100px] object-cover rounded-lg cursor-pointer border-2"
+             :class="{ 'border-blue-500': selectedImage && selectedImage.image_path === image.image_path, 'border-transparent': !selectedImage || selectedImage.image_path !== image.image_path }"
+             @click="enlargeImage(image)" />
+      </div>
+    </div>
+    
+    <!-- Dettagli dell'Appartamento -->
+    <div class="flex flex-col space-y-6">
+      <h1 class="text-3xl font-extrabold text-gray-800">{{ apartment.title }}</h1>
+      <p class="text-lg text-gray-600">{{ apartment.description }}</p>
+      
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Dettagli</h2>
+        <ul class="space-y-2">
+          <li class="text-gray-700"><strong>Stanze:</strong> {{ apartment.rooms }}</li>
+          <li class="text-gray-700"><strong>Letti:</strong> {{ apartment.beds }}</li>
+          <li class="text-gray-700"><strong>Bagni:</strong> {{ apartment.bathrooms }}</li>
+          <li class="text-gray-700"><strong>Indirizzo:</strong> {{ apartment.address }}</li>
+          <li class="text-gray-700"><strong>Metri Quadri:</strong> {{ apartment.square_meters }} m²</li>
+        </ul>
+      </div>
+
+      <!-- Servizi dell'appartamento -->
+      <div v-if="apartment.services && apartment.services.length > 0">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Servizi Disponibili</h2>
+        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+          <li v-for="(service, index) in apartment.services" :key="index">
+            {{ service.name }}
+          </li>
+        </ul>
       </div>
     </div>
 
-    <!-- Servizi dell'appartamento -->
-    <div v-if="apartment.services && apartment.services.length > 0" class="bg-[#BDAFA2] p-6 rounded-lg shadow-md mb-8">
-      <h2 class="text-2xl font-bold text-[#EDEEF0] mb-4">Servizi Disponibili</h2>
-      <ul class="list-disc pl-6 space-y-2">
-        <li v-for="(service, index) in apartment.services" :key="index" class="text-[#EDEEF0] font-semibold">
-          {{ service.name }}
-        </li>
-      </ul>
+    <!-- Mappa e Form di contatto a tutta larghezza -->
+    <div class="col-span-1 md:col-span-2 space-y-6 mt-10">
+      <!-- Mappa -->
+      <div id="map" class="w-full h-96 rounded-lg shadow-md"></div>
+
+      <!-- Form di contatto -->
+      <ContactForm :apartment-id="parseInt(this.$route.params.id)" class="mt-8 w-full" />
     </div>
-
-    <!-- Mappa -->
-    <div id="map" class="w-full h-96 mt-6 rounded-lg shadow-md transition-shadow duration-500 hover:shadow-xl"></div>
-
-    <!-- Form di contatto -->
-    <ContactForm :apartment-id="parseInt(this.$route.params.id)" class="mt-8" />
 
     <!-- Bottone per tornare alla lista degli appartamenti -->
-    <div class="text-center mt-8">
-      <router-link to="/" class="inline-block bg-[#BFAFA2] text-[#EDEEF0] px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-[#BDAFA2] transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-        Torna alla lista degli appartamenti
-      </router-link>
-    </div>
+    <router-link to="/" class="inline-block mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-md hover:bg-indigo-700 transition-all duration-300">
+      Torna alla lista degli appartamenti
+    </router-link>
   </div>
 </template>
 

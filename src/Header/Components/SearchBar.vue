@@ -11,6 +11,9 @@ export default {
       selected: false,
       submit: false,
       selectedIndex: -1,
+      tomtomAxios: axios.create({
+        withCredentials: false
+      })
     };
   },
 
@@ -38,33 +41,46 @@ export default {
   },
 
   methods: {
-    getSuggestion: debounce(function () {
-      this.submit = false;
-      this.selected = false;
-      axios
-        .get('http://127.0.0.1:8000/api/apartments')
-        .then((res) => {
-          this.store.suggestions = res.data.data.filter(apartment => apartment.is_visible === 1);
-          console.log(this.store.suggestions);
+    getSuggestions: debounce(function () {
+      if (this.store.searchInput.length > 0) {
+        axios
+          .get('http://127.0.0.1:8000/api/apartments')
+          .then((response) => {
+            const apartments = response.data.data.filter(apartment => apartment.is_visible === 1);
+            const searchTerms = this.store.searchInput.toLowerCase().split(' ');
+            
+            // Filtra gli appartamenti solo per indirizzo
+            this.store.filteredSuggestions = apartments
+              .filter((apartment) => {
+                // Estraiamo città e via dall'indirizzo completo
+                const addressParts = apartment.address.toLowerCase().split(',').map(part => part.trim());
+                
+                // Verifica che tutti i termini di ricerca corrispondano a parti dell'indirizzo
+                return searchTerms.every(term => 
+                  addressParts.some(part => part.includes(term))
+                );
+              })
+              .map((apartment) => ({
+                text: apartment.address,  // Mostra solo l'indirizzo nei suggerimenti
+                value: apartment.address
+              }))
+              .slice(0, 5);
 
-          this.store.filteredSuggestions = this.store.suggestions
-            .filter((suggestion) =>
-              suggestion.address
-                .toLowerCase()
-                .includes(this.store.searchInput.toLowerCase())
-            )
-            .map((suggestion) => suggestion.address)
-            .slice(0, 5);
+            // Rimuovi i duplicati degli indirizzi
+            this.store.filteredSuggestions = Array.from(
+              new Set(this.store.filteredSuggestions.map(s => JSON.stringify(s)))
+            ).map(s => JSON.parse(s));
 
-          if (this.store.filteredSuggestions.length === 0) {
-            this.store.filteredSuggestions = ['Nessun risultato trovato'];
-          }
-
-          this.selectedIndex = -1;
-        })
-        .catch((error) => {
-          console.error('Errore nel recupero dei suggerimenti:', error);
-        });
+            if (this.store.filteredSuggestions.length === 0) {
+              this.store.filteredSuggestions = ['Nessun risultato trovato'];
+            }
+          })
+          .catch((error) => {
+            console.error('Errore nel recupero dei suggerimenti:', error);
+          });
+      } else {
+        this.store.filteredSuggestions = [];
+      }
     }, 300),
 
     clearSuggestions() {
@@ -75,19 +91,45 @@ export default {
       }, 200);
     },
 
-    selectSuggestion(suggestion) {
-      this.$router.push({ name: 'filtered-page' });
-      this.store.searchInput = suggestion;
+    async selectSuggestion(suggestion) {
+      if (typeof suggestion === 'object') {
+        this.store.searchInput = suggestion.text;
+        
+        try {
+          // Usiamo l'istanza specifica per TomTom
+          const geocodingResponse = await this.tomtomAxios.get(
+            `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion.text)}.json`,
+            {
+              params: {
+                key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
+              }
+            }
+          );
+
+          const { lat, lon } = geocodingResponse.data.results[0].position;
+          
+          // Navighiamo alla pagina filtrata con le coordinate
+          this.$router.push({ 
+            name: 'filtered-page',
+            query: { 
+              lat,
+              lon,
+              address: suggestion.text
+            }
+          });
+        } catch (error) {
+          console.error('Errore nel geocoding:', error);
+        }
+      }
+      
       this.store.filteredSuggestions = [];
       this.selected = true;
-      this.filterApartments();
     },
 
     submittingSearch() {
       this.$router.push({ name: 'filtered-page' });
       this.submit = true;
       this.store.filteredSuggestions = [];
-      this.filterApartments();
     },
 
     handleFocus() {
@@ -95,32 +137,61 @@ export default {
     },
 
     handleKeydown(event) {
-      if (this.store.filteredSuggestions.length === 0) return;
+      if (event.key === 'Enter') {
+        return;
+      }
+
+      if (!this.store.filteredSuggestions || this.store.filteredSuggestions.length === 0) return;
 
       switch (event.key) {
         case 'ArrowDown':
+          event.preventDefault();
           if (this.selectedIndex < this.store.filteredSuggestions.length - 1) {
             this.selectedIndex++;
           }
-          event.preventDefault();
           break;
 
         case 'ArrowUp':
+          event.preventDefault();
           if (this.selectedIndex > 0) {
             this.selectedIndex--;
           }
-          event.preventDefault();
           break;
+      }
+    },
 
-        case 'Enter':
-          if (this.selectedIndex >= 0) {
-            this.selectSuggestion(this.store.filteredSuggestions[this.selectedIndex]);
-          }
-          event.preventDefault();
-          break;
+    async handleEnter(event) {
+      event.preventDefault();
+      console.log('Ricerca avviata per:', this.store.searchInput); // Debug
 
-        default:
-          break;
+      if (this.store.searchInput) {
+        try {
+          const geocodingResponse = await this.tomtomAxios.get(
+            `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json`,
+            {
+              params: {
+                key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
+              }
+            }
+          );
+
+          const { lat, lon } = geocodingResponse.data.results[0].position;
+          
+          console.log('Coordinate trovate:', { lat, lon }); // Debug
+          
+          // Naviga alla pagina dei risultati
+          this.$router.push({ 
+            name: 'search-results',
+            query: { 
+              lat,
+              lon,
+              address: this.store.searchInput
+            }
+          });
+
+        } catch (error) {
+          console.error('Errore nella ricerca:', error);
+        }
       }
     }
   }
@@ -132,10 +203,11 @@ export default {
     <div v-if="!isApartmentShowPage" class="relative scale-125 max-w-lg mx-auto">
         <input
           type="search"
-          placeholder="Inserisci indirizzo..."
-          @input="getSuggestion"
+          placeholder="Cerca per città o indirizzo..."
+          @input="getSuggestions"
           @blur="clearSuggestions"
           @keydown="handleKeydown"
+          @keydown.enter="handleEnter"
           @focus="handleFocus"
           v-model="store.searchInput"
           class="w-full rounded-full px-12 py-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#B49578] transition duration-200 shadow-sm text-gray-700"
@@ -148,18 +220,17 @@ export default {
 
         <!-- Suggerimenti di ricerca -->
         <ul
-          v-if="store.searchInput.length > 0 && store.filteredSuggestions.length > 0"
-          class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
-          :class="[selected || submit ? 'hidden' : 'block']"
+          v-if="store.searchInput && store.filteredSuggestions && store.filteredSuggestions.length > 0"
+          class="absolute w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50"
         >
           <li
             v-for="(suggestion, index) in store.filteredSuggestions"
             :key="index"
             @click="selectSuggestion(suggestion)"
             class="px-4 py-2 hover:bg-[#B49578] hover:text-white cursor-pointer"
-            :class="{ 'bg-[#B49578] text-white': index === selectedIndex }" 
+            :class="{ 'bg-[#B49578] text-white': index === selectedIndex }"
           >
-            {{ suggestion }}
+            {{ typeof suggestion === 'object' ? suggestion.text : suggestion }}
           </li>
         </ul>
       </div>

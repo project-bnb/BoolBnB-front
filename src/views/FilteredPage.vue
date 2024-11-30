@@ -47,9 +47,11 @@ export default {
 
       // Filtrare in base alla ricerca per indirizzo
       if (this.store.searchInput) {
-        filtered = filtered.filter((apartment) =>
-          apartment.address.toLowerCase().includes(this.store.searchInput.toLowerCase())
-        );
+        const searchTerms = this.store.searchInput.toLowerCase().split(' ');
+        filtered = filtered.filter((apartment) => {
+          const apartmentText = `${apartment.title} ${apartment.address}`.toLowerCase();
+          return searchTerms.every(term => apartmentText.includes(term));
+        });
       }
 
       // Filtrare in base al numero minimo di stanze

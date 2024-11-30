@@ -4,6 +4,7 @@ import Card from '../components/ApartmentCard.vue';
 import axios from 'axios';
 import { store } from '../store';
 import TurnUp from '../components/TurnUp.vue';
+import JumboStatic from '../Header/Components/JumboStatic.vue';
 
 export default {
   data() {
@@ -17,6 +18,7 @@ export default {
     Card,
     FilterComp,
     TurnUp,
+    JumboStatic,
   },
 
   mounted() {
@@ -77,6 +79,7 @@ export default {
 </script>
 
 <template>
+  <JumboStatic />
   <FilterComp />
   <div class="max-w-7xl mx-auto p-6 pt-0 transform -translate-y-[290px]">
     <transition-group

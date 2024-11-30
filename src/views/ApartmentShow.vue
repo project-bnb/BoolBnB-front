@@ -1,6 +1,8 @@
 <script>
 import axios from 'axios';
 import Carousel from '../components/Carousel.vue';
+import ContactForm from '../components/ContactForm.vue';
+
 
 export default {
   data() {
@@ -8,11 +10,10 @@ export default {
       apartment: {},
     };
   },
-
-  components:{
+  components: {
+    ContactForm,
     Carousel
   },
-
   mounted() {
     this.getApartment();
   },
@@ -81,6 +82,9 @@ export default {
 
     <!-- Mappa -->
     <div id="map" class="w-full h-96 mt-6 rounded-lg shadow-md transition-shadow duration-500 hover:shadow-xl"></div>
+
+    <!-- Form di contatto -->
+    <ContactForm :apartment-id="parseInt(this.$route.params.id)" class="mt-8" />
 
     <!-- Bottone per tornare alla lista degli appartamenti -->
     <div class="text-center mt-8">

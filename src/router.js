@@ -4,6 +4,7 @@ import HomeView from './views/HomeView.vue';
 import NotFound from './views/NotFound.vue';
 import ApartmentShow from './views/ApartmentShow.vue';
 import FilteredPage from './views/FilteredPage.vue';
+import SearchResults from './views/SearchResults.vue';
 
 const router = createRouter ({
     history: createWebHistory(),
@@ -25,10 +26,15 @@ const router = createRouter ({
             component: FilteredPage,
         },
         {
+            path: '/search-results',
+            name: 'search-results',
+            component: SearchResults,
+        },
+        {
             path: '/:pathMatch(.*)*',
             name: 'not-found',
             component: NotFound,
-          },
+        },
     ]
 });
 

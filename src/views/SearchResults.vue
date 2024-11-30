@@ -30,16 +30,14 @@ export default {
 
       let filtered = this.apartments;
 
-      // Filtra per is_visible
       filtered = filtered.filter(apartment => 
         apartment.is_visible === 1 || apartment.is_visible === true
       );
 
-      // Filtra per distanza
       if (this.$route.query.lat && this.$route.query.lon) {
         const searchLat = parseFloat(this.$route.query.lat);
         const searchLon = parseFloat(this.$route.query.lon);
-        const SEARCH_RADIUS = 20; // km
+        const SEARCH_RADIUS = 20; 
 
         filtered.forEach(apartment => {
           const distance = this.calculateDistance(
@@ -51,7 +49,6 @@ export default {
           apartment.distance = distance;
         });
 
-        // Filtriamo e ordiniamo
         filtered = filtered
           .filter(apartment => apartment.distance !== null && apartment.distance <= SEARCH_RADIUS)
           .sort((a, b) => a.distance - b.distance);

@@ -88,7 +88,6 @@ export default {
 </script>
 
 <template>
-  <JumboStatic />
   <FilterComp />
   <div class="max-w-7xl mx-auto p-6 pt-0">
     <transition-group

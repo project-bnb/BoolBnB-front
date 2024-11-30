@@ -1,4 +1,5 @@
 <script>
+import JumboStatic from './Components/JumboStatic.vue';
 import NavBar from './Components/NavBar.vue';
 
 export default {
@@ -9,6 +10,7 @@ export default {
   },
   components: {
     NavBar,
+    JumboStatic
   },
   methods: {
 

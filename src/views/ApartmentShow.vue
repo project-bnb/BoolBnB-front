@@ -6,7 +6,7 @@ export default {
   data() {
     return {
       apartment: {},
-      selectedImage: null, // Stato per immagine selezionata
+      selectedImage: 0,
     };
   },
   components: {
@@ -40,6 +40,9 @@ export default {
           this.apartment = res.data.data;
           console.log('Appartamento:', this.apartment);
           this.initMap();
+          if (this.apartment.images && this.apartment.images.length > 0) {
+            this.selectedImage = this.apartment.images[0];
+          }
         })
         .catch((err) => {
           console.error('Errore:', err);
@@ -54,23 +57,23 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-8 bg-white shadow-lg rounded-lg relative mt-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+  <div class="max-w-7xl mx-auto p-8 bg-white shadow-lg rounded-lg relative mt-28 grid grid-cols-1 md:grid-cols-2 gap-10">
     <!-- Immagini con possibilità di selezione -->
     <div class="flex flex-col space-y-4">
       <div class="w-full h-80 mb-4">
         <!-- Immagine Selezionata Grande -->
         <img :src="selectedImage ? selectedImage.image_path : (apartment.images && apartment.images.length > 0 ? apartment.images[0].image_path : '')" 
              alt="Selected Apartment Image" 
-             class="w-full h-full object-cover rounded-lg">
+             class="w-full h-full object-cover rounded-lg shadow-md">
       </div>
-      <div class="flex flex-wrap space-x-4">
+      <div class="flex flex-cols-4 gap-4 flex-wrap justify-center">
         <!-- Thumbnail delle Immagini -->
         <img v-for="(image, index) in apartment.images" 
              :key="index" 
              :src="image.image_path" 
              alt="Apartment Image Thumbnail" 
-             class="w-[180px] h-[100px] object-cover rounded-lg cursor-pointer border-2"
-             :class="{ 'border-blue-500': selectedImage && selectedImage.image_path === image.image_path, 'border-transparent': !selectedImage || selectedImage.image_path !== image.image_path }"
+             class="w-[130px] h-20 object-cover rounded-lg cursor-pointer border-2"
+             :class="{ 'border-[#BBA796] shadow-pre': selectedImage && selectedImage.image_path === image.image_path, 'border-transparent': !selectedImage || selectedImage.image_path !== image.image_path }"
              @click="enlargeImage(image)" />
       </div>
     </div>
@@ -103,7 +106,7 @@ export default {
     </div>
 
     <!-- Mappa e Form di contatto a tutta larghezza -->
-    <div class="col-span-1 md:col-span-2 space-y-6 mt-10">
+    <div class="col-span-1 md:col-span-2 space-y-6">
       <!-- Mappa -->
       <div id="map" class="w-full h-96 rounded-lg shadow-md"></div>
 
@@ -112,7 +115,7 @@ export default {
     </div>
 
     <!-- Bottone per tornare alla lista degli appartamenti -->
-    <router-link to="/" class="inline-block mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-md hover:bg-indigo-700 transition-all duration-300">
+    <router-link to="/apartments" class="w-[1216px] text-center inline-block bg-[#BFAFA2] text-[#EDEEF0] px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-[#BDAFA2] transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       Torna alla lista degli appartamenti
     </router-link>
   </div>
@@ -124,5 +127,9 @@ export default {
   height: 400px; 
   border-radius: 12px;
   margin-top: 20px;
+}
+
+.shadow-pre{
+  box-shadow: 0 0 3px #B49578;
 }
 </style>

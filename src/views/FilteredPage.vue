@@ -22,7 +22,7 @@ export default {
   },
 
   mounted() {
-    this.getApartments();
+    this.fetchApartments();
   },
 
   watch: {
@@ -32,41 +32,67 @@ export default {
   },
 
   methods: {
-    getApartments() {
-      axios
-        .get('http://127.0.0.1:8000/api/apartments')
-        .then((res) => {
-          this.apartments = res.data.data;
-          store.suggestions = this.apartments.map((apartment) => apartment.address);
-        })
-        .catch((error) => console.error('Errore:', error));
+    async fetchApartments() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
+        this.apartments = response.data.data;
+        this.loading = false;
+      } catch (error) {
+        this.error = 'Errore nel caricamento degli appartamenti';
+        this.loading = false;
+      }
     },
+
+    normalizeAddress(address) {
+      return address
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/,/g, '')
+        .replace(/\./g, '')
+        .replace(/via/i, '')
+        .trim();
+    },
+
+    calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = this.toRad(lat2 - lat1);
+      const dLon = this.toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    },
+
+    toRad(value) {
+      return (value * Math.PI) / 180;
+    }
   },
 
   computed: {
     filteredApartments() {
+      if (!this.apartments.length) return [];
+
       let filtered = this.apartments;
 
-      if (this.store.searchInput) {
-        const searchTerms = this.store.searchInput.toLowerCase().split(' ');
-        filtered = filtered.filter((apartment) => {
-          const apartmentText = `${apartment.title} ${apartment.address}`.toLowerCase();
-          return searchTerms.every(term => apartmentText.includes(term));
-        });
-      }
+      filtered = filtered.filter(apartment => 
+        apartment.is_visible === 1 || apartment.is_visible === true
+      );
 
       if (this.store.filters.minRooms) {
-        filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
+        filtered = filtered.filter(apartment => apartment.rooms >= this.store.filters.minRooms);
       }
 
       if (this.store.filters.minBeds) {
-        filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
+        filtered = filtered.filter(apartment => apartment.beds >= this.store.filters.minBeds);
       }
 
       if (this.store.filters.selectedServices.length > 0) {
-        filtered = filtered.filter((apartment) => {
-          const apartmentServices = apartment.services.map((service) => service.name);
-          return this.store.filters.selectedServices.every((service) =>
+        filtered = filtered.filter(apartment => {
+          const apartmentServices = apartment.services.map(service => service.name);
+          return this.store.filters.selectedServices.every(service =>
             apartmentServices.includes(service)
           );
         });
@@ -81,15 +107,28 @@ export default {
         return priority[aSponsor] - priority[bSponsor];
       });
 
-      // filtra gli appartamenti in base ai nomi degli appartamenti dentro il raggio
-      if (this.store.filters.filteredApartments.length > 0) {
-        console.log('filteredApartments:', this.store.filters.filteredApartments);
+      if (this.$route.query.lat && this.$route.query.lon) {
+        const searchLat = parseFloat(this.$route.query.lat);
+        const searchLon = parseFloat(this.$route.query.lon);
+        const SEARCH_RADIUS = 20; 
 
-        return this.store.filters.filteredApartments;
+        filtered.forEach(apartment => {
+          const distance = this.calculateDistance(
+            searchLat,
+            searchLon,
+            parseFloat(apartment.latitude),
+            parseFloat(apartment.longitude)
+          );
+          apartment.distance = distance;
+        });
+
+        filtered = filtered
+          .filter(apartment => apartment.distance !== null && apartment.distance <= SEARCH_RADIUS)
+          .sort((a, b) => a.distance - b.distance);
       }
 
       return filtered;
-    },
+    }
   },
 };
 </script>
@@ -102,25 +141,25 @@ export default {
       tag="div"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
     >
-      <Card
-        v-for="(property, index) in filteredApartments"
-        :key="property.id"
-        :id="property.id"
-        :user_id="property.user_id"
-        :title="property.title"
-        :rooms="property.rooms"
-        :beds="property.beds"
-        :bathrooms="property.bathrooms"
-        :square_meters="property.square_meters"
-        :address="property.address"
-        :latitude="property.latitude"
-        :longitude="property.longitude"
-        :image="property.cover_image"
-        :services="property.services"
-        :is_visible="Boolean(property.is_visible)"
-        class="transform transition duration-500 ease-in-out"
-      />
-    </transition-group>
+    <Card
+          v-for="apartment in filteredApartments"
+          :key="apartment.id"
+          :id="apartment.id"
+          :user_id="apartment.user_id"
+          :title="apartment.title"
+          :rooms="apartment.rooms"
+          :beds="apartment.beds"
+          :bathrooms="apartment.bathrooms"
+          :square_meters="apartment.square_meters"
+          :address="apartment.address"
+          :latitude="apartment.latitude"
+          :longitude="apartment.longitude"
+          :image="apartment.cover_image"
+          :services="apartment.services"
+          :is_visible="Boolean(apartment.is_visible)"
+          class="transform transition duration-500 ease-in-out"
+        />
+      </transition-group>
 
     <div v-if="filteredApartments.length === 0" class="text-center mt-12">
       <p class="text-gray-500 text-lg">

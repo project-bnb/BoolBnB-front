@@ -3,9 +3,9 @@ import axios from 'axios';
 
 export default {
   data() {
-    return { 
+    return {
       cover_image: '',
-      images: [], 
+      images: [],
       currentIndex: 0,
     }
   },
@@ -18,7 +18,7 @@ export default {
     getImages() {
       const id = this.$route.params.id;
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${id}`)
+        .get(`http://192.168.1.101:9000/api/apartments/${id}`)
         .then((res) => {
           this.images = res.data.data.images;
           this.cover_image = res.data.data.cover_image;
@@ -46,18 +46,18 @@ export default {
 <template>
   <div class="relative w-full overflow-hidden">
     <!-- Carousel Images Wrapper -->
-    <div 
-      class="carousel-track flex transition-transform duration-500 ease-in-out" 
+    <div
+      class="carousel-track flex transition-transform duration-500 ease-in-out"
       :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
     >
       <!-- Carousel Images -->
-      <div 
-        v-for="(image, index) in images" 
-        :key="index" 
+      <div
+        v-for="(image, index) in images"
+        :key="index"
         class="min-w-full flex-shrink-0"
       >
-        <img 
-          :src="image.image_path" 
+        <img
+          :src="image.image_path"
           alt="Immagine Appartamento"
           class="w-full h-96 object-cover rounded-lg"
         >
@@ -65,8 +65,8 @@ export default {
     </div>
 
     <!-- Button for Previous Slide -->
-    <button 
-      @click="PrevSlide()" 
+    <button
+      @click="PrevSlide()"
       class="absolute top-1/2 left-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all duration-300 ease-in-out"
     >
       <span class="text-xl font-bold">
@@ -75,8 +75,8 @@ export default {
     </button>
 
     <!-- Button for Next Slide -->
-    <button 
-      @click="NextSlide()" 
+    <button
+      @click="NextSlide()"
       class="absolute top-1/2 right-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all duration-300 ease-in-out"
     >
       <span class="text-xl font-bold">

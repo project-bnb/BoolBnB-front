@@ -44,7 +44,7 @@ export default {
     getSuggestions: debounce(function () {
       if (this.store.searchInput.length > 0) {
         axios
-          .get('http://127.0.0.1:8000/api/apartments')
+          .get('http://192.168.1.101:9000/api/apartments')
           .then((response) => {
             const apartments = response.data.data.filter(apartment => apartment.is_visible === 1);
             const searchTerms = this.store.searchInput.toLowerCase().split(' ');
@@ -53,9 +53,9 @@ export default {
             let filteredApartments = apartments.filter((apartment) => {
               // Estraiamo città e via dall'indirizzo completo
               const addressParts = apartment.address.toLowerCase().split(',').map(part => part.trim());
-              
+
               // Verifica che tutti i termini di ricerca corrispondano a parti dell'indirizzo
-              return searchTerms.every(term => 
+              return searchTerms.every(term =>
                 addressParts.some(part => part.includes(term))
               );
             });
@@ -63,11 +63,11 @@ export default {
             // Ordinamento delle sponsorizzazioni: Gold, Silver, Bronze, Nessuna sponsorizzazione
             filteredApartments.sort((a, b) => {
               const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
-              
+
               // Ottenere il tipo di sponsorizzazione per ogni appartamento
               const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
               const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
-              
+
               // Ordinare gli appartamenti in base alla priorità di sponsorizzazione
               return priority[aSponsor] - priority[bSponsor];
             });
@@ -82,8 +82,8 @@ export default {
 
             // Rimuovi i duplicati degli indirizzi
             this.store.filteredSuggestions = Array.from(
-              new Set(this.store.filteredSuggestions.map(s => s.text))
-            ).map(text => ({ text, value: text }));
+              new Set(this.store.filteredSuggestions.map(s => JSON.stringify(s)))
+            ).map(s => JSON.parse(s));
 
             if (this.store.filteredSuggestions.length === 0) {
               this.store.filteredSuggestions = ['Nessun risultato trovato'];
@@ -108,7 +108,7 @@ export default {
     async selectSuggestion(suggestion) {
       if (typeof suggestion === 'object') {
         this.store.searchInput = suggestion.text;
-        
+
         try {
           const geocodingResponse = await this.tomtomAxios.get(
             `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion.text)}.json`,
@@ -120,10 +120,10 @@ export default {
           );
 
           const { lat, lon } = geocodingResponse.data.results[0].position;
-          
-          this.$router.push({ 
+
+          this.$router.push({
             name: 'filtered-page',
-            query: { 
+            query: {
               lat,
               lon,
               address: suggestion.text
@@ -133,7 +133,7 @@ export default {
           console.error('Errore nel geocoding:', error);
         }
       }
-      
+
       this.store.filteredSuggestions = [];
       this.selected = true;
     },
@@ -172,43 +172,11 @@ export default {
       }
     },
 
-    async handleEnter(event) {
-      event.preventDefault();
-      console.log('Ricerca avviata per:', this.store.searchInput); // Debug
 
-      if (this.store.searchInput) {
-        try {
-          const geocodingResponse = await this.tomtomAxios.get(
-            `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json`,
-            {
-              params: {
-                key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
-              }
-            }
-          );
-
-          const { lat, lon } = geocodingResponse.data.results[0].position;
-          
-          console.log('Coordinate trovate:', { lat, lon }); // Debug
-          
-          // Naviga alla pagina dei risultati
-          this.$router.push({ 
-            name: 'search-results',
-            query: { 
-              lat,
-              lon,
-              address: this.store.searchInput
-            }
-          });
-
-        } catch (error) {
-          console.error('Errore nella ricerca:', error);
-        }
-      }
-    }
   }
 }
 </script>
+
 
 <template>
     <!-- Barra di ricerca -->

@@ -8,11 +8,10 @@ export default {
       clickActive: false,
       isExpanded: true,
       hovering: false,
-      // Inizializzo i filtri utilizzando i valori di store o valori di default
-      minRooms: store.filters.minRooms || 1,
-      minBeds: store.filters.minBeds || 1,
-      radius: store.filters.radius || 20,
-      selectedServices: store.filters.selectedServices || [],
+      minRooms: store.filters.minRooms,
+      minBeds: store.filters.minBeds,
+      radius: store.filters.radius,
+      selectedServices: store.filters.selectedServices,
       availableServices: [
         "WiFi",
         "Cucina",
@@ -24,12 +23,20 @@ export default {
       clickedServices: [],
     };
   },
+  watch: {
+    radius(newRadius) {
+      store.filters.radius = newRadius;
+      this.saveFilters();
+    },
+  },
   created() {
     // Carica i filtri dal localStorage quando il componente è creato
     this.loadFilters();
   },
   methods: {
-    loadFilters() {
+
+
+     loadFilters() {
       // Carica i filtri salvati nel localStorage (se presenti)
       const savedFilters = JSON.parse(localStorage.getItem('filters'));
       if (savedFilters) {
@@ -49,22 +56,22 @@ export default {
       localStorage.setItem('filters', JSON.stringify(store.filters));
     },
 
-    isWithinRadius(lat1, lon1, radius) {
-      const milanoLat = 45.4685;
-      const milanoLon = 9.1824;
+    isWithinRadius(originLat, originLon, radius, destinationLat, destinationLon) {
+      const positionLat = destinationLat;
+      const positionLon = destinationLon;
 
-      const haversine = (lat1, lon1) => {
+      const haversine = (lat, lon) => {
         const R = 6371; // raggio della terra in km
         const toRad = (deg) => deg * (Math.PI / 180);
-        const dLat = toRad(lat1 - milanoLat);
-        const dLon = toRad(lon1 - milanoLon);
+        const dLat = toRad(lat - positionLat);
+        const dLon = toRad(lon - positionLon);
         const a = Math.sin(dLat / 2) ** 2 +
-                  Math.cos(toRad(lat1)) * Math.cos(toRad(milanoLat)) *
+                  Math.cos(toRad(lat)) * Math.cos(toRad(positionLat)) *
                   Math.sin(dLon / 2) ** 2;
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // distanza in km
       };
-      return haversine(lat1, lon1) <= radius;
+      return haversine(originLat, originLon) <= radius;
     },
 
     toggleExpand() {
@@ -72,56 +79,80 @@ export default {
     },
 
     toggleService(service) {
-      // Modifica solo clickedServices senza salvare subito nel localStorage
       if (this.clickedServices.includes(service)) {
         this.clickedServices = this.clickedServices.filter((s) => s !== service);
       } else {
         this.clickedServices.push(service);
       }
+      this.saveFilters(); // Salva i filtri ogni volta che cambia il servizio selezionato
     },
 
-    applyFilters() {
-      // Salva tutti i filtri nel localStorage e nello store prima di applicarli
-      this.saveFilters();
+    getPosition(indirizzo)
+    {
+        const infoArrayAddress = [];
+        console.log('questo è indirizzo', indirizzo);
+        const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+return axios.get(url)
+    .then(response => {
+        console.log('questo è response', response.data.results[0]);
+        infoArrayAddress.latitude = response.data.results[0].position.lat;
+        infoArrayAddress.longitude = response.data.results[0].position.lon;
+        infoArrayAddress.address = response.data.results[0].address.freeformAddress;
+        console.log('questo è infoArrayAddress', infoArrayAddress);
+        return infoArrayAddress;
+    })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    },
+
+    async applyFilters() {
+      this.saveFilters(); // Salva tutti i filtri prima di applicarli
+
+
 
       // Filtra tramite radius e salva gli appartamenti filtrati
-      axios.get('http://127.0.0.1:8000/api/apartments')
-        .then((res) => {
-          const filteredApartments = res.data.data.filter((apartment) => {
-            // Verifica se l'appartamento è all'interno del raggio specificato
-            const isInRadius = this.isWithinRadius(apartment.latitude, apartment.longitude, this.radius);
-            // Verifica se l'appartamento ha un numero minimo di stanze e letti
-            const meetsRoomsAndBeds = apartment.rooms >= this.minRooms && apartment.beds >= this.minBeds;
-            // Verifica se l'appartamento ha tutti i servizi selezionati
-            const meetsServices = this.clickedServices.every(service =>
-              apartment.services.map(s => s.name).includes(service)
-            );
-            // Restituisce true se l'appartamento soddisfa tutti i criteri
-            return isInRadius && meetsRoomsAndBeds && meetsServices;
-          });
 
-          store.filters.filteredSuggestions = filteredApartments;
-          store.filters.filteredApartments = filteredApartments;
+      axios.get('http://192.168.1.101:9000/api/apartments')
+        .then(async (res) => {
+          const filteredApartments = [];
 
-          console.log("filters applied:", store.filters);
+          const infoArrayAddress = await this.getPosition(store.searchInput);
+
+          store.filters.filteredSuggestions = [];
+          for (let i = 0; i < res.data.data.length; i++) {
+            const apartment = res.data.data[i];
+            const isInRadius = this.isWithinRadius(infoArrayAddress.latitude, infoArrayAddress.longitude, this.radius, apartment.latitude, apartment.longitude);
+
+            if (isInRadius) {
+              store.filters.filteredSuggestions.push(apartment);
+              filteredApartments.push(apartment);
+              store.filters.filteredApartments = filteredApartments;
+            }
+          }
         })
         .catch((error) => console.error('error:', error));
+
+
+
+      console.log("filters applied:", store.filters);
     },
 
     resetFilters() {
-      // Ripristina i filtri ai valori di default
       this.minRooms = 1;
       this.minBeds = 1;
       this.radius = 20;
       this.clickedServices = [];
+      store.filters.filteredApartments = [];
+      store.searchInput = '';
 
-      // Salva i filtri ripristinati sia nello store che nel localStorage
       store.filters.minRooms = this.minRooms;
       store.filters.minBeds = this.minBeds;
       store.filters.radius = this.radius;
       store.filters.selectedServices = [];
 
-      this.saveFilters(); // Salva i filtri resettati nel localStorage
+      this.saveFilters();
     }
   },
 };
@@ -184,7 +215,7 @@ export default {
           <!-- Raggio di ricerca -->
           <div class="mt-4">
             <label for="radius" class="block text-sm font-bold mb-2">Raggio di ricerca (km):</label>
-            
+
             <!-- Contenitore per l'input range e il valore -->
             <div class="flex items-center gap-4">
               <!-- Input range migliorato esteticamente -->
@@ -196,7 +227,7 @@ export default {
                 max="100"
                 class="w-full range-slider"
               />
-              
+
               <!-- Mostra il valore del raggio in km -->
               <span class="font-semibold text-white">{{ radius }}</span>
             </div>
@@ -265,7 +296,7 @@ export default {
 }
 
 .range-slider {
-  -webkit-appearance: none; 
+  -webkit-appearance: none;
   width: 100%;
   height: 10px;
   background: white;

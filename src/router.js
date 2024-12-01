@@ -4,7 +4,6 @@ import HomeView from './views/HomeView.vue';
 import NotFound from './views/NotFound.vue';
 import ApartmentShow from './views/ApartmentShow.vue';
 import FilteredPage from './views/FilteredPage.vue';
-import SearchResults from './views/SearchResults.vue';
 import AboutUs from './views/AboutUs.vue';
 
 const router = createRouter ({
@@ -25,11 +24,6 @@ const router = createRouter ({
             path: '/apartments',
             name: 'filtered-page',
             component: FilteredPage,
-        },
-        {
-            path: '/search-results',
-            name: 'search-results',
-            component: SearchResults,
         },
         {
             path: '/about',

@@ -82,8 +82,8 @@ export default {
 
             // Rimuovi i duplicati degli indirizzi
             this.store.filteredSuggestions = Array.from(
-              new Set(this.store.filteredSuggestions.map(s => JSON.stringify(s)))
-            ).map(s => JSON.parse(s));
+              new Set(this.store.filteredSuggestions.map(s => s.text))
+            ).map(text => ({ text, value: text }));
 
             if (this.store.filteredSuggestions.length === 0) {
               this.store.filteredSuggestions = ['Nessun risultato trovato'];
@@ -209,7 +209,6 @@ export default {
   }
 }
 </script>
-
 
 <template>
     <!-- Barra di ricerca -->

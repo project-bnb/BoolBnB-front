@@ -8,10 +8,11 @@ export default {
       clickActive: false,
       isExpanded: true,
       hovering: false,
-      minRooms: store.filters.minRooms,
-      minBeds: store.filters.minBeds,
-      radius: store.filters.radius,
-      selectedServices: store.filters.selectedServices,
+      // Inizializzo i filtri utilizzando i valori di store o valori di default
+      minRooms: store.filters.minRooms || 1,
+      minBeds: store.filters.minBeds || 1,
+      radius: store.filters.radius || 20,
+      selectedServices: store.filters.selectedServices || [],
       availableServices: [
         "WiFi",
         "Cucina",
@@ -22,12 +23,6 @@ export default {
       ],
       clickedServices: [],
     };
-  },
-  watch: {
-    radius(newRadius) {
-      store.filters.radius = newRadius;
-      this.saveFilters();
-    },
   },
   created() {
     // Carica i filtri dal localStorage quando il componente è creato
@@ -77,45 +72,50 @@ export default {
     },
 
     toggleService(service) {
+      // Modifica solo clickedServices senza salvare subito nel localStorage
       if (this.clickedServices.includes(service)) {
         this.clickedServices = this.clickedServices.filter((s) => s !== service);
       } else {
         this.clickedServices.push(service);
       }
-      this.saveFilters(); // Salva i filtri ogni volta che cambia il servizio selezionato
     },
 
     applyFilters() {
-      this.saveFilters(); // Salva tutti i filtri prima di applicarli
+      // Salva tutti i filtri nel localStorage e nello store prima di applicarli
+      this.saveFilters();
 
       // Filtra tramite radius e salva gli appartamenti filtrati
       axios.get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
-          const filteredApartments = [];
-
-          store.filters.filteredSuggestions = [];
-          for (let i = 0; i < res.data.data.length; i++) {
-            const apartment = res.data.data[i];
+          const filteredApartments = res.data.data.filter((apartment) => {
+            // Verifica se l'appartamento è all'interno del raggio specificato
             const isInRadius = this.isWithinRadius(apartment.latitude, apartment.longitude, this.radius);
+            // Verifica se l'appartamento ha un numero minimo di stanze e letti
+            const meetsRoomsAndBeds = apartment.rooms >= this.minRooms && apartment.beds >= this.minBeds;
+            // Verifica se l'appartamento ha tutti i servizi selezionati
+            const meetsServices = this.clickedServices.every(service =>
+              apartment.services.map(s => s.name).includes(service)
+            );
+            // Restituisce true se l'appartamento soddisfa tutti i criteri
+            return isInRadius && meetsRoomsAndBeds && meetsServices;
+          });
 
-            if (isInRadius) {
-              store.filters.filteredSuggestions.push(apartment);
-              filteredApartments.push(apartment);
-              store.filters.filteredApartments = filteredApartments;
-            }
-          }
+          store.filters.filteredSuggestions = filteredApartments;
+          store.filters.filteredApartments = filteredApartments;
+
+          console.log("filters applied:", store.filters);
         })
         .catch((error) => console.error('error:', error));
-
-      console.log("filters applied:", store.filters);
     },
 
     resetFilters() {
+      // Ripristina i filtri ai valori di default
       this.minRooms = 1;
       this.minBeds = 1;
       this.radius = 20;
-      this.clickedServices = []; 
+      this.clickedServices = [];
 
+      // Salva i filtri ripristinati sia nello store che nel localStorage
       store.filters.minRooms = this.minRooms;
       store.filters.minBeds = this.minBeds;
       store.filters.radius = this.radius;

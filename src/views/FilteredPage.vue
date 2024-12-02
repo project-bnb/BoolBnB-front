@@ -34,7 +34,7 @@ export default {
   methods: {
     getApartments() {
       axios
-        .get('http://192.168.1.101:9000/api/apartments')
+        .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
           this.apartments = res.data.data;
           store.suggestions = this.apartments.map((apartment) => apartment.address);

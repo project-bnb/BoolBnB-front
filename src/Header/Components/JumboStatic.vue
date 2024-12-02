@@ -41,7 +41,7 @@ export default {
     ></div>
 
     <!-- SearchBar -->
-    <SearchBar class="absolute top-[25%] z-20" />
+    <SearchBar class="absolute top-[25%] z-20 sm:w-[270px]" />
 
     <!-- Sfumatura graduale in basso -->
     <div

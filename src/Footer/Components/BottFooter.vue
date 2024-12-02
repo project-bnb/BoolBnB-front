@@ -19,7 +19,7 @@ export default {
   <!-- Divider -->
   <hr class="w-11/12 mx-auto h-1 mb-6 text-gray-200">
   
-  <div class="text-[#BDAFA2] py-16">
+  <div class="text-[#BDAFA2] py-16 sm:scale-90">
     <!-- Links -->
     <div class="flex justify-center space-x-8 mb-6 text-sm font-medium">
       <a

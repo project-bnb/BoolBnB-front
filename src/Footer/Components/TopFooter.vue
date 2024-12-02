@@ -14,13 +14,13 @@ export default {
 <template>
   <div class="w-full py-16">
     <!-- Contenitore del top footer -->
-    <div class="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto px-6 space-y-6 md:space-y-0">
+    <div class="flex flex-col md:flex-row sm:flex-wrap sm:gap-9 sm:justify-center items-center justify-between max-w-6xl mx-auto px-6 space-y-6 md:space-y-0">
       <!-- Sezione di Testo -->
       <div class="text-center md:text-left">
         <h2 class="font-bold text-2xl drop-shadow-md text-white mb-2">
           Vuoi inserire i tuoi appartamenti?
         </h2>
-        <p class="text-md text-white drop-shadow-md	">
+        <p class="text-md text-white drop-shadow-md	sm:text-center">
           Registrati o fai l'accesso per iniziare subito a condividere i tuoi spazi con gli altri!
         </p>
       </div>

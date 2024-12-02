@@ -22,7 +22,7 @@ export default {
   <div>
     <NavBar/>
   </div>
-  <div class="absolute top-[68px] left-0 right-0">
+  <div class="absolute top-[50px] left-0 right-0">
     <JumboStatic />
   </div>
 </template>

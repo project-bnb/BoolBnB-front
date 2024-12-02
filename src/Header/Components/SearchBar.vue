@@ -45,12 +45,10 @@ export default {
     getSuggestions: debounce(function () {
       if (this.store.searchInput.length > 0) {
         const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=1&countrySet=IT&language=it-IT`;
-         this.tomtomAxios
-        axios
-          .get(url, {
-            credentials: 'include'
-          })
+        this.tomtomAxios
+          .get(url)
           .then((response) => {
+            console.log('response', response);
             const apartments = response.data.results[0].address.freeformAddress;
             // Creazione dei suggerimenti da visualizzare
             this.store.filteredSuggestions = apartments.slice(0, 5);
@@ -62,10 +60,10 @@ export default {
           .catch((error) => {
             console.error('Errore nel recupero dei suggerimenti:', error);
           });
-        } else {
-          this.store.filteredSuggestions = [];
-        }
-      }, 300),
+      } else {
+        this.store.filteredSuggestions = [];
+      }
+    }, 300),
 
     clearSuggestions() {
       store.SearchFocus = false;

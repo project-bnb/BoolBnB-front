@@ -13,7 +13,8 @@ export default {
       selectedIndex: -1,
       tomtomAxios: axios.create({
         withCredentials: false
-      })
+      }),
+      apiTomTomKey: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
     };
   },
 
@@ -43,48 +44,17 @@ export default {
   methods: {
     getSuggestions: debounce(function () {
       if (this.store.searchInput.length > 0) {
+        const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=1&countrySet=IT&language=it-IT`;
+         this.tomtomAxios
         axios
-          .get('http://192.168.1.101:9000/api/apartments')
+          .get(url, {
+            credentials: 'omit'
+          })
           .then((response) => {
-            const apartments = response.data.data.filter(apartment => apartment.is_visible === 1);
-            const searchTerms = this.store.searchInput.toLowerCase().split(' ');
-
-            // Filtra gli appartamenti solo per indirizzo
-            let filteredApartments = apartments.filter((apartment) => {
-              // Estraiamo città e via dall'indirizzo completo
-              const addressParts = apartment.address.toLowerCase().split(',').map(part => part.trim());
-
-              // Verifica che tutti i termini di ricerca corrispondano a parti dell'indirizzo
-              return searchTerms.every(term =>
-                addressParts.some(part => part.includes(term))
-              );
-            });
-
-            // Ordinamento delle sponsorizzazioni: Gold, Silver, Bronze, Nessuna sponsorizzazione
-            filteredApartments.sort((a, b) => {
-              const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
-
-              // Ottenere il tipo di sponsorizzazione per ogni appartamento
-              const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
-              const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
-
-              // Ordinare gli appartamenti in base alla priorità di sponsorizzazione
-              return priority[aSponsor] - priority[bSponsor];
-            });
-
+            const apartments = response.data.results[0].address.freeformAddress;
             // Creazione dei suggerimenti da visualizzare
-            this.store.filteredSuggestions = filteredApartments
-              .map((apartment) => ({
-                text: apartment.address,  // Mostra solo l'indirizzo nei suggerimenti
-                value: apartment.address
-              }))
-              .slice(0, 5);
-
-            // Rimuovi i duplicati degli indirizzi
-            this.store.filteredSuggestions = Array.from(
-              new Set(this.store.filteredSuggestions.map(s => JSON.stringify(s)))
-            ).map(s => JSON.parse(s));
-
+            this.store.filteredSuggestions = apartments.slice(0, 5);
+            
             if (this.store.filteredSuggestions.length === 0) {
               this.store.filteredSuggestions = ['Nessun risultato trovato'];
             }
@@ -92,10 +62,10 @@ export default {
           .catch((error) => {
             console.error('Errore nel recupero dei suggerimenti:', error);
           });
-      } else {
-        this.store.filteredSuggestions = [];
-      }
-    }, 300),
+        } else {
+          this.store.filteredSuggestions = [];
+        }
+      }, 300),
 
     clearSuggestions() {
       store.SearchFocus = false;

@@ -91,7 +91,7 @@ export default {
     {
         const infoArrayAddress = [];
         console.log('questo è indirizzo', indirizzo);
-        const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+        const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
 return axios.get(url)
     .then(response => {
         console.log('questo è response', response.data.results[0]);
@@ -114,7 +114,7 @@ return axios.get(url)
 
       // Filtra tramite radius e salva gli appartamenti filtrati
 
-      axios.get('http://192.168.1.101:9000/api/apartments')
+      axios.get('http://127.0.0.1:8000/api/apartments')
         .then(async (res) => {
           const filteredApartments = [];
 

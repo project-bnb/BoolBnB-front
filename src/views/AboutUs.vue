@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="bg-gradient-to-b from-white to-gray-200 h-screen flex items-center justify-center animate__animated animate__fadeIn">
+  <div class="bg-gradient-to-b from-white to-gray-200 h-[700px] flex items-center justify-center animate__animated animate__fadeIn">
     <div class="max-w-7xl px-6 lg:px-8">
       <h1 class="text-gray-800 text-3xl font-semibold tracking-tight text-center animate__animated animate__fadeInDown">
         Il nostro Team

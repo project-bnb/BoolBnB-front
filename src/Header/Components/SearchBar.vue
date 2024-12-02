@@ -48,7 +48,7 @@ export default {
          this.tomtomAxios
         axios
           .get(url, {
-            credentials: 'omit'
+            credentials: 'include'
           })
           .then((response) => {
             const apartments = response.data.results[0].address.freeformAddress;

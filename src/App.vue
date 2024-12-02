@@ -17,6 +17,10 @@ export default {
     isAboutUsPage() {
       return this.$route.name === 'AboutUs';
     },
+
+    isNotFound() {
+      return this.$route.name === 'not-found';
+    },
   }
 };
 </script>
@@ -26,10 +30,10 @@ export default {
     <header>  
       <AppHeader/>
     </header>
-    <main :class="[ !isAboutUsPage && !isApartmentShowPage  ? 'mt-[500px]' : '']">
+    <main :class="[ !isAboutUsPage && !isApartmentShowPage && !isNotFound  ? 'mt-[500px] mb-[250px]' : '']">
       <AppMain/>
     </main>
-    <footer :class="{'mt-[100px]' : !isAboutUsPage}">
+    <footer>
       <AppFooter/>
     </footer>
   </template>

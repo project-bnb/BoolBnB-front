@@ -21,15 +21,18 @@ export default {
     isAboutUsPage() {
       return this.$route.name === 'AboutUs';
     },
+    isNotFound() {
+      return this.$route.name === 'not-found';
+    },
   },
 };
 </script>
 
 <template>
-  <div v-if="!isAboutUsPage" class="h-[800px] w-full relative overflow-hidden">
+  <div v-if="!isAboutUsPage && !isNotFound" class="h-[800px] w-full relative overflow-hidden">
     <!-- Sfondo -->
     <div
-      class="absolute top-0 left-0 right-0 bottom-0 w-full h-full bg-cover bg-center transition-all duration-500 ease-in-out"
+      class="absolute top-0 left-0 right-0 bottom-0 w-full h-[full] bg-cover bg-center transition-all duration-500 ease-in-out"
       :style="{ 
         backgroundImage: `url('/images/Jumbo.jpg')`, 
         backgroundPosition: '50% 40%' 

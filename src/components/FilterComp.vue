@@ -91,7 +91,7 @@ export default {
     {
         const infoArrayAddress = [];
         console.log('questo è indirizzo', indirizzo);
-        const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+        const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
 return axios.get(url)
     .then(response => {
         console.log('questo è response', response.data.results[0]);
@@ -114,7 +114,7 @@ return axios.get(url)
 
       // Filtra tramite radius e salva gli appartamenti filtrati
 
-      axios.get('http://192.168.1.101:9000/api/apartments')
+      axios.get('http://127.0.0.1:8000/api/apartments')
         .then(async (res) => {
           const filteredApartments = [];
 
@@ -160,37 +160,37 @@ return axios.get(url)
 
 <template>
   <div class="relative">
-    <div class="fixed ml-5 left-0 bottom-[45px] w-14 h-14 z-50 slide-in">
+    <div class="fixed ml-5 md:w-12 md:h-12 md:scale-90 left-0 bottom-[37px] w-14 h-14 z-20 slide-in">
       <!-- Pulsante di Espansione del Menu Filtri -->
       <button
         ref="bounceButton"
         @click="toggleExpand"
         @mouseover="hovering = true"
         @mouseleave="hovering = false"
-        class="w-14 h-14 bg-[#B49578] z-50 text-white rounded-full flex items-center justify-center shadow-md transition-all duration-500 ease-in-out"
-        :class="[isExpanded ? 'bg-[#EDEEF0] hover:opacity-70 translate-x-2' : 'hover:bg-[#B49578] hover:translate-x-2']"
+        class="w-14 h-14 bg-[#B49578] z-40 text-white rounded-full flex items-center justify-center shadow-md transition-all duration-500 ease-in-out"
+        :class="[isExpanded ? 'bg-[#EDEEF0] md:hover:opacity-100 hover:opacity-70 translate-x-2' : 'hover:bg-[#B49578] hover:translate-x-2']"
       >
         <i class="fa-solid fa-wand-magic-sparkles" :class="[isExpanded ? 'text-[#B49578]' : '']"></i>
       </button>
       <span
-        class="absolute z-10 bottom-[15px] left-16 font-bold transition-all duration-500 ease-in-out"
+        class="absolute z-10 bottom-[15px] left-16 font-bold transition-all duration-500 ease-in-out md:hidden"
         :class="[isExpanded ? 'text-white translate-x-5' : (hovering ? 'translate-x-5 text-[#B49578]' : 'text-transparent -translate-x-5')]"
       >
         Filtri
       </span>
     </div>
 
-    <!-- Pannello dei Filtri che si espande sotto al pulsante -->
+    <!-- Pannello dei Filtri -->
     <transition name="slide">
       <div
         v-if="isExpanded"
-        class="z-0 fixed left-0 top-0 h-filter w-[11%] bg-[#B49578] filter-bar p-4 text-white transition-all duration-500 ease-in-out slide-in"
+        class="z-0 fixed left-0 top-0 mt-[68px] md:mt-[50px] 2xl:w-2/12 h-full md:top-0 md:h-[170px] md:grid md:w-screen md:overflow-x-scroll md:h-9/12 w-[11%] bg-[#B49578] filter-bar p-4 text-white transition-all duration-500 ease-in-out slide-in"
       >
         <!-- Filtri per l'utente -->
-        <div>
+        <div class="md:grid md:grid-cols-11 md:gap-x-3 md:grid-rows-2 md:w-[1200px] md:h-full md:overflow-x-auto">
           <!-- Numero minimo di stanze -->
-          <div class="mt-4">
-            <label for="minRooms" class="block text-sm font-bold">Numero minimo di stanze:</label>
+          <div class="mt-4 md:mt-0 md:order-1 md:col-span-2 md:inline-block">
+            <label for="minRooms" class="block text-md font-bold">Numero minimo di stanze:</label>
             <input
               type="number"
               v-model="minRooms"
@@ -201,8 +201,8 @@ return axios.get(url)
           </div>
 
           <!-- Numero minimo di letti -->
-          <div class="mt-4">
-            <label for="minBeds" class="block text-sm font-bold">Numero minimo di letti:</label>
+          <div class="mt-4 md:mt-0 md:order-2 md:col-span-2 md:inline-block">
+            <label for="minBeds" class="block text-md font-bold">Numero minimo di letti:</label>
             <input
               type="number"
               v-model="minBeds"
@@ -213,12 +213,12 @@ return axios.get(url)
           </div>
 
           <!-- Raggio di ricerca -->
-          <div class="mt-4">
-            <label for="radius" class="block text-sm font-bold mb-2">Raggio di ricerca (km):</label>
+          <div class="mt-4 md:mt-0 md:mr-4 md:order-start md:col-span-3 md:inline-block">
+            <label for="radius" class="block text-md font-bold mb-2">Raggio di ricerca (km):</label>
 
             <!-- Contenitore per l'input range e il valore -->
-            <div class="flex items-center gap-4">
-              <!-- Input range migliorato esteticamente -->
+            <div class="flex items-center gap-4 md:col-span-3">
+              <!-- Input range -->
               <input
                 type="range"
                 v-model="radius"
@@ -234,9 +234,9 @@ return axios.get(url)
           </div>
 
           <!-- Servizi aggiuntivi -->
-          <div class="mt-4">
-            <label class="block text-sm font-bold">Servizi aggiuntivi:</label>
-            <div v-for="service in availableServices" :key="service" class="mt-2">
+          <div class="mt-4 md:mt-0 md:flex md:flex-no-wrap md:order-first md:col-span-full">
+            <label class="block text-md font-bold md:hidden">Servizi aggiuntivi:</label>
+            <div v-for="service in availableServices" :key="service" class="mt-2 md:scale-75">
               <button
                 type="button"
                 :id="service"
@@ -256,7 +256,7 @@ return axios.get(url)
           <!-- Bottone per applicare i filtri -->
           <button
             @click="applyFilters"
-            class="w-full bg-[#EDEEF0] text-[#B49578] py-2 px-4 rounded-lg shadow-md mt-6 hover:bg-[#B49578] hover:text-[#EDEEF0] transition-all ease-in-out duration-300 outline-filter"
+            class="w-full bg-[#EDEEF0] text-[#B49578] py-2 px-4 rounded-lg shadow-md mt-6 hover:bg-[#B49578] hover:text-[#EDEEF0] transition-all ease-in-out duration-300 outline-filter md:scale-75 md:col-span-2 md:inline-block md:order-4 md:mt-4"
           >
             Applica Filtri
           </button>
@@ -264,7 +264,7 @@ return axios.get(url)
           <!-- Bottone per resettare i filtri -->
           <button
             @click="resetFilters"
-            class="w-full bg-black text-white py-2 px-4 rounded-lg shadow-md mt-3 hover:bg-gray-600 transition duration-300"
+            class="w-full bg-black text-white py-2 px-4 rounded-lg shadow-md mt-3 md:mt-6 hover:bg-gray-600 transition duration-300 md:scale-75 md:order-5 md:col-span-2 md:inline-block md:mt-4"
           >
             Resetta Filtri
           </button>
@@ -358,8 +358,7 @@ return axios.get(url)
 }
 
 .h-filter {
-  margin-top: 68px;
-  height: calc(100vh - 68px);
+  height: calc(100vh - 50px);
 }
 
 .shadow-click {

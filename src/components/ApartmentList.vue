@@ -8,10 +8,8 @@ export default {
     return {
       store,
       apartments: [],
-      perPage: 4,
-      currentPage: 0,
-      hasAnimated: false, 
-      transition: false
+      currentIndex: 0,
+      itemsPerPage: 4, // Numero di card visibili per volta
     };
   },
 
@@ -21,6 +19,12 @@ export default {
 
   mounted() {
     this.getApartments();
+    this.updateItemsPerPage();
+    window.addEventListener('resize', this.updateItemsPerPage);
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateItemsPerPage);
   },
 
   watch: {
@@ -32,94 +36,104 @@ export default {
   methods: {
     getApartments() {
       axios
-      .get('http://192.168.1.101:9000/api/apartments')
+        .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
           this.apartments = res.data.data.filter(
-            apartment => apartment.is_visible && apartment.sponsorships && apartment.sponsorships.length > 0 && !apartment.sponsorships.some(sponsorship => sponsorship.name === 'No sponsorship')
+            (apartment) =>
+              apartment.is_visible &&
+              apartment.sponsorships &&
+              apartment.sponsorships.length > 0 &&
+              !apartment.sponsorships.some((sponsorship) => sponsorship.name === 'No sponsorship')
           );
 
           this.apartments.sort((a, b) => {
             const priority = { Gold: 1, Silver: 2, Bronze: 3 };
-            const aSponsor = a.sponsorships[0]?.name || "Bronze";
-            const bSponsor = b.sponsorships[0]?.name || "Bronze";
+            const aSponsor = a.sponsorships[0]?.name || 'Bronze';
+            const bSponsor = b.sponsorships[0]?.name || 'Bronze';
             return priority[aSponsor] - priority[bSponsor];
           });
 
           store.suggestions = this.apartments.map((apartment) => apartment.address);
-
         })
         .catch((error) => console.error('Errore:', error));
     },
 
-    NextPage() {
-    if (this.currentPage < Math.ceil(this.apartments.length / this.perPage) - 1) {
-      this.currentPage++;
-    }
-    this.hasAnimated = true;
-  },
-
-    PrevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage--;
+    updateItemsPerPage() {
+      if (window.innerWidth >= 1024) {
+        this.itemsPerPage = 4;
+      } else if (window.innerWidth >= 768) {
+        this.itemsPerPage = 3;
+      } else {
+        this.itemsPerPage = 1;
       }
-    }
+    },
+
+    NextCard() {
+      if (this.currentIndex < this.apartments.length - this.itemsPerPage) {
+        this.currentIndex = this.currentIndex + this.itemsPerPage;
+      }
+    },
+
+    PrevCard() {
+      if (this.currentIndex > 0) {
+        this.currentIndex = this.currentIndex - this.itemsPerPage;
+      }
+    },
   },
 
   computed: {
-    paginatedApartments() {
-      const start = this.currentPage * this.perPage;
-      const end = start + this.perPage;
-      return this.apartments.slice(start, end);
+    visibleApartments() {
+      return this.apartments.slice(this.currentIndex, this.currentIndex + this.itemsPerPage);
     },
   },
 };
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto h-[432px] relative">
-    <!-- Visualizzazione degli appartamenti -->
-    <transition-group
-      name="fade"
-      tag="div"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-      :key="currentPage"
-    >
-      <Card
-        v-for="(property, index) in paginatedApartments"
-        :key="property.id"
-        :id="property.id"
-        :user_id="property.user_id"
-        :title="property.title"
-        :rooms="property.rooms"
-        :beds="property.beds"
-        :bathrooms="property.bathrooms"
-        :square_meters="property.square_meters"
-        :address="property.address"
-        :latitude="property.latitude"
-        :longitude="property.longitude"
-        :image="property.cover_image"
-        :services="property.services"
-        :is_visible="Boolean(property.is_visible)"
-        class="transform transition duration-500 ease-in-out hover:scale-105"
-      />
-    </transition-group>
-
-    <!-- Bottone per la pagina precedente -->
+  <div class="max-w-7xl mx-auto relative px-8 sm:px-6 lg:px-8 lg:scale-75 2xl:scale-90 md:w-full md:scale-75 xl:scale-90">
+    <!-- Bottone per la slide precedente -->
     <button 
-      @click="PrevPage" 
-      class="absolute top-1/2 -left-20 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all hover:-translate-x-1 duration-300 ease-in-out"
+      @click="PrevCard" 
+      class="absolute top-1/2 -left-12 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all hover:-translate-x-1 duration-300 ease-in-out z-10"
     >
-      <span class="text-xl font-bold">
+      <span class="text-sm sm:text-xl font-bold">
         <i class="fa-solid fa-arrow-left"></i>
       </span>
     </button>
 
-    <!-- Bottone per la pagina successiva -->
+    <!-- Visualizzazione degli appartamenti in modalità carosello -->
+    <div class="overflow-visible">
+      <div
+        class="flex gap-6 transition-all ease-in-out duration-500"
+        :style="{ transform: `-translateX(${currentIndex * (100 / itemsPerPage)}%)` }"
+      >
+        <Card
+          v-for="(property, index) in visibleApartments"
+          :key="property.id"
+          :id="property.id"
+          :user_id="property.user_id"
+          :title="property.title"
+          :rooms="property.rooms"
+          :beds="property.beds"
+          :bathrooms="property.bathrooms"
+          :square_meters="property.square_meters"
+          :address="property.address"
+          :latitude="property.latitude"
+          :longitude="property.longitude"
+          :image="property.cover_image"
+          :services="property.services"
+          :is_visible="Boolean(property.is_visible)"
+          class="w-full md:w-full lg:w-1/3 sm:w-full transform transition duration-500 ease-in-out hover:scale-105"
+        />
+      </div>
+    </div>
+
+    <!-- Bottone per la slide successiva -->
     <button 
-      @click="NextPage" 
-      class="absolute top-1/2 -right-20 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all hover:translate-x-1 duration-300 ease-in-out"
+      @click="NextCard" 
+      class="absolute top-1/2 -right-12 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-[#B49578] text-white rounded-full shadow-md hover:bg-[#EDEEF0] hover:text-[#B49578] hover:shadow-lg transition-all hover:translate-x-1 duration-300 ease-in-out z-10"
     >
-      <span class="text-xl font-bold">
+      <span class="text-sm sm:text-xl font-bold">
         <i class="fa-solid fa-arrow-right"></i>
       </span>
     </button>
@@ -132,6 +146,7 @@ export default {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 @keyframes fadeIn {
@@ -156,5 +171,9 @@ export default {
 .fade-enter, .fade-leave-to {
   opacity: 0;
   transform: translateX(20px);
+}
+
+.scale-25{
+  scale: 0.25;
 }
 </style>

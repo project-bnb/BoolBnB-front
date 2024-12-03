@@ -34,7 +34,7 @@ export default {
   methods: {
     getApartments() {
       axios
-        .get('http://192.168.1.101:9000/api/apartments')
+        .get('http://127.0.0.1:8000/api/apartments')
         .then((res) => {
           this.apartments = res.data.data;
           store.suggestions = this.apartments.map((apartment) => apartment.address);
@@ -95,12 +95,12 @@ export default {
 </script>
 
 <template>
-  <FilterComp />
+  <FilterComp class="z-20"/>
   <div class="max-w-7xl mx-auto p-6 pt-0">
     <transition-group
       name="fade"
       tag="div"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      class="grid grid-cols-4 md:grid-cols-1 md:w-full xl:w-8/12 xl:grid-cols-2 2xl:w-9/12 2xl:grid-cols-3 sm:grid-cols-1 sm:w-9/12 sm:flex sm:flex-wrap 2xl:mx-auto md:grid-cols-1 lg:w-7/12 lg:mx-auto lg:grid-cols-1 gap-6"
     >
       <Card
         v-for="(property, index) in filteredApartments"

@@ -14,7 +14,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
+    axios.get('http://192.168.1.101:9000/api/user', { withCredentials: true })
     .then(
         response => {
           console.log('NavbarAUTH', response.data);
@@ -80,20 +80,21 @@ export default {
       <!-- Pulsante di accesso -->
       <div v-if="!isAuthenticated">
         <a
-          href="http://127.0.0.1:8000/login"
-        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-[#EDEEF0] text-[#B49578] hover:bg-opacity-70"
+          href="http://192.168.1.101:9000/login"
+          class="ml-4 px-6 py-3 rounded-full text-sm font-semibold transition duration-300 shadow-lg bg-[#EDEEF0] text-[#B49578] hover:bg-[#D1C6B8] hover:shadow-xl"
         >
           Accedi
         </a>
       </div>
-      <div v-else>
-
-        <data> sei loggato come {{ user.name }}</data>
+      <div v-else class="flex items-center">
         <a
-          href="http://127.0.0.1:8000/dashboard"
-        class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-[#EDEEF0] text-[#B49578] hover:bg-opacity-70"
+          href="http://192.168.1.101:9000/dashboard"
+          class="ml-4 px-6 py-3 rounded-full text-sm font-semibold transition duration-300 shadow-lg bg-[#EDEEF0] text-[#B49578] hover:bg-[#D1C6B8] hover:shadow-xl"
         >
           Dashboard
+        </a>
+        <a href="http://192.168.1.101:9000/dashboard" class="bg-[#B49578] text-[#EDEEF0] text-sm font-medium mr-2 px-2 py-1 rounded-full ml-4">
+          <strong>{{ user.name }}</strong>
         </a>
       </div>
     </div>

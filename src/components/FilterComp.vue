@@ -56,22 +56,32 @@ export default {
       localStorage.setItem('filters', JSON.stringify(store.filters));
     },
 
-    isWithinRadius(originLat, originLon, radius, destinationLat, destinationLon) {
-      const positionLat = destinationLat;
-      const positionLon = destinationLon;
+    /**
+     * migliorato il calcolo della distanza
+     */
+    isWithinSearchRadius(originLatitude, originLongitude, searchRadius, destinationLatitude, destinationLongitude) {
+      // raggio della terra in km
+      const EARTH_RADIO_DELLA_TERRA = 6371; 
+      // conversione gradi radianti https://www.youmath.it/formulari/65-formulari-di-trigonometria-logaritmi-esponenziali/640-passare-dai-radianti-ai-gradi.html#:~:text=La%20conversione%20gradi%2Dradianti%20si,%C3%97r%5E(rad).
+      const deltaLatitude = this.convertDegreesToRadians(destinationLatitude - originLatitude);
+      const deltaLongitude = this.convertDegreesToRadians(destinationLongitude - originLongitude);
+      
+      // formula di haversine https://learn.microsoft.com/it-it/dotnet/api/system.device.location.geocoordinate.getdistanceto?view=netframework-4.8.1
+      const a = 
+        Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
+        Math.cos(this.convertDegreesToRadians(originLatitude)) * Math.cos(this.convertDegreesToRadians(destinationLatitude)) * 
+        Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2);
+      
+      // calcolo della distanza 
+      // atan2 è la funzione inversa della tangente potere di JAVASCRIPT
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = EARTH_RADIO_DELLA_TERRA * c; 
+      
+      return distance <= searchRadius;
+    },
 
-      const haversine = (lat, lon) => {
-        const R = 6371; // raggio della terra in km
-        const toRad = (deg) => deg * (Math.PI / 180);
-        const dLat = toRad(lat - positionLat);
-        const dLon = toRad(lon - positionLon);
-        const a = Math.sin(dLat / 2) ** 2 +
-                  Math.cos(toRad(lat)) * Math.cos(toRad(positionLat)) *
-                  Math.sin(dLon / 2) ** 2;
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // distanza in km
-      };
-      return haversine(originLat, originLon) <= radius;
+    convertDegreesToRadians(degrees) {
+      return degrees * (Math.PI / 180);
     },
 
     toggleExpand() {
@@ -105,27 +115,41 @@ return axios.get(url)
     },
 
     async applyFilters() {
-      this.saveFilters(); // Salva tutti i filtri prima di applicarli
-      // Filtra tramite radius e salva gli appartamenti filtrati
-      axios.get('http://192.168.1.101:9000/api/apartments')
-        .then(async (res) => {
-          const filteredApartments = [];
+      try {
+        this.saveFilters(); 
+        
+        // ottieni le coordinate dell'indirizzo
+        const infoArrayAddress = await this.getPosition(store.searchInput);
+        
+        //se non riesce a ottenere le coordinate dell'indirizzo
+        if (!infoArrayAddress) {
+          console.error('impossibile ottenere le coordinate dell\'indirizzo');
+          return;
+        }
 
-          const infoArrayAddress = await this.getPosition(store.searchInput);
-
-          for (let i = 0; i < res.data.data.length; i++) {
-            const apartment = res.data.data[i];
-            const isInRadius = this.isWithinRadius(infoArrayAddress.latitude, infoArrayAddress.longitude, this.radius, apartment.latitude, apartment.longitude);
-
-            if (isInRadius) {
-              filteredApartments.push(apartment); 
-            }
-          }
-          store.filters.filteredApartments = filteredApartments; 
-        })
-        .catch((error) => console.error('error:', error));
-
-      console.log("filters applied:", store.filters);
+        // ottieni tutti gli appartamenti
+        const response = await axios.get('http://192.168.1.101:9000/api/apartments');
+        const apartments = response.data.data;
+        
+        // filtra gli appartamenti in base al raggio di ricerca
+        const filteredApartments = apartments.filter(apartment => {
+          const isInRange = this.isWithinRadius(
+            infoArrayAddress.latitude, 
+            infoArrayAddress.longitude, 
+            this.radius,
+            apartment.latitude,
+            apartment.longitude
+          );
+          
+          return isInRange;
+        });
+        
+        // aggiorna lo store con gli appartamenti filtrati
+        store.filters.filteredApartments = filteredApartments;
+        
+      } catch (error) {
+        console.error('stampa errore:', error);
+      }
     },
 
     resetFilters() {
@@ -133,15 +157,21 @@ return axios.get(url)
       this.minBeds = 1;
       this.radius = 20;
       this.clickedServices = [];
+      
+      
       store.filters.filteredApartments = [];
-      store.searchInput = '';
-
       store.filters.minRooms = this.minRooms;
       store.filters.minBeds = this.minBeds;
       store.filters.radius = this.radius;
       store.filters.selectedServices = [];
-
+      
+      store.searchInput = '';
+      
       this.saveFilters();
+      
+      //richiamo del metodo getApartments per aggiornare la lista degli appartamenti
+      // https://www.reddit.com/r/vuejs/comments/c1uwde/when_to_use_emit_vs_parent_when_changing_parent/?rdt=35049
+      this.$parent.getApartments();
     }
   },
 };

@@ -2,7 +2,32 @@
 export default {
   data() {
     return {
-      links: ["About", "Blog", "Jobs", "Press", "Accessibility", "Partners"],
+      links: [
+        {
+          name: 'About',
+          link: ''
+        },
+        {
+          name: 'Blog',
+          link: ''
+        },
+        {
+          name: 'Jobs',
+          link: ''
+        },
+        {
+          name: 'Press',
+          link: ''
+        },
+        {
+          name: 'Accessibility',
+          link: ''
+        },
+        {
+          name: 'Partners',
+          link: ''
+        },
+      ],
       socialIcons: [
         { icon: "fa-facebook-f", link: "https://www.facebook.com" },
         { icon: "fa-instagram", link: "https://www.instagram.com" },
@@ -13,7 +38,7 @@ export default {
     };
   },
 };
-</script>+
+</script>
 
 <template>
   <!-- Divider -->
@@ -21,14 +46,14 @@ export default {
   
   <div class="text-[#BDAFA2] py-16 sm:scale-90">
     <!-- Links -->
-    <div class="flex justify-center space-x-8 mb-6 text-sm font-medium">
+    <div class="flex justify-center  space-x-8 mb-6 text-sm font-medium">
       <a
         v-for="(link, index) in links"
         :key="index"
         href="#"
         class="hover:opacity-70 transition-all duration-200 ease-in-out text-white drop-shadow-md"
       >
-        {{ link }}
+        {{ link.name }}
       </a>
     </div>
 

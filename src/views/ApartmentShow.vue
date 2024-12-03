@@ -57,16 +57,16 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-8 bg-white shadow-lg rounded-lg relative mt-28 grid grid-cols-1 md:grid-cols-2 gap-10">
+  <div class="max-w-7xl mx-auto p-8 bg-white shadow-lg rounded-lg relative sm:grid-cols-1 mt-28 grid sm:gap-5 grid-cols-2 gap-10">
     <!-- Immagini con possibilità di selezione -->
-    <div class="flex flex-col space-y-4">
-      <div class="w-full h-80 mb-4">
+    <div class="flex flex-col space-y-4 sm:contents">
+      <div class="w-full sm:mb-0 sm:col-span-2 h-80 mb-4">
         <!-- Immagine Selezionata Grande -->
         <img :src="selectedImage ? selectedImage.image_path : (apartment.images && apartment.images.length > 0 ? apartment.images[0].image_path : '')" 
              alt="Selected Apartment Image" 
              class="w-full h-full object-cover rounded-lg shadow-md">
       </div>
-      <div class="flex flex-cols-4 gap-4 flex-wrap justify-center">
+      <div class="flex flex-cols-4 gap-4 flex-wrap justify-center sm:col-span-2">
         <!-- Thumbnail delle Immagini -->
         <img v-for="(image, index) in apartment.images" 
              :key="index" 
@@ -106,7 +106,7 @@ export default {
     </div>
 
     <!-- Mappa e Form di contatto a tutta larghezza -->
-    <div class="col-span-1 md:col-span-2 space-y-6">
+    <div class="col-span-1 col-span-2 space-y-6">
       <!-- Mappa -->
       <div id="map" class="w-full h-96 rounded-lg shadow-md"></div>
 
@@ -115,7 +115,7 @@ export default {
     </div>
 
     <!-- Bottone per tornare alla lista degli appartamenti -->
-    <router-link to="/apartments" class="w-[1216px] text-center inline-block bg-[#BFAFA2] text-[#EDEEF0] px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-[#BDAFA2] transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <router-link to="/apartments" class="col-span-2 text-center inline-block bg-[#BFAFA2] text-[#EDEEF0] px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-[#BDAFA2] transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       Torna alla lista degli appartamenti
     </router-link>
   </div>

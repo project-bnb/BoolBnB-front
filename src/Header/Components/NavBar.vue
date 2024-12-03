@@ -41,13 +41,6 @@ export default {
     }
   },
 
-  computed: {
-    isApartmentShowPage() {
-      return this.$route.name === 'apartment-show';
-    },
-  },
-
-
   methods: {
     handleScroll() {
       if (this.isApartmentShowPage) {
@@ -62,10 +55,10 @@ export default {
 <template>
   <header
     class='w-full z-50 transition-all duration-300 shadow-nav fixed top-0 left-0 right-0 bg-[#B49578] py-4'>
-    <div class="container mx-auto flex items-center justify-between px-4 sm:px-3 md:px-8">
+    <div class="container mx-auto flex items-center w-1/2 2xl:w-10/12 justify-between px-4 sm:w-full sm:px-3 md:px-8">
 
       <!-- Logo -->
-      <div class="text-[#EDEEF0] text-2xl w-14 h-10 font-bold sm:hidden">
+      <div class="text-[#EDEEF0] text-2xl md:hidden w-14 h-10 font-bold sm:hidden">
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70 flex items-center">
           <span>MilanBnB</span>
         </router-link>

@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="bg-gradient-to-b from-white to-gray-200 h-[700px] flex items-center justify-center animate__animated animate__fadeIn">
+  <div class="bg-gradient-to-b from-white to-gray-200 h-[700px] md:h-auto md:mt-[50px] md:pt-20 flex items-center justify-center animate__animated animate__fadeIn">
     <div class="max-w-7xl px-6 lg:px-8">
       <h1 class="text-gray-800 text-3xl font-semibold tracking-tight text-center animate__animated animate__fadeInDown">
         Il nostro Team
@@ -54,7 +54,7 @@ export default {
       <p class="mt-6 text-lg text-gray-600 text-center animate__animated animate__fadeInUp animate__delay-1s">
         Siamo un gruppo dinamico di individui appassionati di ciò che facciamo e dedicati a ottenere i migliori risultati per i nostri clienti.
       </p>
-      <div class="grid gap-8 mt-12 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-8 md:mt-0 mt-12 md:grid-cols-1 grid-cols-3 sm:scale-90 ">
         <div
           v-for="member in teamMembers"
           :key="member.id"

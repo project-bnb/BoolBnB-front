@@ -32,6 +32,9 @@ export default {
   },
 
   methods: {
+    /**
+     * ottieni tutti gli appartamenti
+     */
     getApartments() {
       axios
         .get('http://127.0.0.1:8000/api/apartments')
@@ -47,49 +50,43 @@ export default {
     filteredApartments() {
       let filtered = this.apartments;
 
-      if (this.store.searchInput) {
-        const searchTerms = this.store.searchInput.toLowerCase().split(' ');
-        filtered = filtered.filter((apartment) => {
-          const apartmentText = `${apartment.title} ${apartment.address}`.toLowerCase();
-          return searchTerms.every(term => apartmentText.includes(term));
-        });
+      //controlllo se ci sono appartamenti filtrati
+      if (store.filters.filteredApartments && store.filters.filteredApartments.length > 0) {
+        filtered = store.filters.filteredApartments;
       }
 
-      if (this.store.filters.minRooms) {
-        filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
+      //controlllo se ci sono servizi selezionati
+      if (filtered.length > 0) {
+        if (this.store.filters.selectedServices.length > 0) {
+          filtered = filtered.filter((apartment) => {
+            const apartmentServices = apartment.services.map((service) => service.name);
+            return this.store.filters.selectedServices.every((service) =>
+              apartmentServices.includes(service)
+            );
+          });
+        }
+
+        //controlllo se ci sono minimo di stanze selezionate
+        if (this.store.filters.minRooms) {
+          filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
+        }
+
+        //controlllo se ci sono minimo di letti selezionati
+        if (this.store.filters.minBeds) {
+          filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
+        }
       }
 
-      if (this.store.filters.minBeds) {
-        filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
-      }
-
-      if (this.store.filters.selectedServices.length > 0) {
-        filtered = filtered.filter((apartment) => {
-          const apartmentServices = apartment.services.map((service) => service.name);
-          return this.store.filters.selectedServices.every((service) =>
-            apartmentServices.includes(service)
-          );
-        });
-      }
-
+      //ordino gli appartamenti in base all'ordine dei sponsorizzazioni
       filtered.sort((a, b) => {
         const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
-        
         const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
         const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
-
         return priority[aSponsor] - priority[bSponsor];
       });
 
-      // filtra gli appartamenti in base ai nomi degli appartamenti dentro il raggio
-      if (this.store.filters.filteredApartments.length > 0) {
-        console.log('filteredApartments:', this.store.filters.filteredApartments);
-
-        return this.store.filters.filteredApartments;
-      }
-
       return filtered;
-    },
+    }
   },
 };
 </script>

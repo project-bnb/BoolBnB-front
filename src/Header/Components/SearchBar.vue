@@ -43,16 +43,26 @@ export default {
 
   methods: {
     getSuggestions: debounce(function () {
+      // se la lunghezza della stringa è maggiore di 0
       if (this.store.searchInput.length > 0) {
-        const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=1&countrySet=IT&language=it-IT`;
-        this.tomtomAxios
+        // se la lunghezza della stringa è minore di 3
+        if (this.store.searchInput.length < 3) {
+          this.store.filteredSuggestions = [];
+          return;
+        } else {
+          // modifica sul bounding box per evitare di ottenere suggerimenti di città esterne ora prende posizione lombardia
+          const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=5&countrySet=IT&language=it-IT&boundingBox=45.4,8.5,46.7,10.5`;
+          this.tomtomAxios
           .get(url)
           .then((response) => {
-            console.log('response', response);
-            const apartments = response.data.results[0].address.freeformAddress;
-            // Creazione dei suggerimenti da visualizzare
-            this.store.filteredSuggestions = apartments.slice(0, 5);
+
+            // definisco data che puo essere vuota o con i suggerimenti
+            const data = response.data.results || [];
+
+            // mappa i suggerimenti / array di stringhe nuovo
+            this.store.filteredSuggestions = data.map(item => item.address.freeformAddress);
             
+            // se non ci sono suggerimenti
             if (this.store.filteredSuggestions.length === 0) {
               this.store.filteredSuggestions = ['Nessun risultato trovato'];
             }
@@ -60,6 +70,7 @@ export default {
           .catch((error) => {
             console.error('Errore nel recupero dei suggerimenti:', error);
           });
+        }
       } else {
         this.store.filteredSuggestions = [];
       }

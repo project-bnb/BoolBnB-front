@@ -14,7 +14,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
+    axios.get('http://192.168.1.101:9000/api/user', { withCredentials: true })
     .then(
         response => {
           console.log('NavbarAUTH', response.data);
@@ -80,7 +80,7 @@ export default {
       <!-- Pulsante di accesso -->
       <div v-if="!isAuthenticated">
         <a
-          href="http://127.0.0.1:8000/login"
+          href="http://192.168.1.101:9000/login"
         class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-[#EDEEF0] text-[#B49578] hover:bg-opacity-70"
         >
           Accedi
@@ -90,7 +90,7 @@ export default {
 
         <data> sei loggato come {{ user.name }}</data>
         <a
-          href="http://127.0.0.1:8000/dashboard"
+          href="http://192.168.1.101:9000/dashboard"
         class="ml-4 px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-md bg-[#EDEEF0] text-[#B49578] hover:bg-opacity-70"
         >
           Dashboard

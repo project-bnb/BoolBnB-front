@@ -90,15 +90,12 @@ export default {
     getPosition(indirizzo)
     {
         const infoArrayAddress = [];
-        console.log('questo è indirizzo', indirizzo);
-        const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+        const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
 return axios.get(url)
     .then(response => {
-        console.log('questo è response', response.data.results[0]);
         infoArrayAddress.latitude = response.data.results[0].position.lat;
         infoArrayAddress.longitude = response.data.results[0].position.lon;
         infoArrayAddress.address = response.data.results[0].address.freeformAddress;
-        console.log('questo è infoArrayAddress', infoArrayAddress);
         return infoArrayAddress;
     })
         .catch(error => {
@@ -109,32 +106,24 @@ return axios.get(url)
 
     async applyFilters() {
       this.saveFilters(); // Salva tutti i filtri prima di applicarli
-
-
-
       // Filtra tramite radius e salva gli appartamenti filtrati
-
-      axios.get('http://127.0.0.1:8000/api/apartments')
+      axios.get('http://192.168.1.101:9000/api/apartments')
         .then(async (res) => {
           const filteredApartments = [];
 
           const infoArrayAddress = await this.getPosition(store.searchInput);
 
-          store.filters.filteredSuggestions = [];
           for (let i = 0; i < res.data.data.length; i++) {
             const apartment = res.data.data[i];
             const isInRadius = this.isWithinRadius(infoArrayAddress.latitude, infoArrayAddress.longitude, this.radius, apartment.latitude, apartment.longitude);
 
             if (isInRadius) {
-              store.filters.filteredSuggestions.push(apartment);
-              filteredApartments.push(apartment);
-              store.filters.filteredApartments = filteredApartments;
+              filteredApartments.push(apartment); 
             }
           }
+          store.filters.filteredApartments = filteredApartments; 
         })
         .catch((error) => console.error('error:', error));
-
-
 
       console.log("filters applied:", store.filters);
     },

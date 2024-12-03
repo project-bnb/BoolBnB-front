@@ -44,15 +44,20 @@ export default {
   methods: {
     getSuggestions: debounce(function () {
       if (this.store.searchInput.length > 0) {
-        const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=1&countrySet=IT&language=it-IT`;
-        this.tomtomAxios
+        if (this.store.searchInput.length < 3) {
+          this.store.filteredSuggestions = [];
+          return;
+        } else {
+          const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=5&countrySet=IT&language=it-IT&boundingBox=45.4,8.5,46.7,10.5`;
+          this.tomtomAxios
           .get(url)
           .then((response) => {
-            console.log('response', response);
-            const apartments = response.data.results[0].address.freeformAddress;
-            // Creazione dei suggerimenti da visualizzare
-            this.store.filteredSuggestions = apartments.slice(0, 5);
+
+            const data = response.data.results || [];
+
+            this.store.filteredSuggestions = data.map(item => item.address.freeformAddress);
             
+
             if (this.store.filteredSuggestions.length === 0) {
               this.store.filteredSuggestions = ['Nessun risultato trovato'];
             }
@@ -60,6 +65,7 @@ export default {
           .catch((error) => {
             console.error('Errore nel recupero dei suggerimenti:', error);
           });
+        }
       } else {
         this.store.filteredSuggestions = [];
       }

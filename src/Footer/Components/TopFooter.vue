@@ -25,7 +25,7 @@ export default {
         </p>
       </div>
       <!-- Pulsante di Azione -->
-      <a href="http://192.168.1.101:9000/register">
+      <a href="http://127.0.0.1:8000/register">
         <button
           class="px-6 py-3 rounded-full bg-white text-[#B49578] font-semibold shadow-lg transition-all duration-300 ease-in-out hover:bg-[#B49578] hover:text-white hover:shadow-lg hover:-translate-y-1"
         >

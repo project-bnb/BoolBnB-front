@@ -100,7 +100,7 @@ export default {
     getPosition(indirizzo)
     {
         const infoArrayAddress = [];
-        const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+        const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
 return axios.get(url)
     .then(response => {
         infoArrayAddress.latitude = response.data.results[0].position.lat;
@@ -128,7 +128,7 @@ return axios.get(url)
         }
 
         // ottieni tutti gli appartamenti
-        const response = await axios.get('http://192.168.1.101:9000/api/apartments');
+        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
         const apartments = response.data.data;
         
         // filtra gli appartamenti in base al raggio di ricerca

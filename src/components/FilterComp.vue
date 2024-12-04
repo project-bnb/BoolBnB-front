@@ -133,7 +133,7 @@ return axios.get(url)
         
         // filtra gli appartamenti in base al raggio di ricerca
         const filteredApartments = apartments.filter(apartment => {
-          const isInRange = this.isWithinRadius(
+          const isInRange = this.isWithinSearchRadius(
             infoArrayAddress.latitude, 
             infoArrayAddress.longitude, 
             this.radius,

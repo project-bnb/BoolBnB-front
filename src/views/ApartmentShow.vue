@@ -14,8 +14,23 @@ export default {
   },
   mounted() {
     this.getApartment();
+
+    const apartmentId = this.$route.params.id;
+    this.incrementViews(apartmentId);
   },
   methods: {
+
+    async incrementViews(apartmentId) {
+      await axios
+        .post(`http://127.0.0.1:8000/api/apartments/${apartmentId}/views`)
+        .then((response) => {
+          console.log('Visualizzazioni incrementate con successo', response.data.message);
+        })
+        .catch((error) => {
+          console.error('Errore nell\'incremento delle visualizzazioni:', error.response.data.message);
+        });
+    },
+
     initMap() {
       const tt = window.tt;
       const latitude = parseFloat(this.apartment.latitude);

@@ -46,7 +46,7 @@ export default {
       // se la lunghezza della stringa è maggiore di 0
       if (this.store.searchInput.length > 0) {
         // se la lunghezza della stringa è minore di 3
-        if (this.store.searchInput.length < 3) {
+        if (this.store.searchInput.length < 2) {
           this.store.filteredSuggestions = [];
           return;
         } else {
@@ -61,7 +61,10 @@ export default {
 
             // mappa i suggerimenti / array di stringhe nuovo
             this.store.filteredSuggestions = data.map(item => item.address.freeformAddress);
-            
+
+            // su store.suggestions inserisco quello vicino all'indirizzo
+            this.store.suggestions = this.store.filteredSuggestions;
+
             // se non ci sono suggerimenti
             if (this.store.filteredSuggestions.length === 0) {
               this.store.filteredSuggestions = ['Nessun risultato trovato'];
@@ -84,41 +87,57 @@ export default {
       }, 200);
     },
 
+    /**
+     * seleziona il suggerimento
+     */
     async selectSuggestion(suggestion) {
       if (typeof suggestion === 'object') {
+        // su store.searchInput inserisco il suggerimento selezionato
         this.store.searchInput = suggestion.text;
-
-        try {
-          const geocodingResponse = await this.tomtomAxios.get(
-            `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion.text)}.json`,
-            {
-              params: {
-                key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
+        // controllo se siamo nella pagina filtered-page
+        if (this.$route.name === 'filtered-page') {
+          try {
+            // uso geocoding per ottenere le coordinate
+            const geocodingResponse = await this.tomtomAxios.get(
+              `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion.text)}.json`,
+              {
+                params: {
+                  // chiave api per l'autenticazione
+                  key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
+                }
               }
-            }
-          );
+            );
 
-          const { lat, lon } = geocodingResponse.data.results[0].position;
+            // estrae le coordinate (latitudine e longitudine) dalla risposta
+            const { lat, lon } = geocodingResponse.data.results[0].position;
 
-          this.$router.push({
-            name: 'filtered-page',
-            query: {
-              lat,
-              lon,
-              address: suggestion.text
-            }
-          });
-        } catch (error) {
-          console.error('Errore nel geocoding:', error);
+            // naviga verso la pagina 'filtered-page' passando le coordinate e l'indirizzo come query parameters
+            this.$router.push({
+              name: 'filtered-page',
+              query: {
+                lat,
+                lon,
+                address: suggestion.text
+              }
+            });
+          } catch (error) {
+            // gestisci eventuali errori durante la richiesta di geocoding, lho messo per debuggare
+            console.error('Errore nel geocoding:', error);
+          }
         }
       }
 
+      // pulisci le suggerimenti filtrati
       this.store.filteredSuggestions = [];
+      // imposta lo stato di selezione a true
       this.selected = true;
     },
 
     submittingSearch() {
-      this.$router.push({ name: 'filtered-page' });
+      // se non siamo già nella pagina 'filtered-page', naviga verso di essa
+      if (this.$route.name !== 'filtered-page') {
+        this.$router.push({ name: 'filtered-page' });
+      }
       this.submit = true;
       this.store.filteredSuggestions = [];
     },

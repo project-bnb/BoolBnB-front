@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.1",
-    "lodash": "^4.17.21",
     "animate.css": "^4.1.1",
     "axios": "^1.7.7",
+    "braintree-web-drop-in": "^1.43.0",
+    "lodash": "^4.17.21",
     "swiper": "^11.1.15",
     "vue": "^3.4.37",
     "vue-router": "^4.5.0"

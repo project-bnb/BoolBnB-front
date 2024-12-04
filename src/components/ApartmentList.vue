@@ -133,6 +133,7 @@ export default {
           :image="property.cover_image"
           :services="property.services"
           :is_visible="Boolean(property.is_visible)"
+          :price="property.price"
           class="w-full md:w-full lg:w-1/3 sm:w-full transform transition duration-500 ease-in-out hover:scale-105"
         />
       </div>

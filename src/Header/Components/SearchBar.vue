@@ -91,19 +91,21 @@ export default {
      * seleziona il suggerimento
      */
     async selectSuggestion(suggestion) {
-      if (typeof suggestion === 'object') {
+      // se il suggerimento è una stringa semplice
+      if (typeof suggestion === 'string') {
         // su store.searchInput inserisco il suggerimento selezionato
-        this.store.searchInput = suggestion.text;
+        this.store.searchInput = suggestion;
+        
         // controllo se siamo nella pagina filtered-page
         if (this.$route.name === 'filtered-page') {
           try {
             // uso geocoding per ottenere le coordinate
             const geocodingResponse = await this.tomtomAxios.get(
-              `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion.text)}.json`,
+              `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion)}.json`,
               {
                 params: {
                   // chiave api per l'autenticazione
-                  key: 'SooRbYbji9V5qUxAh3i2ijnD8m9ZWVZ7'
+                  key: this.apiTomTomKey
                 }
               }
             );
@@ -117,7 +119,7 @@ export default {
               query: {
                 lat,
                 lon,
-                address: suggestion.text
+                address: suggestion
               }
             });
           } catch (error) {
@@ -127,7 +129,7 @@ export default {
         }
       }
 
-      // pulisci le suggerimenti filtrati
+      // pulisci i suggerimenti filtrati
       this.store.filteredSuggestions = [];
       // imposta lo stato di selezione a true
       this.selected = true;
@@ -208,7 +210,7 @@ export default {
             class="px-4 py-2 hover:bg-[#B49578] hover:text-white cursor-pointer"
             :class="{ 'bg-[#B49578] text-white': index === selectedIndex }"
           >
-            {{ typeof suggestion === 'object' ? suggestion.text : suggestion }}
+            {{ suggestion }}
           </li>
         </ul>
       </div>

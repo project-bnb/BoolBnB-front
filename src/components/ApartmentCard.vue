@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -104,6 +108,9 @@ export default {
             {{ service.name }}<span v-if="index < services.length - 1"> | </span>
           </span>
         </p>
+      </div>
+      <div class="text-[#EDEEF0] text-lg font-bold mt-4">
+        <p><strong>Prezzo:</strong> {{ price }} €</p>
       </div>
     </div>
   </div>

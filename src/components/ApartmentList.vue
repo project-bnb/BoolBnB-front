@@ -36,17 +36,14 @@ export default {
   methods: {
     getApartments() {
       axios
-        .get('http://127.0.0.1:8000/api/apartments')
+        .get('http://192.168.1.101:9000/api/apartments')
         .then((res) => {
+          // prima otteniamo tutti gli appartamenti visibili
           let apartments = res.data.data.filter(
-            (apartment) =>
-              apartment.is_visible &&
-              apartment.sponsorships &&
-              apartment.sponsorships.length > 0 &&
-              !apartment.sponsorships.some((sponsorship) => sponsorship.name === 'No sponsorship')
+            (apartment) => apartment.is_visible
           );
 
-          // Filtra gli appartamenti in base alla ricerca
+          // poi applichiamo il filtro di ricerca se c'è un input
           if (store.searchInput) {
             const searchTerm = store.searchInput.toLowerCase();
             apartments = apartments.filter(apartment => 
@@ -54,12 +51,11 @@ export default {
             );
           }
 
-          this.apartments = apartments;
-
-          this.apartments.sort((a, b) => {
+          //  e poi per sponsorizzazione
+          this.apartments = apartments.sort((a, b) => {
             const priority = { Gold: 1, Silver: 2, Bronze: 3 };
-            const aSponsor = a.sponsorships[0]?.name || 'Bronze';
-            const bSponsor = b.sponsorships[0]?.name || 'Bronze';
+            const aSponsor = a.sponsorships && a.sponsorships[0]?.name || 'Bronze';
+            const bSponsor = b.sponsorships && b.sponsorships[0]?.name || 'Bronze';
             return priority[aSponsor] - priority[bSponsor];
           });
 

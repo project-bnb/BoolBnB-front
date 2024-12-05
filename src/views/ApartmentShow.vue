@@ -228,7 +228,7 @@ export default {
 
     async incrementViews(apartmentId) {
       await axios
-        .post(`http://127.0.0.1:8000/api/apartments/${apartmentId}/views`)
+        .post(`http://192.168.1.101:9000/api/apartments/${apartmentId}/views`)
         .then((response) => {
           console.log('Visualizzazioni incrementate con successo', response.data.message);
         })
@@ -256,7 +256,7 @@ export default {
     getApartment() {
       const apartmentId = this.$route.params.id;
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`)
+        .get(`http://192.168.1.101:9000/api/apartments/${apartmentId}`)
         .then((res) => {
           this.apartment = res.data.data;
           console.log('Appartamento:', this.apartment);
@@ -346,55 +346,6 @@ export default {
       <!-- Form di contatto -->
       <ContactForm :apartment-id="parseInt(this.$route.params.id)" class="mt-8 w-full" />
     </div>
-
-    <!-- Form di pagamento con Braintree -->
-    <div class="payment-form mt-8">
-      <h2 class="text-xl font-semibold text-gray-800 mb-2">Pagamento</h2>
-      <p class="text-lg text-gray-700 mb-4">Costo: €{{ apartment.price }}</p>
-      <form id="payment-form">
-        <!-- Campi aggiuntivi per i dettagli dell'utente -->
-        <div class="mb-4">
-          <label for="first-name" class="block text-gray-700">Nome</label>
-          <input type="text" id="first-name" v-model="firstName" class="w-full border rounded px-3 py-2" required>
-        </div>
-        <div class="mb-4">
-          <label for="last-name" class="block text-gray-700">Cognome</label>
-          <input type="text" id="last-name" v-model="lastName" class="w-full border rounded px-3 py-2" required>
-        </div>
-        <div class="mb-4">
-          <label for="address" class="block text-gray-700">Indirizzo</label>
-          <input type="text" id="address" v-model="address" class="w-full border rounded px-3 py-2" required>
-        </div>
-        <div class="mb-4">
-          <label for="email" class="block text-gray-700">Email</label>
-          <input type="email" id="email" v-model="email" class="w-full border rounded px-3 py-2" required>
-        </div>
-        <div class="mb-4">
-          <label for="territory" class="block text-gray-700">Territorio</label>
-          <select id="territory" v-model="selectedCountry" class="w-full border rounded px-3 py-2" required @change="updatePhonePrefix">
-            <option value="" disabled>Seleziona un territorio</option>
-            <option v-for="(country, index) in countries" :key="index" :value="country.name">{{ country.name }}</option>
-          </select>
-        </div>
-        <div class="mb-4 flex items-center">
-          <div class="mr-2">
-            <label for="phone-prefix" class="block text-gray-700">Prefisso</label>
-            <select id="phone-prefix" v-model="phonePrefix" class="border rounded px-3 py-2" required>
-              <option value="" disabled>Seleziona</option>
-              <option v-for="(country, index) in countries" :key="index" :value="country.prefix">{{ country.prefix }}</option>
-            </select>
-          </div>
-          <div class="flex-1">
-            <label for="phone" class="block text-gray-700">Numero di Telefono</label>
-            <input type="tel" id="phone" v-model="phone" class="w-full border rounded px-3 py-2" required>
-          </div>
-        </div>
-        <!-- Qui andrà il drop-in UI di Braintree -->
-        <div id="bt-dropin"></div>
-        <button type="submit" class="bg-[#BBA796] text-white px-4 py-2 rounded mt-4">Paga ora</button>
-      </form>
-    </div>
-
     <!-- Bottone per tornare alla lista degli appartamenti -->
     <router-link to="/apartments" class="col-span-2 text-center inline-block bg-[#BFAFA2] text-[#EDEEF0] px-6 py-3 rounded-full font-semibold text-lg shadow-md hover:bg-[#BDAFA2] transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       Torna alla lista degli appartamenti

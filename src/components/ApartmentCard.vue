@@ -56,7 +56,7 @@ export default {
     price: {
       type: Number,
       required: true,
-    },
+    }
   },
   data() {
     return {

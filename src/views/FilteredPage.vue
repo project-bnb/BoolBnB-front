@@ -119,6 +119,7 @@ export default {
         :longitude="property.longitude"
         :image="property.cover_image"
         :services="property.services"
+        :price="property.price"
         :is_visible="Boolean(property.is_visible)"
         class="transform transition duration-500 ease-in-out"
       />

@@ -5,6 +5,7 @@ export const store = reactive({
     suggestions: [],
     filteredSuggestions: [],
     SearchFocus : false,
+    unreadMessages: 0,
 
     jumbos : [
         {

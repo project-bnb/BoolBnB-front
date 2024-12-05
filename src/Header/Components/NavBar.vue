@@ -77,7 +77,7 @@ export default {
         </router-link>
       </div>
 
-      <!-- Pulsante di accesso -->
+      <!-- pulsante di accesso -->
       <div v-if="!isAuthenticated">
         <a
           href="http://127.0.0.1:8000/login"
@@ -86,16 +86,39 @@ export default {
           Accedi
         </a>
       </div>
-      <div v-else class="flex items-center">
+      <div v-else class="flex items-center space-x-4">
+        <!-- campanella notifiche -->
         <a
           href="http://127.0.0.1:8000/dashboard"
-          class="ml-4 px-6 py-3 rounded-full text-sm font-semibold transition duration-300 shadow-lg bg-[#EDEEF0] text-[#B49578] hover:bg-[#D1C6B8] hover:shadow-xl"
+          class="text-[#EDEEF0] hover:opacity-80 transition-opacity relative"
+          title="Notifiche"
         >
-          Dashboard
+          <i class="fas fa-bell text-xl"></i>
+          <!-- indicatore piccolo commenti -->
+          <span 
+            v-if="store.unreadMessages > 0"
+            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+          >
+            {{ store.unreadMessages }}
+          </span>
         </a>
-        <a href="http://127.0.0.1:8000/dashboard" class="bg-[#B49578] text-[#EDEEF0] text-sm font-medium mr-2 px-2 py-1 rounded-full ml-4">
-          <strong>{{ user.name }}</strong>
-        </a>
+
+        <!-- link alla dashboard con pallino utente -->
+        <div class="flex items-center space-x-2">
+          <a
+            href="http://127.0.0.1:8000/dashboard"
+            class="flex items-center space-x-2"
+          >
+            <!-- pallino con iniziale -->
+            <div 
+              class="w-8 h-8 rounded-full bg-[#EDEEF0] text-[#B49578] flex items-center justify-center font-semibold"
+              title="Dashboard"
+            >
+              {{ user.name.charAt(0).toUpperCase() }}
+            </div>
+          
+          </a>
+        </div>
       </div>
     </div>
   </header>

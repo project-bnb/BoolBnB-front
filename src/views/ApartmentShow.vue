@@ -338,9 +338,9 @@ export default {
       </div>
     </div>
 
-    <!-- Mappa e Form di contatto a tutta larghezza -->
+    <!-- mappa e form di contatto a tutta larghezza -->
     <div class="col-span-1 col-span-2 space-y-6">
-      <!-- Mappa -->
+      <!-- mappa -->
       <div id="map" class="w-full h-96 rounded-lg shadow-md"></div>
 
       <!-- Form di contatto -->

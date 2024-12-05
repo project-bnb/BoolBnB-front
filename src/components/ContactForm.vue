@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import { store } from '../store';
 
 export default {
   props: {
@@ -10,6 +11,7 @@ export default {
   },
   data() {
     return {
+      store,
       form: {
         message: '',
         email_sender: '',
@@ -51,6 +53,7 @@ async sendMessage() {
     .then(response => {
       this.submitted = true;
       this.error = null;
+      this.store.unreadMessages++;
     })
     .catch(error => {
       this.error = `Si è verificato un errore durante l'invio del messaggio.`;

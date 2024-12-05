@@ -290,7 +290,7 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-8 bg-white shadow-lg rounded-lg relative sm:grid-cols-1 mt-28 grid sm:gap-5 grid-cols-2 gap-10">
+  <div class="max-w-7xl mx-auto p-8 bg-white mb-28 shadow-lg rounded-lg relative sm:grid-cols-1 mt-28 grid sm:gap-5 grid-cols-2 gap-10">
     <!-- Immagini con possibilità di selezione -->
     <div class="flex flex-col space-y-4 sm:contents">
       <div class="w-full sm:mb-0 sm:col-span-2 h-80 mb-4">

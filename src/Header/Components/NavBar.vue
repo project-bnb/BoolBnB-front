@@ -71,7 +71,7 @@ export default {
       </div>
 
       <!-- Link Route -->
-      <div class="flex space-x-6 text-[#EDEEF0] text-sm font-medium">
+      <div class="flex space-x-4 text-[#EDEEF0] text-sm font-medium">
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Home
         </router-link>

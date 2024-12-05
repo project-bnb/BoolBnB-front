@@ -31,6 +31,12 @@ export default {
     $route(to) {
       if (to.name === 'home') {
         this.store.searchInput = '';
+      } else if (to.name === 'filtered-page' && to.query.noResults === 'true') {
+        this.store.searchInput = 'Risultato non trovato';
+        // Dopo 2 secondi, ripristina l'input originale
+        setTimeout(() => {
+          this.store.searchInput = to.query.address || '';
+        }, 2000);
       }
     }
   },
@@ -51,7 +57,7 @@ export default {
           return;
         } else {
           // modifica sul bounding box per evitare di ottenere suggerimenti di città esterne ora prende posizione lombardia
-          const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=5&countrySet=IT&language=it-IT&boundingBox=45.4,8.5,46.7,10.5`;
+          const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(this.store.searchInput)}.json?key=${this.apiTomTomKey}&limit=5&countrySet=IT&language=it-IT&boundingBox=35.5,6.7,47.1,18.5`;
           this.tomtomAxios
           .get(url)
           .then((response) => {
@@ -172,7 +178,73 @@ export default {
       }
     },
 
+    handleEnter() {
+      // see c'è un input di ricerca, naviga alla pagina filtered
+      if (this.store.searchInput) {
+        this.navigateToFilteredPage(this.store.searchInput);
+      }
+    },
 
+    async navigateToFilteredPage(address) {
+      try {
+        // prova a ottenere le coordinate dall'indirizzo
+        const geocodingResponse = await this.tomtomAxios.get(
+          `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(address)}.json`,
+          {
+            params: {
+              key: this.apiTomTomKey
+            }
+          }
+        );
+
+        let lat, lon;
+        let noResults = false;
+        
+        // se ci sono risultati
+        if (geocodingResponse.data.results && geocodingResponse.data.results.length > 0) {
+          const { position } = geocodingResponse.data.results[0];
+          lat = position.lat;
+          lon = position.lon;
+        } else {
+          // se non ci sono risultati
+          lat = 45.4642;
+          lon = 9.1900;
+          noResults = true;
+        }
+
+        // naviga alla pagina filtered-page con i parametri
+        this.$router.push({
+          name: 'filtered-page',
+          query: {
+            lat,
+            lon,
+            address: this.store.searchInput,
+            noResults: noResults ? 'true' : undefined
+          }
+        });
+      } catch (error) {
+        console.error('Errore nel geocoding:', error);
+        // in caso di errore, naviga comunque alla pagina filtered con coordinate di default
+        this.$router.push({
+          name: 'filtered-page',
+          query: {
+            lat: 45.4642,
+            lon: 9.1900,
+            address: this.store.searchInput,
+            noResults: 'true'
+          }
+        });
+      }
+    },
+
+    selectSuggestion(suggestion) {
+      if (typeof suggestion === 'string') {
+        this.store.searchInput = suggestion;
+        this.navigateToFilteredPage(suggestion);
+      }
+      this.store.filteredSuggestions = [];
+      this.selected = true;
+    }
   }
 }
 </script>

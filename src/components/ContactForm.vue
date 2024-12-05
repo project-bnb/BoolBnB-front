@@ -47,7 +47,7 @@ export default {
 
 
 async sendMessage() {
-    axios.post('http://192.168.1.101:9000/api/emailreceiver', this.form, { withCredentials: true })
+    axios.post('http://127.0.0.1:8000/api/emailreceiver', this.form, { withCredentials: true })
     .then(response => {
       this.submitted = true;
       this.error = null;

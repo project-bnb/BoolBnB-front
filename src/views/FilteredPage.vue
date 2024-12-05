@@ -92,6 +92,11 @@ export default {
 </script>
 
 <template>
+  <div v-if="$route.query.noResults === 'true'" class="text-center py-8">
+    <p class="text-xl text-gray-600">
+      Non ci sono appartamenti disponibili per "{{ $route.query.address }}"
+    </p>
+  </div>
   <FilterComp class="z-20"/>
   <div class="max-w-7xl mx-auto p-6 pt-0">
     <transition-group

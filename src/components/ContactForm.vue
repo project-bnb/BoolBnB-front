@@ -49,17 +49,17 @@ export default {
 
 
 async sendMessage() {
-    axios.post('http://127.0.0.1:8000/api/emailreceiver', this.form, { withCredentials: true })
-    .then(response => {
-      this.submitted = true;
-      this.error = null;
-      this.store.unreadMessages++;
-    })
-    .catch(error => {
-      this.error = `Si è verificato un errore durante l'invio del messaggio.`;
-      console.error('Errore:', error);
-    })
-    }
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/emailreceiver', this.form, { withCredentials: true });
+    this.submitted = true;
+    this.error = null;
+    const currentCount = this.store.unreadMessages || 0;
+    this.store.unreadMessages = currentCount + 1;
+  } catch (error) {
+    this.error = `Si è verificato un errore durante l'invio del messaggio.`;
+    console.error('Errore:', error);
+  }
+}
   }
 }
 </script>

@@ -14,14 +14,14 @@ export default {
     };
   },
   mounted() {
+    if (typeof this.store.unreadMessages === 'undefined') {
+      this.store.unreadMessages = 0;
+    }
     axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
-    .then(
-        response => {
-          console.log('NavbarAUTH', response.data);
-          this.isAuthenticated = true;
-          this.user = response.data;
-        }
-    )
+    .then(response => {
+      this.isAuthenticated = true;
+      this.user = response.data;
+    })
     .catch(error => console.error('Errore:', error));
   },
   created() {
@@ -49,6 +49,12 @@ export default {
       this.isScrolled = window.scrollY > 50;
     },
   },
+
+  computed: {
+    messageCount() {
+      return this.store.unreadMessages;
+    }
+  }
 };
 </script>
 
@@ -96,10 +102,10 @@ export default {
           <i class="fas fa-bell text-xl"></i>
           <!-- indicatore piccolo commenti -->
           <span 
-            v-if="store.unreadMessages > 0"
+            v-if="messageCount > 0"
             class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
           >
-            {{ store.unreadMessages }}
+            {{ messageCount }}
           </span>
         </a>
 

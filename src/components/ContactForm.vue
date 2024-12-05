@@ -23,7 +23,7 @@ export default {
     }
   },
   mounted() {
-    axios.get('http://192.168.1.101:9000/api/user', { withCredentials: true })
+    axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
     .then(response => {
       this.user = response.data;
       this.isAuthenticated = true;

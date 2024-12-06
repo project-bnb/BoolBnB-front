@@ -76,7 +76,7 @@ export default {
 
     getPosition(indirizzo) {
       const infoArrayAddress = [];
-      const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+      const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
       
       return new Promise((resolve) => {
         axios.get(url)
@@ -138,7 +138,7 @@ export default {
           return;
         }
 
-        const response = await axios.get('http://192.168.1.101:9000/api/apartments');
+        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
         const apartments = response.data.data;
         
         const filteredApartments = apartments.filter(apartment => {

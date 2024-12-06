@@ -98,7 +98,6 @@ export default {
     },
 
     filterByDistance(lat1, lon1, lat2, lon2) {
-      // converti e normalizza coordinate
       lat1 = Number(parseFloat(lat1).toFixed(6));
       lon1 = Number(parseFloat(lon1).toFixed(6));
       lat2 = Number(parseFloat(lat2).toFixed(6));
@@ -106,18 +105,12 @@ export default {
 
       const R = 6371; // raggio terra in km
       
-      // calcola delta lat/lon
       const dLat = this.convertDegreesToRadians(lat2 - lat1);
       const dLon = this.convertDegreesToRadians(lon2 - lon1);
       
-      // converti in radianti
-      // from reddit: You multiply X radian by 180/π to get the equivalent of X in degrees. You multiply Y degrees by π/180 to get the equivalent of Y in radian. The calculator mode is irrelevant.
-      // For example, 30 degrees is 30 * π/180 = π/6 radian. And π/6 rad is π/6 * 180/π= 30 degrees.
       const lat1Rad = this.convertDegreesToRadians(lat1);
       const lat2Rad = this.convertDegreesToRadians(lat2);
 
-      // formula haversine
-      // https://en.wikipedia.org/wiki/Haversine_formula
       const a = 
         Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.cos(lat1Rad) * Math.cos(lat2Rad) * 
@@ -126,7 +119,6 @@ export default {
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       const distance = R * c;
 
-      // arrotonda a 2 decimali
       return Number(distance.toFixed(2));
     },
 

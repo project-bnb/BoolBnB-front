@@ -48,18 +48,15 @@ export default {
 
   computed: {
     filteredApartments() {
-      // Filtra prima per visibilità
       let filtered = this.apartments.filter(apartment => apartment.is_visible);
 
-      // Se ci sono appartamenti filtrati nello store, usa quelli
       if (store.filters.filteredApartments !== undefined) {
         if (store.filters.filteredApartments.length === 0) {
           return [];
         }
-        filtered = store.filters.filteredApartments.filter(apartment => apartment.is_visible);
+        filtered = store.filters.filteredApartments;
       }
 
-      // Controllo servizi selezionati
       if (filtered.length > 0 && this.store.filters.selectedServices.length > 0) {
         filtered = filtered.filter((apartment) => {
           const apartmentServices = apartment.services.map((service) => service.name);
@@ -69,21 +66,18 @@ export default {
         });
       }
 
-      // Controllo stanze minime
       if (filtered.length > 0 && this.store.filters.minRooms) {
         filtered = filtered.filter((apartment) => 
           apartment.rooms >= this.store.filters.minRooms
         );
       }
 
-      // Controllo letti minimi
       if (filtered.length > 0 && this.store.filters.minBeds) {
         filtered = filtered.filter((apartment) => 
           apartment.beds >= this.store.filters.minBeds
         );
       }
 
-      // Ordina per sponsorizzazione
       return filtered.sort((a, b) => {
         const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
         const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? 
@@ -106,13 +100,13 @@ export default {
   <FilterComp class="z-20"/>
   <div class="max-w-7xl mx-auto p-6 pt-0">
     <div v-if="filteredApartments.length === 0" 
-         class="flex flex-col items-center justify-center min-h-[50vh] text-center">
-      <i class="fas fa-home text-6xl text-gray-300 mb-4"></i>
-      <h2 class="text-2xl font-semibold text-gray-600 mb-2">
-        Nessun appartamento disponibile
-      </h2>
-      <p class="text-gray-500">
-        Prova a modificare i filtri di ricerca o cambia località
+         class="flex flex-col items-center justify-center min-h-[50vh] relative z-50">
+      <i class="fas fa-search text-6xl text-[#B49578] mb-4"></i>
+      <p class="text-[#B49578] text-lg font-semibold">
+        Nessun appartamento trovato
+      </p>
+      <p class="text-gray-500 mt-2">
+        Prova a modificare i filtri o cambia la zona di ricerca
       </p>
     </div>
     <transition-group

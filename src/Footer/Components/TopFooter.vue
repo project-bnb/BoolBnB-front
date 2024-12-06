@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div class="w-full py-16">
+  <div class="w-full py-16 z-footer">
     <!-- Contenitore del top footer -->
     <div class="flex flex-col md:flex-row sm:flex-wrap sm:gap-9 sm:justify-center items-center justify-between max-w-6xl mx-auto px-6 space-y-6 md:space-y-0">
       <!-- Sezione di Testo -->
@@ -39,5 +39,9 @@ export default {
 <style scoped>
 button:hover {
   transform: translateY(-3px);
+}
+
+.z-footer{
+  z-index: 100;
 }
 </style>

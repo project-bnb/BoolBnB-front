@@ -292,22 +292,22 @@ export default {
 <template>
   <div class="max-w-7xl mx-auto p-8 bg-white mb-28 shadow-lg rounded-lg relative sm:grid-cols-1 mt-28 grid sm:gap-5 grid-cols-2 gap-10">
     <!-- Immagini con possibilità di selezione -->
-    <div class="flex flex-col space-y-4 sm:contents">
+    <div class="flex flex-col space-y-4 sm:contents sm:col-span-2">
       <div class="w-full sm:mb-0 sm:col-span-2 h-80 mb-4">
         <!-- Immagine Selezionata Grande -->
         <img :src="selectedImage ? selectedImage.image_path : (apartment.images && apartment.images.length > 0 ? apartment.images[0].image_path : '')" 
-             alt="Selected Apartment Image" 
-             class="w-full h-full object-cover rounded-lg shadow-md">
+          alt="Selected Apartment Image" 
+          class="w-full h-full object-cover rounded-lg shadow-md">
       </div>
       <div class="flex flex-cols-4 gap-4 flex-wrap justify-center sm:col-span-2">
         <!-- Thumbnail delle Immagini -->
         <img v-for="(image, index) in apartment.images" 
-             :key="index" 
-             :src="image.image_path" 
-             alt="Apartment Image Thumbnail" 
-             class="w-[130px] h-20 object-cover rounded-lg cursor-pointer border-2"
-             :class="{ 'border-[#BBA796] shadow-pre': selectedImage && selectedImage.image_path === image.image_path, 'border-transparent': !selectedImage || selectedImage.image_path !== image.image_path }"
-             @click="enlargeImage(image)" />
+          :key="index" 
+          :src="image.image_path" 
+          alt="Apartment Image Thumbnail" 
+          class="w-[130px] h-20 object-cover rounded-lg cursor-pointer border-2"
+          :class="{ 'border-[#BBA796] shadow-pre': selectedImage && selectedImage.image_path === image.image_path, 'border-transparent': !selectedImage || selectedImage.image_path !== image.image_path }"
+          @click="enlargeImage(image)" />
       </div>
     </div>
     

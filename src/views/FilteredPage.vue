@@ -48,44 +48,50 @@ export default {
 
   computed: {
     filteredApartments() {
-      let filtered = this.apartments;
+      // Filtra prima per visibilità
+      let filtered = this.apartments.filter(apartment => apartment.is_visible);
 
-      //controlllo se ci sono appartamenti filtrati
-      if (store.filters.filteredApartments && store.filters.filteredApartments.length > 0) {
-        filtered = store.filters.filteredApartments;
+      // Se ci sono appartamenti filtrati nello store, usa quelli
+      if (store.filters.filteredApartments !== undefined) {
+        if (store.filters.filteredApartments.length === 0) {
+          return [];
+        }
+        filtered = store.filters.filteredApartments.filter(apartment => apartment.is_visible);
       }
 
-      //controlllo se ci sono servizi selezionati
-      if (filtered.length > 0) {
-        if (this.store.filters.selectedServices.length > 0) {
-          filtered = filtered.filter((apartment) => {
-            const apartmentServices = apartment.services.map((service) => service.name);
-            return this.store.filters.selectedServices.every((service) =>
-              apartmentServices.includes(service)
-            );
-          });
-        }
-
-        //controlllo se ci sono minimo di stanze selezionate
-        if (this.store.filters.minRooms) {
-          filtered = filtered.filter((apartment) => apartment.rooms >= this.store.filters.minRooms);
-        }
-
-        //controlllo se ci sono minimo di letti selezionati
-        if (this.store.filters.minBeds) {
-          filtered = filtered.filter((apartment) => apartment.beds >= this.store.filters.minBeds);
-        }
+      // Controllo servizi selezionati
+      if (filtered.length > 0 && this.store.filters.selectedServices.length > 0) {
+        filtered = filtered.filter((apartment) => {
+          const apartmentServices = apartment.services.map((service) => service.name);
+          return this.store.filters.selectedServices.every((service) =>
+            apartmentServices.includes(service)
+          );
+        });
       }
 
-      //ordino gli appartamenti in base all'ordine dei sponsorizzazioni
-      filtered.sort((a, b) => {
+      // Controllo stanze minime
+      if (filtered.length > 0 && this.store.filters.minRooms) {
+        filtered = filtered.filter((apartment) => 
+          apartment.rooms >= this.store.filters.minRooms
+        );
+      }
+
+      // Controllo letti minimi
+      if (filtered.length > 0 && this.store.filters.minBeds) {
+        filtered = filtered.filter((apartment) => 
+          apartment.beds >= this.store.filters.minBeds
+        );
+      }
+
+      // Ordina per sponsorizzazione
+      return filtered.sort((a, b) => {
         const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
-        const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? a.sponsorships[0].name : 'No sponsorship';
-        const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? b.sponsorships[0].name : 'No sponsorship';
+        const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? 
+          a.sponsorships[0].name : 'No sponsorship';
+        const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? 
+          b.sponsorships[0].name : 'No sponsorship';
         return priority[aSponsor] - priority[bSponsor];
       });
-
-      return filtered;
     }
   },
 };
@@ -99,13 +105,24 @@ export default {
   </div>
   <FilterComp class="z-20"/>
   <div class="max-w-7xl mx-auto p-6 pt-0">
+    <div v-if="filteredApartments.length === 0" 
+         class="flex flex-col items-center justify-center min-h-[50vh] text-center">
+      <i class="fas fa-home text-6xl text-gray-300 mb-4"></i>
+      <h2 class="text-2xl font-semibold text-gray-600 mb-2">
+        Nessun appartamento disponibile
+      </h2>
+      <p class="text-gray-500">
+        Prova a modificare i filtri di ricerca o cambia località
+      </p>
+    </div>
     <transition-group
+      v-else
       name="fade"
       tag="div"
       class="grid grid-cols-4 md:grid-cols-1 md:w-full xl:w-8/12 xl:grid-cols-2 2xl:w-9/12 2xl:grid-cols-3 sm:grid-cols-1 sm:w-9/12 sm:flex sm:flex-wrap 2xl:mx-auto md:grid-cols-1 lg:w-7/12 lg:mx-auto lg:grid-cols-1 gap-6"
     >
       <Card
-        v-for="(property, index) in filteredApartments"
+        v-for="property in filteredApartments"
         :key="property.id"
         :id="property.id"
         :user_id="property.user_id"
@@ -124,12 +141,6 @@ export default {
         class="transform transition duration-500 ease-in-out"
       />
     </transition-group>
-
-    <div v-if="filteredApartments.length === 0" class="text-center mt-12">
-      <p class="text-gray-500 text-lg">
-        Nessun appartamento disponibile.
-      </p>
-    </div>
   </div>
   <TurnUp class="fixed right-8 bottom-8"/>
 </template>

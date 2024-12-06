@@ -51,7 +51,7 @@ export default {
             );
           }
 
-          //  e poi per sponsorizzazione
+          // e poi per sponsorizzazione
           this.apartments = apartments.sort((a, b) => {
             const priority = { Gold: 1, Silver: 2, Bronze: 3 };
             const aSponsor = a.sponsorships && a.sponsorships[0]?.name || 'Bronze';

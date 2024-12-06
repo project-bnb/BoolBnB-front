@@ -1,6 +1,7 @@
 <script>
 import { store } from '../store';
 import axios from 'axios';
+import debounce from 'lodash/debounce';
 
 export default {
   data() {
@@ -56,30 +57,6 @@ export default {
       localStorage.setItem('filters', JSON.stringify(store.filters));
     },
 
-    /**
-     * migliorato il calcolo della distanza
-     */
-    isWithinSearchRadius(originLatitude, originLongitude, searchRadius, destinationLatitude, destinationLongitude) {
-      // raggio della terra in km
-      const EARTH_RADIO_DELLA_TERRA = 6371; 
-      // conversione gradi radianti https://www.youmath.it/formulari/65-formulari-di-trigonometria-logaritmi-esponenziali/640-passare-dai-radianti-ai-gradi.html#:~:text=La%20conversione%20gradi%2Dradianti%20si,%C3%97r%5E(rad).
-      const deltaLatitude = this.convertDegreesToRadians(destinationLatitude - originLatitude);
-      const deltaLongitude = this.convertDegreesToRadians(destinationLongitude - originLongitude);
-      
-      // formula di haversine https://learn.microsoft.com/it-it/dotnet/api/system.device.location.geocoordinate.getdistanceto?view=netframework-4.8.1
-      const a = 
-        Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
-        Math.cos(this.convertDegreesToRadians(originLatitude)) * Math.cos(this.convertDegreesToRadians(destinationLatitude)) * 
-        Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2);
-      
-      // calcolo della distanza 
-      // atan2 è la funzione inversa della tangente potere di JAVASCRIPT
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      const distance = EARTH_RADIO_DELLA_TERRA * c; 
-      
-      return distance <= searchRadius;
-    },
-
     convertDegreesToRadians(degrees) {
       return degrees * (Math.PI / 180);
     },
@@ -97,55 +74,87 @@ export default {
       this.saveFilters(); // Salva i filtri ogni volta che cambia il servizio selezionato
     },
 
-    getPosition(indirizzo)
-    {
-        const infoArrayAddress = [];
-        const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
-return axios.get(url)
-    .then(response => {
-        infoArrayAddress.latitude = response.data.results[0].position.lat;
-        infoArrayAddress.longitude = response.data.results[0].position.lon;
-        infoArrayAddress.address = response.data.results[0].address.freeformAddress;
-        return infoArrayAddress;
-    })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    getPosition: debounce(function(indirizzo) {
+      const infoArrayAddress = [];
+      const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+      
+      // aggiunto delay tra le richieste per evitare too many requests
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          axios.get(url)
+            .then(response => {
+              infoArrayAddress.latitude = response.data.results[0].position.lat;
+              infoArrayAddress.longitude = response.data.results[0].position.lon;
+              infoArrayAddress.address = response.data.results[0].address.freeformAddress;
+              resolve(infoArrayAddress);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              resolve(null);
+            });
+        }, 1000); // 1 secondo di delay
+      });
+    }, 1000), // debounce di 1 secondo
 
+    calculateDistance(lat1, lon1, lat2, lon2) {
+      // Converti tutte le coordinate in numeri e arrotonda a 6 decimali per precisione
+      lat1 = Number(parseFloat(lat1).toFixed(6));
+      lon1 = Number(parseFloat(lon1).toFixed(6));
+      lat2 = Number(parseFloat(lat2).toFixed(6));
+      lon2 = Number(parseFloat(lon2).toFixed(6));
+
+      const R = 6371; // raggio della terra in km
+      
+      // Calcola le differenze di latitudine e longitudine
+      const dLat = this.convertDegreesToRadians(lat2 - lat1);
+      const dLon = this.convertDegreesToRadians(lon2 - lon1);
+      
+      // Converti le latitudini in radianti
+      const lat1Rad = this.convertDegreesToRadians(lat1);
+      const lat2Rad = this.convertDegreesToRadians(lat2);
+
+      // Formula Haversine semplificata
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1Rad) * Math.cos(lat2Rad) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distance = R * c;
+
+      // Arrotonda la distanza a 2 decimali
+      return Number(distance.toFixed(2));
     },
 
     async applyFilters() {
       try {
         this.saveFilters(); 
         
-        // ottieni le coordinate dell'indirizzo
         const infoArrayAddress = await this.getPosition(store.searchInput);
         
-        //se non riesce a ottenere le coordinate dell'indirizzo
         if (!infoArrayAddress) {
           console.error('impossibile ottenere le coordinate dell\'indirizzo');
           return;
         }
 
-        // ottieni tutti gli appartamenti
         const response = await axios.get('http://127.0.0.1:8000/api/apartments');
         const apartments = response.data.data;
         
-        // filtra gli appartamenti in base al raggio di ricerca
         const filteredApartments = apartments.filter(apartment => {
-          const isInRange = this.isWithinSearchRadius(
-            infoArrayAddress.latitude, 
-            infoArrayAddress.longitude, 
-            this.radius,
+          const distance = this.calculateDistance(
+            infoArrayAddress.latitude,
+            infoArrayAddress.longitude,
             apartment.latitude,
             apartment.longitude
           );
           
-          return isInRange;
+          return distance <= this.radius;
         });
-        
-        // aggiorna lo store con gli appartamenti filtrati
-        store.filters.filteredApartments = filteredApartments;
+
+        // Forza l'aggiornamento dello store
+        this.$nextTick(() => {
+          store.filters.filteredApartments = filteredApartments;
+        });
         
       } catch (error) {
         console.error('stampa errore:', error);
@@ -172,7 +181,41 @@ return axios.get(url)
       //richiamo del metodo getApartments per aggiornare la lista degli appartamenti
       // https://www.reddit.com/r/vuejs/comments/c1uwde/when_to_use_emit_vs_parent_when_changing_parent/?rdt=35049
       this.$parent.getApartments();
-    }
+    },
+
+    async filterByDistance() {
+      try {
+        // ottengo tutti gli appartamenti
+        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
+        const apartments = response.data.data;
+
+        // ottengo le coordinate dalla query URL
+        const lat = parseFloat(this.$route.query.lat);
+        const lon = parseFloat(this.$route.query.lon);
+
+        // filtro gli appartamenti in base alla distanza
+        this.store.filters.filteredApartments = apartments.filter(apartment => {
+          // calcolo la distanza usando la formula di Haversine
+          const R = 6371; // raggio della terra in km
+          const lat1 = lat * Math.PI / 180;
+          const lat2 = apartment.latitude * Math.PI / 180;
+          const deltaLat = (apartment.latitude - lat) * Math.PI / 180;
+          const deltaLon = (apartment.longitude - lon) * Math.PI / 180;
+
+          const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+                   Math.cos(lat1) * Math.cos(lat2) *
+                   Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
+          
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          const distance = R * c;
+
+          return distance <= this.store.filters.radius;
+        });
+
+      } catch (error) {
+        console.error('Errore nel filtraggio per distanza:', error);
+      }
+    },
   },
 };
 </script>

@@ -228,7 +228,7 @@ export default {
 
     async incrementViews(apartmentId) {
       await axios
-        .post(`http://127.0.0.1:8000/api/apartments/${apartmentId}/views`)
+        .post(`http://192.168.1.101:9000/api/apartments/${apartmentId}/views`)
         .then((response) => {
           console.log('Visualizzazioni incrementate con successo', response.data.message);
         })
@@ -256,7 +256,7 @@ export default {
     getApartment() {
       const apartmentId = this.$route.params.id;
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`)
+        .get(`http://192.168.1.101:9000/api/apartments/${apartmentId}`)
         .then((res) => {
           this.apartment = res.data.data;
           console.log('Appartamento:', this.apartment);

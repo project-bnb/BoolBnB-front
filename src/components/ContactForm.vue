@@ -25,7 +25,7 @@ export default {
     }
   },
   mounted() {
-    axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
+    axios.get('http://192.168.1.101:9000/api/user', { withCredentials: true })
     .then(response => {
       this.user = response.data;
       this.isAuthenticated = true;
@@ -50,7 +50,7 @@ export default {
 
 async sendMessage() {
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/emailreceiver', this.form, { withCredentials: true });
+    const response = await axios.post('http://192.168.1.101:9000/api/emailreceiver', this.form, { withCredentials: true });
     this.submitted = true;
     this.error = null;
     const currentCount = this.store.unreadMessages || 0;

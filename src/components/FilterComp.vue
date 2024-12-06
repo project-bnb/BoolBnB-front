@@ -74,46 +74,50 @@ export default {
       this.saveFilters(); // Salva i filtri ogni volta che cambia il servizio selezionato
     },
 
-    getPosition: debounce(function(indirizzo) {
+    getPosition(indirizzo) {
       const infoArrayAddress = [];
-      const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+      const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
       
-      // aggiunto delay tra le richieste per evitare too many requests
       return new Promise((resolve) => {
-        setTimeout(() => {
-          axios.get(url)
-            .then(response => {
+        axios.get(url)
+          .then(response => {
+            if (response.data.results && response.data.results.length > 0) {
               infoArrayAddress.latitude = response.data.results[0].position.lat;
               infoArrayAddress.longitude = response.data.results[0].position.lon;
               infoArrayAddress.address = response.data.results[0].address.freeformAddress;
               resolve(infoArrayAddress);
-            })
-            .catch(error => {
-              console.error('Error:', error);
+            } else {
               resolve(null);
-            });
-        }, 1000); // 1 secondo di delay
+            }
+          })
+          .catch(error => {
+            console.error('Errore nella richiesta:', error);
+            resolve(null);
+          });
       });
-    }, 1000), // debounce di 1 secondo
+    },
 
-    calculateDistance(lat1, lon1, lat2, lon2) {
-      // Converti tutte le coordinate in numeri e arrotonda a 6 decimali per precisione
+    filterByDistance(lat1, lon1, lat2, lon2) {
+      // converti e normalizza coordinate
       lat1 = Number(parseFloat(lat1).toFixed(6));
       lon1 = Number(parseFloat(lon1).toFixed(6));
       lat2 = Number(parseFloat(lat2).toFixed(6));
       lon2 = Number(parseFloat(lon2).toFixed(6));
 
-      const R = 6371; // raggio della terra in km
+      const R = 6371; // raggio terra in km
       
-      // Calcola le differenze di latitudine e longitudine
+      // calcola delta lat/lon
       const dLat = this.convertDegreesToRadians(lat2 - lat1);
       const dLon = this.convertDegreesToRadians(lon2 - lon1);
       
-      // Converti le latitudini in radianti
+      // converti in radianti
+      // from reddit: You multiply X radian by 180/π to get the equivalent of X in degrees. You multiply Y degrees by π/180 to get the equivalent of Y in radian. The calculator mode is irrelevant.
+      // For example, 30 degrees is 30 * π/180 = π/6 radian. And π/6 rad is π/6 * 180/π= 30 degrees.
       const lat1Rad = this.convertDegreesToRadians(lat1);
       const lat2Rad = this.convertDegreesToRadians(lat2);
 
-      // Formula Haversine semplificata
+      // formula haversine
+      // https://en.wikipedia.org/wiki/Haversine_formula
       const a = 
         Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.cos(lat1Rad) * Math.cos(lat2Rad) * 
@@ -122,26 +126,31 @@ export default {
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       const distance = R * c;
 
-      // Arrotonda la distanza a 2 decimali
+      // arrotonda a 2 decimali
       return Number(distance.toFixed(2));
     },
 
-    async applyFilters() {
+    applyFilters: debounce(async function() {
       try {
         this.saveFilters(); 
+
+        if (!store.searchInput) {
+          console.error('Inserisci un indirizzo per la ricerca');
+          return;
+        }
         
         const infoArrayAddress = await this.getPosition(store.searchInput);
         
         if (!infoArrayAddress) {
-          console.error('impossibile ottenere le coordinate dell\'indirizzo');
+          console.error('Impossibile ottenere le coordinate dell\'indirizzo');
           return;
         }
 
-        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
+        const response = await axios.get('http://192.168.1.101:9000/api/apartments');
         const apartments = response.data.data;
         
         const filteredApartments = apartments.filter(apartment => {
-          const distance = this.calculateDistance(
+          const distance = this.filterByDistance(
             infoArrayAddress.latitude,
             infoArrayAddress.longitude,
             apartment.latitude,
@@ -151,15 +160,12 @@ export default {
           return distance <= this.radius;
         });
 
-        // Forza l'aggiornamento dello store
-        this.$nextTick(() => {
-          store.filters.filteredApartments = filteredApartments;
-        });
+        store.filters.filteredApartments = filteredApartments;
         
       } catch (error) {
-        console.error('stampa errore:', error);
+        console.error('Errore durante il filtraggio:', error);
       }
-    },
+    }, 100),
 
     resetFilters() {
       this.minRooms = 1;
@@ -181,40 +187,6 @@ export default {
       //richiamo del metodo getApartments per aggiornare la lista degli appartamenti
       // https://www.reddit.com/r/vuejs/comments/c1uwde/when_to_use_emit_vs_parent_when_changing_parent/?rdt=35049
       this.$parent.getApartments();
-    },
-
-    async filterByDistance() {
-      try {
-        // ottengo tutti gli appartamenti
-        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
-        const apartments = response.data.data;
-
-        // ottengo le coordinate dalla query URL
-        const lat = parseFloat(this.$route.query.lat);
-        const lon = parseFloat(this.$route.query.lon);
-
-        // filtro gli appartamenti in base alla distanza
-        this.store.filters.filteredApartments = apartments.filter(apartment => {
-          // calcolo la distanza usando la formula di Haversine
-          const R = 6371; // raggio della terra in km
-          const lat1 = lat * Math.PI / 180;
-          const lat2 = apartment.latitude * Math.PI / 180;
-          const deltaLat = (apartment.latitude - lat) * Math.PI / 180;
-          const deltaLon = (apartment.longitude - lon) * Math.PI / 180;
-
-          const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
-                   Math.cos(lat1) * Math.cos(lat2) *
-                   Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
-          
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-          const distance = R * c;
-
-          return distance <= this.store.filters.radius;
-        });
-
-      } catch (error) {
-        console.error('Errore nel filtraggio per distanza:', error);
-      }
     },
   },
 };

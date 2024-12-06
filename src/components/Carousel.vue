@@ -18,7 +18,7 @@ export default {
     getImages() {
       const id = this.$route.params.id;
       axios
-        .get(`http://127.0.0.1:8000/api/apartments/${id}`)
+        .get(`http://192.168.1.101:9000/api/apartments/${id}`)
         .then((res) => {
           this.images = res.data.data.images;
           this.cover_image = res.data.data.cover_image;

@@ -124,6 +124,7 @@ export default {
 
     applyFilters: debounce(async function() {
       try {
+        console.log('applyFilters');
         this.saveFilters(); 
 
         if (!store.searchInput) {

@@ -23,6 +23,9 @@ export default {
 
   mounted() {
     this.getApartments();
+    setTimeout(() => {
+      this.$refs.filterComp.applyFilters();
+    }, 100);
   },
 
   watch: {
@@ -97,7 +100,7 @@ export default {
       Non ci sono appartamenti disponibili per "{{ $route.query.address }}"
     </p>
   </div>
-  <FilterComp class="z-20"/>
+  <FilterComp ref="filterComp" class="z-20"/>
   <div class="max-w-7xl mx-auto p-6 pt-0">
     <div v-if="filteredApartments.length === 0" 
          class="flex flex-col items-center justify-center min-h-[50vh] relative z-50">

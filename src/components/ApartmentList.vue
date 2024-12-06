@@ -43,14 +43,6 @@ export default {
             (apartment) => apartment.is_visible
           );
 
-          // poi applichiamo il filtro di ricerca se c'è un input
-          if (store.searchInput) {
-            const searchTerm = store.searchInput.toLowerCase();
-            apartments = apartments.filter(apartment => 
-              apartment.address.toLowerCase().includes(searchTerm)
-            );
-          }
-
           // e poi per sponsorizzazione
           this.apartments = apartments.sort((a, b) => {
             const priority = { Gold: 1, Silver: 2, Bronze: 3 };

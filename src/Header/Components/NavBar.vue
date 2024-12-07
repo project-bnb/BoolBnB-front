@@ -11,9 +11,18 @@ export default {
       selectedIndex: -1,
       isAuthenticated: false,
       user: null,
+      isDropdownOpen: false,
     };
   },
+
+  beforeUnmount() {
+    document.removeEventListener("click", this.closeDropdown);
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+
   mounted() {
+    document.addEventListener("click", this.closeDropdown);
+
     if (typeof this.store.unreadMessages === 'undefined') {
       this.store.unreadMessages = 0;
     }
@@ -27,10 +36,6 @@ export default {
   created() {
     window.addEventListener('scroll', this.handleScroll);
     this.isAuthenticated = !!localStorage.getItem('AuthToken');
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll);
   },
 
   watch: {
@@ -47,6 +52,11 @@ export default {
         return;
       }
       this.isScrolled = window.scrollY > 50;
+    },
+
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+      console.log(this.isDropdownOpen);
     },
   },
 
@@ -110,20 +120,48 @@ export default {
         </a>
 
         <!-- link alla dashboard con pallino utente -->
-        <div class="flex items-center space-x-2">
-          <a
-            href="http://127.0.0.1:8000/dashboard"
-            class="flex items-center space-x-2"
+        <div class="relative flex items-center space-x-2">
+          <!-- Pallino con iniziale -->
+          <div 
+            class="w-8 h-8 rounded-full bg-[#EDEEF0] text-[#B49578] flex items-center justify-center font-semibold cursor-pointer"
+            title="Dashboard"
+            @click="toggleDropdown"
           >
-            <!-- pallino con iniziale -->
-            <div 
-              class="w-8 h-8 rounded-full bg-[#EDEEF0] text-[#B49578] flex items-center justify-center font-semibold"
-              title="Dashboard"
-            >
-              {{ user.name.charAt(0).toUpperCase() }}
-            </div>
-          
-          </a>
+            {{ user.name.charAt(0).toUpperCase() }}
+          </div>
+
+          <!-- Dropdown menu -->
+          <div 
+            v-if="isDropdownOpen == true"
+            class="absolute top-[30px] right-0 mt-2 w-48 bg-white z-dropdown rounded shadow-lg border border-gray-200"
+          >
+            <ul class="py-1">
+              <li>
+                <a 
+                  href="http://127.0.0.1:8000/dashboard"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="http://127.0.0.1:8000/profile"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Profilo
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="http://127.0.0.1:8000/logout"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -133,5 +171,9 @@ export default {
 <style scoped>
 .shadow-nav {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.315);
+}
+
+.z-dropdown{
+  z-index: 70;
 }
 </style>

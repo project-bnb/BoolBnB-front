@@ -97,47 +97,11 @@ export default {
      * seleziona il suggerimento
      */
     async selectSuggestion(suggestion) {
-      // se il suggerimento è una stringa semplice
       if (typeof suggestion === 'string') {
-        // su store.searchInput inserisco il suggerimento selezionato
         this.store.searchInput = suggestion;
-        
-        // controllo se siamo nella pagina filtered-page
-        if (this.$route.name === 'filtered-page') {
-          try {
-            // uso geocoding per ottenere le coordinate
-            const geocodingResponse = await this.tomtomAxios.get(
-              `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(suggestion)}.json`,
-              {
-                params: {
-                  // chiave api per l'autenticazione
-                  key: this.apiTomTomKey
-                }
-              }
-            );
-
-            // estrae le coordinate (latitudine e longitudine) dalla risposta
-            const { lat, lon } = geocodingResponse.data.results[0].position;
-
-            // naviga verso la pagina 'filtered-page' passando le coordinate e l'indirizzo come query parameters
-            this.$router.push({
-              name: 'filtered-page',
-              query: {
-                lat,
-                lon,
-                address: suggestion
-              }
-            });
-          } catch (error) {
-            // gestisci eventuali errori durante la richiesta di geocoding, lho messo per debuggare
-            console.error('Errore nel geocoding:', error);
-          }
-        }
+        await this.navigateToFilteredPage(suggestion);
       }
-
-      // pulisci i suggerimenti filtrati
       this.store.filteredSuggestions = [];
-      // imposta lo stato di selezione a true
       this.selected = true;
     },
 
@@ -187,7 +151,6 @@ export default {
 
     async navigateToFilteredPage(address) {
       try {
-        // prova a ottenere le coordinate dall'indirizzo
         const geocodingResponse = await this.tomtomAxios.get(
           `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(address)}.json`,
           {
@@ -200,50 +163,44 @@ export default {
         let lat, lon;
         let noResults = false;
         
-        // se ci sono risultati
         if (geocodingResponse.data.results && geocodingResponse.data.results.length > 0) {
           const { position } = geocodingResponse.data.results[0];
           lat = position.lat;
           lon = position.lon;
         } else {
-          // se non ci sono risultati
           lat = 45.4642;
           lon = 9.1900;
           noResults = true;
         }
 
-        // naviga alla pagina filtered-page con i parametri
-        this.$router.push({
+        await this.$router.push({
           name: 'filtered-page',
           query: {
             lat,
             lon,
+            radius: 20,
             address: this.store.searchInput,
             noResults: noResults ? 'true' : undefined
           }
         });
+
+        this.store.filteredSuggestions = [];
+
       } catch (error) {
         console.error('Errore nel geocoding:', error);
-        // in caso di errore, naviga comunque alla pagina filtered con coordinate di default
-        this.$router.push({
+        await this.$router.push({
           name: 'filtered-page',
           query: {
             lat: 45.4642,
             lon: 9.1900,
+            radius: 20,
             address: this.store.searchInput,
             noResults: 'true'
           }
         });
+        
+        this.store.filteredSuggestions = [];
       }
-    },
-
-    selectSuggestion(suggestion) {
-      if (typeof suggestion === 'string') {
-        this.store.searchInput = suggestion;
-        this.navigateToFilteredPage(suggestion);
-      }
-      this.store.filteredSuggestions = [];
-      this.selected = true;
     }
   }
 }

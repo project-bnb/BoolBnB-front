@@ -108,7 +108,15 @@ export default {
     submittingSearch() {
       // se non siamo già nella pagina 'filtered-page', naviga verso di essa
       if (this.$route.name !== 'filtered-page') {
-        this.$router.push({ name: 'filtered-page' });
+        this.$router.push({
+          name: 'filtered-page',
+          query: {
+            lat: 45.4642,
+            lon: 9.1900,
+            radius: 20,
+            address: 'Milano',
+          }
+        });
       }
       this.submit = true;
       this.store.filteredSuggestions = [];
@@ -143,9 +151,20 @@ export default {
     },
 
     handleEnter() {
-      // see c'è un input di ricerca, naviga alla pagina filtered
       if (this.store.searchInput) {
         this.navigateToFilteredPage(this.store.searchInput);
+      } else {
+        // Se la barra è vuota, naviga alla posizione di Milano
+        this.$router.push({
+          name: 'filtered-page',
+          query: {
+            lat: 45.4642,
+            lon: 9.1900,
+            radius: 20,
+            address: 'Milano',
+          }
+        });
+        this.store.filteredSuggestions = [];
       }
     },
 

@@ -122,7 +122,18 @@ export default {
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Home
         </router-link>
-        <router-link to="/apartments" class="transition-all ease-in-out duration-300 hover:opacity-70">
+        <router-link 
+          :to="{ 
+            name: 'filtered-page', 
+            query: {
+              lat: 45.4642,
+              lon: 9.1900,
+              radius: 20,
+              address: 'Milano'
+            }
+          }" 
+          class="transition-all ease-in-out duration-300 hover:opacity-70"
+        >
           Filtra appartamenti
         </router-link>
         <router-link to="/about" class="transition-all ease-in-out duration-300 hover:opacity-70">

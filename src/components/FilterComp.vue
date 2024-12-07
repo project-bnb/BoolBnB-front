@@ -141,12 +141,15 @@ export default {
         console.log('applyFilters');
         this.saveFilters(); 
 
-        if (!store.searchInput) {
+        // qui usiamo l'indirizzo dalla query se la searchbar è vuota
+        const searchAddress = store.searchInput || this.$route.query.address;
+
+        if (!searchAddress) {
           console.error('Inserisci un indirizzo per la ricerca');
           return;
         }
         
-        const infoArrayAddress = await this.getPosition(store.searchInput);
+        const infoArrayAddress = await this.getPosition(searchAddress);
         
         if (!infoArrayAddress) {
           console.error('Impossibile ottenere le coordinate dell\'indirizzo');

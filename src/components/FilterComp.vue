@@ -11,7 +11,7 @@ export default {
       hovering: false,
       minRooms: store.filters.minRooms,
       minBeds: store.filters.minBeds,
-      radius: store.filters.radius,
+      radius: this.$route.query.radius ? parseInt(this.$route.query.radius) : 20,
       selectedServices: store.filters.selectedServices,
       availableServices: [
         "WiFi",
@@ -25,14 +25,28 @@ export default {
     };
   },
   watch: {
+    '$route.query.radius'(newRadius) {
+      if (newRadius) {
+        this.radius = parseInt(newRadius);
+        store.filters.radius = this.radius;
+        this.saveFilters();
+      }
+    },
+    
     radius(newRadius) {
       store.filters.radius = newRadius;
       this.saveFilters();
     },
   },
   created() {
-    // Carica i filtri dal localStorage quando il componente è creato
-    this.loadFilters();
+    // Inizializza il raggio dalla query o dal localStorage
+    const queryRadius = this.$route.query.radius;
+    if (queryRadius) {
+      this.radius = parseInt(queryRadius);
+      store.filters.radius = this.radius;
+    } else {
+      this.loadFilters();
+    }
   },
   methods: {
 

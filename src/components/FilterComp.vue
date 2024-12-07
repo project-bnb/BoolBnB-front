@@ -187,14 +187,14 @@ export default {
 
 <template>
   <div class="relative">
-    <div class="fixed ml-5 md:w-12 md:h-12 md:scale-90 left-0 bottom-[37px] w-14 h-14 z-20 slide-in">
+    <div class="fixed ml-5 md:w-12 md:h-12 z-100 md:scale-90 left-0 bottom-[37px] w-14 h-14 slide-in">
       <!-- Pulsante di Espansione del Menu Filtri -->
       <button
         ref="bounceButton"
         @click="toggleExpand"
         @mouseover="hovering = true"
         @mouseleave="hovering = false"
-        class="w-14 h-14 bg-[#B49578] z-40 text-white rounded-full flex items-center justify-center shadow-md transition-all duration-500 ease-in-out"
+        class="w-14 h-14 bg-[#B49578] text-white rounded-full flex items-center justify-center shadow-md z-100 transition-all duration-500 ease-in-out"
         :class="[isExpanded ? 'bg-[#EDEEF0] md:hover:opacity-100 hover:opacity-70 translate-x-2' : 'hover:bg-[#B49578] hover:translate-x-2']"
       >
         <i class="fa-solid fa-wand-magic-sparkles" :class="[isExpanded ? 'text-[#B49578]' : '']"></i>
@@ -394,5 +394,9 @@ export default {
 
 .border-filter{
   border: 1px solid white;
+}
+
+.z-100{
+  z-index: 100;
 }
 </style>

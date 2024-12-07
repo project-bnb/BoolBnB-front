@@ -103,7 +103,7 @@ export default {
   <FilterComp ref="filterComp" class="z-20"/>
   <div class="max-w-7xl mx-auto p-6 pt-0">
     <div v-if="filteredApartments.length === 0" 
-         class="flex flex-col items-center justify-center min-h-[50vh] relative z-50">
+         class="flex flex-col items-center justify-center min-h-[50vh] relative z-10">
       <i class="fas fa-search text-6xl text-[#B49578] mb-4"></i>
       <p class="text-[#B49578] text-lg font-semibold">
         Nessun appartamento trovato
@@ -139,7 +139,7 @@ export default {
       />
     </transition-group>
   </div>
-  <TurnUp class="fixed right-8 bottom-8"/>
+  <TurnUp class="fixed z-[100] right-8 bottom-8"/>
 </template>
 
 <style scoped>

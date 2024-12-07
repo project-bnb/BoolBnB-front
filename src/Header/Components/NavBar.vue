@@ -1,6 +1,7 @@
 <script>
 import { store } from '../../store';
 import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -12,27 +13,31 @@ export default {
       isAuthenticated: false,
       user: null,
       isDropdownOpen: false,
+      isNotificationsOpen: false,
+      notifications: [],
+      messageCount: 0,
     };
   },
 
   beforeUnmount() {
-    document.removeEventListener("click", this.closeDropdown);
+    document.removeEventListener("click", this.handleDocumentClick);
     window.removeEventListener('scroll', this.handleScroll);
   },
 
   mounted() {
-    document.addEventListener("click", this.closeDropdown);
+    document.addEventListener("click", this.handleDocumentClick);
 
     if (typeof this.store.unreadMessages === 'undefined') {
       this.store.unreadMessages = 0;
     }
     axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
-    .then(response => {
-      this.isAuthenticated = true;
-      this.user = response.data;
-    })
-    .catch(error => console.error('Errore:', error));
+      .then(response => {
+        this.isAuthenticated = true;
+        this.user = response.data;
+      })
+      .catch(error => console.error('Errore:', error));
   },
+  
   created() {
     window.addEventListener('scroll', this.handleScroll);
     this.isAuthenticated = !!localStorage.getItem('AuthToken');
@@ -47,6 +52,10 @@ export default {
   },
 
   methods: {
+    toggleNotifications() {
+      this.isNotificationsOpen = !this.isNotificationsOpen;
+    },
+
     handleScroll() {
       if (this.isApartmentShowPage) {
         return;
@@ -56,7 +65,33 @@ export default {
 
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
-      console.log(this.isDropdownOpen);
+    },
+
+    handleDocumentClick(event) {
+      const dropdown = this.$el.querySelector('.z-dropdown');
+      const dropdownTrigger = this.$el.querySelector('.w-8.h-8');
+      const notifications = this.$el.querySelector('.absolute.right-0.mt-2');
+      const notificationsTrigger = this.$el.querySelector('.fas.fa-bell');
+
+      // Controlla clic esterni per il dropdown
+      if (
+        dropdown &&
+        !dropdown.contains(event.target) &&
+        dropdownTrigger &&
+        !dropdownTrigger.contains(event.target)
+      ) {
+        this.isDropdownOpen = false;
+      }
+
+      // Controlla clic esterni per il menu notifiche
+      if (
+        notifications &&
+        !notifications.contains(event.target) &&
+        notificationsTrigger &&
+        !notificationsTrigger.contains(event.target)
+      ) {
+        this.isNotificationsOpen = false;
+      }
     },
   },
 
@@ -67,6 +102,8 @@ export default {
   }
 };
 </script>
+
+
 
 <template>
   <header
@@ -103,21 +140,47 @@ export default {
         </a>
       </div>
       <div v-else class="flex items-center space-x-4">
-        <!-- campanella notifiche -->
-        <a
-          href="http://127.0.0.1:8000/dashboard"
-          class="text-[#EDEEF0] hover:opacity-80 transition-opacity relative"
-          title="Notifiche"
-        >
-          <i class="fas fa-bell text-xl"></i>
-          <!-- indicatore piccolo commenti -->
-          <span 
-            v-if="messageCount > 0"
-            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+        <!-- Campanella notifiche con dropdown -->
+        <div class="relative" @click="toggleNotifications">
+          <!-- Icona campanella -->
+          <div 
+            class="text-[#EDEEF0] hover:opacity-80 transition-opacity cursor-pointer relative"
+            title="Notifiche"
           >
-            {{ messageCount }}
-          </span>
-        </a>
+            <i class="fas fa-bell text-xl"></i>
+            <!-- Indicatore delle notifiche -->
+            <span 
+              v-if="messageCount > 0"
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+            >
+              {{ messageCount }}
+            </span>
+          </div>
+
+          <!-- Dropdown notifiche -->
+          <div 
+            v-if="isNotificationsOpen"
+            class="absolute right-0 mt-2 w-64 bg-white z-50 rounded shadow-lg border border-gray-200"
+          >
+            <div class="p-4 text-sm font-medium text-gray-700 border-b">
+              Notifiche
+            </div>
+            <ul class="py-2">
+              <li v-for="(notification, index) in notifications" :key="index" class="px-4 py-2 hover:bg-gray-100">
+                <a 
+                  :href="notification.link"
+                  class="text-gray-700 text-sm"
+                >
+                  {{ notification.message }}
+                </a>
+              </li>
+              <li v-if="notifications.length === 0" class="px-4 py-2 text-gray-500">
+                Nessuna notifica.
+              </li>
+            </ul>
+          </div>
+        </div>
+
 
         <!-- link alla dashboard con pallino utente -->
         <div class="relative flex items-center space-x-2">
@@ -133,7 +196,7 @@ export default {
           <!-- Dropdown menu -->
           <div 
             v-if="isDropdownOpen == true"
-            class="absolute top-[30px] right-0 mt-2 w-48 bg-white z-dropdown rounded shadow-lg border border-gray-200"
+            class="absolute top-[28px] right-0 mt-2 w-48 bg-white z-dropdown rounded shadow-lg border border-gray-200"
           >
             <ul class="py-1">
               <li>

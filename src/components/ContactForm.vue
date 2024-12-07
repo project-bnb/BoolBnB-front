@@ -53,8 +53,7 @@ async sendMessage() {
     const response = await axios.post('http://127.0.0.1:8000/api/emailreceiver', this.form, { withCredentials: true });
     this.submitted = true;
     this.error = null;
-    const currentCount = this.store.unreadMessages || 0;
-    this.store.unreadMessages = currentCount + 1;
+    store.functions.getNotifications();
   } catch (error) {
     this.error = `Si è verificato un errore durante l'invio del messaggio.`;
     console.error('Errore:', error);

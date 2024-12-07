@@ -25,6 +25,7 @@ export default {
   },
 
   mounted() {
+    store.functions.getNotifications();
     document.addEventListener("click", this.handleDocumentClick);
 
     if (typeof this.store.unreadMessages === 'undefined') {
@@ -93,6 +94,11 @@ export default {
         this.isNotificationsOpen = false;
       }
     },
+
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+      return new Date(dateString).toLocaleString('it-IT', options);
+    },
   },
 
   computed: {
@@ -122,18 +128,7 @@ export default {
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Home
         </router-link>
-        <router-link 
-          :to="{ 
-            name: 'filtered-page', 
-            query: {
-              lat: 45.4642,
-              lon: 9.1900,
-              radius: 20,
-              address: 'Milano'
-            }
-          }" 
-          class="transition-all ease-in-out duration-300 hover:opacity-70"
-        >
+        <router-link to="/apartments" class="transition-all ease-in-out duration-300 hover:opacity-70">
           Filtra appartamenti
         </router-link>
         <router-link to="/about" class="transition-all ease-in-out duration-300 hover:opacity-70">
@@ -177,15 +172,16 @@ export default {
               Notifiche
             </div>
             <ul class="py-2">
-              <li v-for="(notification, index) in notifications" :key="index" class="px-4 py-2 hover:bg-gray-100">
+              <li v-if="store.notifications.length > 0" v-for="(notification, index) in store.notifications" :key="index" class="px-4 py-2 hover:bg-gray-100">
                 <a 
                   :href="notification.link"
                   class="text-gray-700 text-sm"
                 >
-                  {{ notification.message }}
+                  <span class="font-bold">{{ notification.email_sender }}</span> ti ha contattato alle {{ formatDate(notification.created_at) }}
                 </a>
+                ha scritto: {{ notification.message }}
               </li>
-              <li v-if="notifications.length === 0" class="px-4 py-2 text-gray-500">
+              <li v-else class="px-4 py-2 text-gray-500">
                 Nessuna notifica.
               </li>
             </ul>

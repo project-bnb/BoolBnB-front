@@ -51,7 +51,7 @@ export default {
     getSuggestions: debounce(function () {
       // se la lunghezza della stringa è maggiore di 0
       if (this.store.searchInput.length > 0) {
-        // se la lunghezza della stringa è minore di 3
+        // se la lunghezza della stringa è minore di 2
         if (this.store.searchInput.length < 2) {
           this.store.filteredSuggestions = [];
           return;
@@ -61,15 +61,11 @@ export default {
           this.tomtomAxios
           .get(url)
           .then((response) => {
-
             // definisco data che puo essere vuota o con i suggerimenti
             const data = response.data.results || [];
 
             // mappa i suggerimenti / array di stringhe nuovo
             this.store.filteredSuggestions = data.map(item => item.address.freeformAddress);
-
-            // su store.suggestions inserisco quello vicino all'indirizzo
-            this.store.suggestions = this.store.filteredSuggestions;
 
             // se non ci sono suggerimenti
             if (this.store.filteredSuggestions.length === 0) {
@@ -127,10 +123,6 @@ export default {
     },
 
     handleKeydown(event) {
-      if (event.key === 'Enter') {
-        return;
-      }
-
       if (!this.store.filteredSuggestions || this.store.filteredSuggestions.length === 0) return;
 
       switch (event.key) {
@@ -151,20 +143,26 @@ export default {
     },
 
     handleEnter() {
-      if (this.store.searchInput) {
-        this.navigateToFilteredPage(this.store.searchInput);
+      // Se siamo già nella pagina filtered, applichiamo solo i filtri
+      if (this.$route.name === 'filtered-page') {
+        // Invece di cercare direttamente il componente, usiamo lo store
+        store.triggerFilter = true;
       } else {
-        // Se la barra è vuota, naviga alla posizione di Milano
-        this.$router.push({
-          name: 'filtered-page',
-          query: {
-            lat: 45.4642,
-            lon: 9.1900,
-            radius: 20,
-            address: 'Milano',
-          }
-        });
-        this.store.filteredSuggestions = [];
+        if (this.store.searchInput) {
+          this.navigateToFilteredPage(this.store.searchInput);
+        } else {
+          this.$router.push({
+            name: 'filtered-page',
+            query: {
+              lat: 45.4642,
+              lon: 9.1900,
+              radius: 20,
+              address: 'Milano',
+              shouldFilter: 'true'
+            }
+          });
+          this.store.filteredSuggestions = [];
+        }
       }
     },
 
@@ -199,7 +197,8 @@ export default {
             lon,
             radius: 20,
             address: this.store.searchInput,
-            noResults: noResults ? 'true' : undefined
+            noResults: noResults ? 'true' : undefined,
+            shouldFilter: 'true'
           }
         });
 
@@ -214,7 +213,8 @@ export default {
             lon: 9.1900,
             radius: 20,
             address: this.store.searchInput,
-            noResults: 'true'
+            noResults: 'true',
+            shouldFilter: 'true'
           }
         });
         
@@ -235,7 +235,7 @@ export default {
           @input="getSuggestions"
           @blur="clearSuggestions"
           @keydown="handleKeydown"
-          @keydown.enter="handleEnter"
+          @keyup.enter.prevent="handleEnter"
           @focus="handleFocus"
           v-model="store.searchInput"
           class="w-full rounded-full px-12 py-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#B49578] transition duration-200 shadow-sm text-gray-700"

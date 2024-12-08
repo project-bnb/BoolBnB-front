@@ -17,7 +17,7 @@ export const store = reactive({
     },
     functions: {
         getNotifications: () => {
-            axios.get('http://127.0.0.1:8000/api/notifications', { withCredentials: true })
+            axios.get('http://192.168.1.101:9000/api/notifications', { withCredentials: true })
             .then(response => {
                 console.log(response.data);
                 store.notifications = response.data;
@@ -25,5 +25,6 @@ export const store = reactive({
             })
             .catch(error => console.error('Errore:', error));
         }
-    }
+    },
+    triggerFilter: false,
 });

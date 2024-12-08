@@ -39,6 +39,12 @@ export default {
       store.filters.radius = newRadius;
       this.saveFilters();
     },
+    'store.triggerFilter'(newVal) {
+      if (newVal === true) {
+        this.applyFilters();
+        this.store.triggerFilter = false;
+      }
+    },
   },
   created() {
     // Inizializza il raggio dalla query o dal localStorage
@@ -92,7 +98,7 @@ export default {
 
     getPosition(indirizzo) {
       const infoArrayAddress = [];
-      const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+      const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
       
       return new Promise((resolve) => {
         axios.get(url)
@@ -140,25 +146,22 @@ export default {
 
     applyFilters: debounce(async function() {
       try {
-        console.log('applyFilters');
         this.saveFilters(); 
-
-        // qui usiamo l'indirizzo dalla query se la searchbar è vuota
         const searchAddress = store.searchInput || this.$route.query.address;
 
         if (!searchAddress) {
-          console.error('Inserisci un indirizzo per la ricerca');
+          const response = await axios.get('http://192.168.1.101:9000/api/apartments');
+          store.filters.filteredApartments = response.data.data;
           return;
         }
         
         const infoArrayAddress = await this.getPosition(searchAddress);
         
         if (!infoArrayAddress) {
-          console.error('Impossibile ottenere le coordinate dell\'indirizzo');
           return;
         }
 
-        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
+        const response = await axios.get('http://192.168.1.101:9000/api/apartments');
         const apartments = response.data.data;
         
         const filteredApartments = apartments.filter(apartment => {
@@ -169,7 +172,30 @@ export default {
             apartment.longitude
           );
           
+          apartment.distance = distance;
           return distance <= this.radius;
+        });
+
+        const isSpecificAddress = searchAddress && 
+          !searchAddress.toLowerCase().includes('milano') && 
+          searchAddress.length > 10;
+
+        filteredApartments.sort((a, b) => {
+          if (isSpecificAddress) {
+            return a.distance - b.distance;
+          } else {
+            const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
+            const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? 
+              a.sponsorships[0].name : 'No sponsorship';
+            const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? 
+              b.sponsorships[0].name : 'No sponsorship';
+
+            if (priority[aSponsor] === priority[bSponsor]) {
+              return a.distance - b.distance;
+            }
+            
+            return priority[aSponsor] - priority[bSponsor];
+          }
         });
 
         store.filters.filteredApartments = filteredApartments;
@@ -185,19 +211,15 @@ export default {
       this.radius = 20;
       this.clickedServices = [];
       
-      
-      store.filters.filteredApartments = [];
       store.filters.minRooms = this.minRooms;
       store.filters.minBeds = this.minBeds;
       store.filters.radius = this.radius;
       store.filters.selectedServices = [];
-      
       store.searchInput = '';
       
-      this.saveFilters();
+      store.filters.filteredApartments = undefined;
       
-      //richiamo del metodo getApartments per aggiornare la lista degli appartamenti
-      // https://www.reddit.com/r/vuejs/comments/c1uwde/when_to_use_emit_vs_parent_when_changing_parent/?rdt=35049
+      this.saveFilters();
       this.$parent.getApartments();
     },
   },

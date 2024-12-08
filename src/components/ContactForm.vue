@@ -25,7 +25,7 @@ export default {
     }
   },
   mounted() {
-    axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
+    axios.get('http://192.168.1.101:9000/api/user', { withCredentials: true })
     .then(response => {
       this.user = response.data;
       this.isAuthenticated = true;
@@ -35,11 +35,15 @@ export default {
   computed: {
     emailModel: {
       get() {
-        if (this.isAuthenticated) {
-            this.form.email_sender = this.user.email;
+        if (this.isAuthenticated && this.user) {
+          this.form.email_sender = this.user.email;
           return this.user.email;
-        } else {
-          return this.form.email_sender;
+        }
+        return this.form.email_sender;
+      },
+      set(value) {
+        if (!this.isAuthenticated) {
+          this.form.email_sender = value;
         }
       }
     }
@@ -50,7 +54,7 @@ export default {
 
 async sendMessage() {
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/emailreceiver', this.form, { withCredentials: true });
+    const response = await axios.post('http://192.168.1.101:9000/api/emailreceiver', this.form, { withCredentials: true });
     this.submitted = true;
     this.error = null;
     store.functions.getNotifications();
@@ -74,8 +78,10 @@ async sendMessage() {
           type="email"
           id="email"
           v-model="emailModel"
+          :disabled="isAuthenticated"
           required
           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#B49578]"
+          :class="{ 'bg-gray-100': isAuthenticated }"
         >
       </div>
 

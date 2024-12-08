@@ -28,29 +28,40 @@ export default {
     }, 100);
   },
 
-  watch: {
-    'store.searchInput': function () {
-      this.getApartments();
-    },
-  },
-
   methods: {
     /**
      * ottieni tutti gli appartamenti
      */
     getApartments() {
       axios
-        .get('http://127.0.0.1:8000/api/apartments')
+        .get('http://192.168.1.101:9000/api/apartments')
         .then((res) => {
           this.apartments = res.data.data;
           store.suggestions = this.apartments.map((apartment) => apartment.address);
         })
         .catch((error) => console.error('Errore:', error));
     },
+
+    calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Raggio della Terra in km
+      const dLat = this.deg2rad(lat2 - lat1);
+      const dLon = this.deg2rad(lon2 - lon1);
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c; // Distanza in km
+    },
+
+    deg2rad(deg) {
+      return deg * (Math.PI/180);
+    },
   },
 
   computed: {
     filteredApartments() {
+      console.log('🔄 Inizio computed filteredApartments');
       let filtered = this.apartments.filter(apartment => apartment.is_visible);
 
       if (store.filters.filteredApartments !== undefined) {
@@ -58,6 +69,11 @@ export default {
           return [];
         }
         filtered = store.filters.filteredApartments;
+        console.log('📊 Usando appartamenti filtrati dallo store:', filtered.map(apt => ({
+          titolo: apt.title,
+          distanza: apt.distance,
+          sponsorizzazione: apt.sponsorships?.[0]?.name || 'No sponsorship'
+        })));
       }
 
       if (filtered.length > 0 && this.store.filters.selectedServices.length > 0) {
@@ -81,14 +97,25 @@ export default {
         );
       }
 
-      return filtered.sort((a, b) => {
-        const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
-        const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? 
-          a.sponsorships[0].name : 'No sponsorship';
-        const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? 
-          b.sponsorships[0].name : 'No sponsorship';
-        return priority[aSponsor] - priority[bSponsor];
-      });
+      console.log('🏁 Array finale dal computed:', filtered.map(apt => ({
+        titolo: apt.title,
+        distanza: apt.distance,
+        sponsorizzazione: apt.sponsorships?.[0]?.name || 'No sponsorship'
+      })));
+
+      return filtered;
+    }
+  },
+
+  watch: {
+    '$route.query.shouldFilter'(newVal) {
+      if (newVal === 'true') {
+        this.$refs.filterComp.applyFilters();
+        // Rimuoviamo il flag dalla query dopo aver applicato i filtri
+        const query = { ...this.$route.query };
+        delete query.shouldFilter;
+        this.$router.replace({ query });
+      }
     }
   },
 };

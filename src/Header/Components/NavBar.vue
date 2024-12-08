@@ -146,7 +146,7 @@ export default {
       <!-- Logo -->
       <div class="text-[#EDEEF0] text-2xl md:hidden w-14 h-10 font-bold sm:hidden">
         <router-link to="/" class="transition-all ease-in-out duration-300 hover:opacity-70 flex items-center">
-          <span>MilanBnB</span>
+          <span>LomBnB</span>
         </router-link>
       </div>
 

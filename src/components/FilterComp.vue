@@ -19,7 +19,9 @@ export default {
         "Lavatrice",
         "Riscaldamento",
         "Parcheggio",
-        "Aria Condizionata"
+        "Aria Condizionata",
+        "Piscina",
+        "TV"
       ],
       clickedServices: [],
     };
@@ -253,7 +255,7 @@ export default {
         class="z-0 fixed left-0 top-0 mt-[68px] md:mt-[50px] 2xl:w-2/12 h-full md:top-0 md:h-[170px] md:grid md:w-screen md:overflow-x-scroll md:h-9/12 w-[11%] bg-[#B49578] filter-bar p-4 text-white transition-all duration-500 ease-in-out slide-in"
       >
         <!-- Filtri per l'utente -->
-        <div class="md:grid md:grid-cols-11 md:gap-x-3 md:grid-rows-2 md:w-[1200px] md:h-full md:overflow-x-auto">
+        <div class="md:grid md:grid-cols-11 md:gap-x-3 md:grid-rows-2 md:w-[1200px] md:h-full md:overflow-x-auto 2xl:overflow-y-scroll">
           <!-- Numero minimo di stanze -->
           <div class="mt-4 md:mt-0 md:order-1 md:col-span-2 md:inline-block">
             <label for="minRooms" class="block text-md font-bold">Numero minimo di stanze:</label>

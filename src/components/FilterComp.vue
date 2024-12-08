@@ -138,31 +138,23 @@ export default {
 
     applyFilters: debounce(async function() {
       try {
-        console.log('🔍 Iniziando applyFilters...');
-        console.log('📍 Indirizzo cercato:', store.searchInput || this.$route.query.address);
-        console.log('🎯 Raggio di ricerca:', this.radius, 'km');
-        
         this.saveFilters(); 
         const searchAddress = store.searchInput || this.$route.query.address;
 
         if (!searchAddress) {
-          console.log('⚠️ Nessun indirizzo specificato, mostro tutti gli appartamenti');
           const response = await axios.get('http://192.168.1.101:9000/api/apartments');
           store.filters.filteredApartments = response.data.data;
           return;
         }
         
         const infoArrayAddress = await this.getPosition(searchAddress);
-        console.log('📌 Coordinate ottenute:', infoArrayAddress);
         
         if (!infoArrayAddress) {
-          console.error('❌ Impossibile ottenere le coordinate dell\'indirizzo');
           return;
         }
 
         const response = await axios.get('http://192.168.1.101:9000/api/apartments');
         const apartments = response.data.data;
-        console.log('🏠 Totale appartamenti:', apartments.length);
         
         const filteredApartments = apartments.filter(apartment => {
           const distance = this.filterByDistance(
@@ -173,26 +165,17 @@ export default {
           );
           
           apartment.distance = distance;
-          const isInRange = distance <= this.radius;
-          
-          if (isInRange) {
-            console.log(`📍 ${apartment.title} - Distanza: ${distance.toFixed(2)}km`);
-          }
-          
-          return isInRange;
+          return distance <= this.radius;
         });
 
-        console.log('🏠 Appartamenti nel raggio:', filteredApartments.length);
-
-        // Se abbiamo un indirizzo specifico (non Milano generico)
-        const isSpecificAddress = searchAddress && searchAddress !== 'Milano';
+        const isSpecificAddress = searchAddress && 
+          !searchAddress.toLowerCase().includes('milano') && 
+          searchAddress.length > 10;
 
         filteredApartments.sort((a, b) => {
           if (isSpecificAddress) {
-            // Se è un indirizzo specifico, ordina solo per distanza
             return a.distance - b.distance;
           } else {
-            // Altrimenti usa l'ordinamento per sponsorizzazione e poi distanza
             const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
             const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? 
               a.sponsorships[0].name : 'No sponsorship';
@@ -207,22 +190,14 @@ export default {
           }
         });
 
-        console.log('🎯 Appartamenti ordinati:', filteredApartments.map(apt => ({
-          titolo: apt.title,
-          distanza: apt.distance.toFixed(2) + 'km',
-          sponsorizzazione: apt.sponsorships?.[0]?.name || 'No sponsorship'
-        })));
-
         store.filters.filteredApartments = filteredApartments;
-        console.log('✅ Filtri applicati con successo');
         
       } catch (error) {
-        console.error('❌ Errore durante il filtraggio:', error);
+        console.error('Errore durante il filtraggio:', error);
       }
     }, 100),
 
     resetFilters() {
-      console.log('🔄 Resettando i filtri...');
       this.minRooms = 1;
       this.minBeds = 1;
       this.radius = 20;
@@ -237,10 +212,7 @@ export default {
       store.filters.filteredApartments = undefined;
       
       this.saveFilters();
-      console.log('💾 Filtri salvati dopo reset');
-      
       this.$parent.getApartments();
-      console.log('🏠 Lista appartamenti ricaricata');
     },
   },
 };

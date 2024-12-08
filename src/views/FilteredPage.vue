@@ -61,6 +61,7 @@ export default {
 
   computed: {
     filteredApartments() {
+      console.log('🔄 Inizio computed filteredApartments');
       let filtered = this.apartments.filter(apartment => apartment.is_visible);
 
       if (store.filters.filteredApartments !== undefined) {
@@ -68,6 +69,11 @@ export default {
           return [];
         }
         filtered = store.filters.filteredApartments;
+        console.log('📊 Usando appartamenti filtrati dallo store:', filtered.map(apt => ({
+          titolo: apt.title,
+          distanza: apt.distance,
+          sponsorizzazione: apt.sponsorships?.[0]?.name || 'No sponsorship'
+        })));
       }
 
       if (filtered.length > 0 && this.store.filters.selectedServices.length > 0) {
@@ -91,28 +97,25 @@ export default {
         );
       }
 
-      filtered = filtered.sort((a, b) => {
-        const priority = { Gold: 1, Silver: 2, Bronze: 3, 'No sponsorship': 4 };
-        const aSponsor = a.sponsorships && a.sponsorships.length > 0 ? 
-          a.sponsorships[0].name : 'No sponsorship';
-        const bSponsor = b.sponsorships && b.sponsorships.length > 0 ? 
-          b.sponsorships[0].name : 'No sponsorship';
-        
-        if (priority[aSponsor] === priority[bSponsor]) {
-          const searchLat = parseFloat(this.$route.query.lat);
-          const searchLon = parseFloat(this.$route.query.lon);
-          
-          if (!isNaN(searchLat) && !isNaN(searchLon)) {
-            const distA = this.calculateDistance(searchLat, searchLon, a.latitude, a.longitude);
-            const distB = this.calculateDistance(searchLat, searchLon, b.latitude, b.longitude);
-            return distA - distB;
-          }
-        }
-        
-        return priority[aSponsor] - priority[bSponsor];
-      });
+      console.log('🏁 Array finale dal computed:', filtered.map(apt => ({
+        titolo: apt.title,
+        distanza: apt.distance,
+        sponsorizzazione: apt.sponsorships?.[0]?.name || 'No sponsorship'
+      })));
 
       return filtered;
+    }
+  },
+
+  watch: {
+    '$route.query.shouldFilter'(newVal) {
+      if (newVal === 'true') {
+        this.$refs.filterComp.applyFilters();
+        // Rimuoviamo il flag dalla query dopo aver applicato i filtri
+        const query = { ...this.$route.query };
+        delete query.shouldFilter;
+        this.$router.replace({ query });
+      }
     }
   },
 };

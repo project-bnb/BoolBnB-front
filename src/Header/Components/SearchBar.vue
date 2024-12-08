@@ -123,10 +123,6 @@ export default {
     },
 
     handleKeydown(event) {
-      if (event.key === 'Enter') {
-        return;
-      }
-
       if (!this.store.filteredSuggestions || this.store.filteredSuggestions.length === 0) return;
 
       switch (event.key) {
@@ -147,20 +143,29 @@ export default {
     },
 
     handleEnter() {
-      if (this.store.searchInput) {
-        this.navigateToFilteredPage(this.store.searchInput);
+      // Se siamo già nella pagina filtered, applichiamo solo i filtri
+      if (this.$route.name === 'filtered-page') {
+        // Cerca il componente FilterComp usando il ref
+        const filterComp = document.querySelector('[ref="filterComp"]').__vueParentComponent.ctx;
+        if (filterComp) {
+          filterComp.applyFilters();
+        }
       } else {
-        // Se la barra è vuota, naviga alla posizione di Milano
-        this.$router.push({
-          name: 'filtered-page',
-          query: {
-            lat: 45.4642,
-            lon: 9.1900,
-            radius: 20,
-            address: 'Milano',
-          }
-        });
-        this.store.filteredSuggestions = [];
+        if (this.store.searchInput) {
+          this.navigateToFilteredPage(this.store.searchInput);
+        } else {
+          this.$router.push({
+            name: 'filtered-page',
+            query: {
+              lat: 45.4642,
+              lon: 9.1900,
+              radius: 20,
+              address: 'Milano',
+              shouldFilter: 'true'
+            }
+          });
+          this.store.filteredSuggestions = [];
+        }
       }
     },
 
@@ -195,7 +200,8 @@ export default {
             lon,
             radius: 20,
             address: this.store.searchInput,
-            noResults: noResults ? 'true' : undefined
+            noResults: noResults ? 'true' : undefined,
+            shouldFilter: 'true'
           }
         });
 
@@ -210,7 +216,8 @@ export default {
             lon: 9.1900,
             radius: 20,
             address: this.store.searchInput,
-            noResults: 'true'
+            noResults: 'true',
+            shouldFilter: 'true'
           }
         });
         
@@ -231,7 +238,7 @@ export default {
           @input="getSuggestions"
           @blur="clearSuggestions"
           @keydown="handleKeydown"
-          @keydown.enter="handleEnter"
+          @keyup.enter.prevent="handleEnter"
           @focus="handleFocus"
           v-model="store.searchInput"
           class="w-full rounded-full px-12 py-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#B49578] transition duration-200 shadow-sm text-gray-700"

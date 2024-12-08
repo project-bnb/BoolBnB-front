@@ -37,6 +37,12 @@ export default {
       store.filters.radius = newRadius;
       this.saveFilters();
     },
+    'store.triggerFilter'(newVal) {
+      if (newVal === true) {
+        this.applyFilters();
+        this.store.triggerFilter = false;
+      }
+    },
   },
   created() {
     // Inizializza il raggio dalla query o dal localStorage

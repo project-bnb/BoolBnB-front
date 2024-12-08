@@ -57,6 +57,33 @@ export default {
       this.isNotificationsOpen = !this.isNotificationsOpen;
     },
 
+    logout() {
+      axios.post('http://192.168.1.101:9000/api/logout', {}, {
+        withCredentials: true,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(() => {
+        localStorage.removeItem('AuthToken');
+        this.isAuthenticated = false;
+        this.user = null;
+        store.notifications = [];
+        store.unreadMessages = 0;
+        this.$router.push('/');
+      })
+      .catch(error => {
+        // entra qui dentro lascia stare non so nemmeno io perche va qui dentro
+    localStorage.removeItem('AuthToken');
+        this.isAuthenticated = false;
+        this.user = null;
+        store.notifications = [];
+        store.unreadMessages = 0;
+        this.$router.push('/');
+      });
+    },
+
     handleScroll() {
       if (this.isApartmentShowPage) {
         return;
@@ -174,7 +201,7 @@ export default {
             <ul class="py-2">
               <li v-if="store.notifications.length > 0" v-for="(notification, index) in store.notifications" :key="index" class="px-4 py-2 hover:bg-gray-100">
                 <a 
-                  :href="notification.link"
+                  :href="`http://192.168.1.101:9000/apartments/${notification.apartment_id}`"
                   class="text-gray-700 text-sm"
                 >
                   <span class="font-bold">{{ notification.email_sender }}</span> ti ha contattato alle {{ formatDate(notification.created_at) }}
@@ -224,8 +251,8 @@ export default {
               </li>
               <li>
                 <a 
-                  href="http://192.168.1.101:9000/logout"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  @click="logout"
+                  class="cursor-pointer block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Logout
                 </a>

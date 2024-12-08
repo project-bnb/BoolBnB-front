@@ -35,11 +35,15 @@ export default {
   computed: {
     emailModel: {
       get() {
-        if (this.isAuthenticated) {
-            this.form.email_sender = this.user.email;
+        if (this.isAuthenticated && this.user) {
+          this.form.email_sender = this.user.email;
           return this.user.email;
-        } else {
-          return this.form.email_sender;
+        }
+        return this.form.email_sender;
+      },
+      set(value) {
+        if (!this.isAuthenticated) {
+          this.form.email_sender = value;
         }
       }
     }
@@ -74,8 +78,10 @@ async sendMessage() {
           type="email"
           id="email"
           v-model="emailModel"
+          :disabled="isAuthenticated"
           required
           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#B49578]"
+          :class="{ 'bg-gray-100': isAuthenticated }"
         >
       </div>
 

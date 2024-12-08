@@ -25,5 +25,6 @@ export const store = reactive({
             })
             .catch(error => console.error('Errore:', error));
         }
-    }
+    },
+    triggerFilter: false,
 });

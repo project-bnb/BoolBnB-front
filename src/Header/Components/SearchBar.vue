@@ -145,11 +145,8 @@ export default {
     handleEnter() {
       // Se siamo già nella pagina filtered, applichiamo solo i filtri
       if (this.$route.name === 'filtered-page') {
-        // Cerca il componente FilterComp usando il ref
-        const filterComp = document.querySelector('[ref="filterComp"]').__vueParentComponent.ctx;
-        if (filterComp) {
-          filterComp.applyFilters();
-        }
+        // Invece di cercare direttamente il componente, usiamo lo store
+        store.triggerFilter = true;
       } else {
         if (this.store.searchInput) {
           this.navigateToFilteredPage(this.store.searchInput);

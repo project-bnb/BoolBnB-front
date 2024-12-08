@@ -31,7 +31,7 @@ export default {
     if (typeof this.store.unreadMessages === 'undefined') {
       this.store.unreadMessages = 0;
     }
-    axios.get('http://127.0.0.1:8000/api/user', { withCredentials: true })
+    axios.get('http://192.168.1.101:9000/api/user', { withCredentials: true })
       .then(response => {
         this.isAuthenticated = true;
         this.user = response.data;
@@ -139,7 +139,7 @@ export default {
       <!-- pulsante di accesso -->
       <div v-if="!isAuthenticated">
         <a
-          href="http://127.0.0.1:8000/login"
+          href="http://192.168.1.101:9000/login"
           class="ml-4 px-6 py-3 rounded-full text-sm font-semibold transition duration-300 shadow-lg bg-[#EDEEF0] text-[#B49578] hover:bg-[#D1C6B8] hover:shadow-xl"
         >
           Accedi
@@ -208,7 +208,7 @@ export default {
             <ul class="py-1">
               <li>
                 <a 
-                  href="http://127.0.0.1:8000/dashboard"
+                  href="http://192.168.1.101:9000/dashboard"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Dashboard
@@ -216,7 +216,7 @@ export default {
               </li>
               <li>
                 <a 
-                  href="http://127.0.0.1:8000/profile"
+                  href="http://192.168.1.101:9000/profile"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Profilo
@@ -224,7 +224,7 @@ export default {
               </li>
               <li>
                 <a 
-                  href="http://127.0.0.1:8000/logout"
+                  href="http://192.168.1.101:9000/logout"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Logout

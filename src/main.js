@@ -6,6 +6,6 @@ import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.css';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+axios.defaults.baseURL = 'http://192.168.1.101:9000';
 
 createApp(App).use(router).mount('#app')

@@ -98,7 +98,7 @@ export default {
 
     getPosition(indirizzo) {
       const infoArrayAddress = [];
-      const url = `http://192.168.1.101:9000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
+      const url = `http://127.0.0.1:8000/api/geocode?indirizzo=${encodeURIComponent(indirizzo)}`;
       
       return new Promise((resolve) => {
         axios.get(url)
@@ -150,7 +150,7 @@ export default {
         const searchAddress = store.searchInput || this.$route.query.address;
 
         if (!searchAddress) {
-          const response = await axios.get('http://192.168.1.101:9000/api/apartments');
+          const response = await axios.get('http://127.0.0.1:8000/api/apartments');
           store.filters.filteredApartments = response.data.data;
           return;
         }
@@ -161,7 +161,7 @@ export default {
           return;
         }
 
-        const response = await axios.get('http://192.168.1.101:9000/api/apartments');
+        const response = await axios.get('http://127.0.0.1:8000/api/apartments');
         const apartments = response.data.data;
         
         const filteredApartments = apartments.filter(apartment => {
@@ -236,13 +236,13 @@ export default {
         @mouseover="hovering = true"
         @mouseleave="hovering = false"
         class="w-14 h-14 bg-[#B49578] text-white rounded-full flex items-center justify-center shadow-md z-100 transition-all duration-500 ease-in-out"
-        :class="[isExpanded ? 'bg-[#EDEEF0] md:hover:opacity-100 hover:opacity-70 translate-x-2' : 'hover:bg-[#B49578] hover:translate-x-2']"
+        :class="[isExpanded ? 'bg-[#EDEEF0] md:hover:opacity-100 hover:opacity-70 translate-x-72 drop-shadow-xl' : 'hover:bg-[#B49578] hover:translate-x-2']"
       >
         <i class="fa-solid fa-wand-magic-sparkles" :class="[isExpanded ? 'text-[#B49578]' : '']"></i>
       </button>
       <span
-        class="absolute z-10 bottom-[15px] left-16 font-bold transition-all duration-500 ease-in-out md:hidden"
-        :class="[isExpanded ? 'text-white translate-x-5' : (hovering ? 'translate-x-5 text-[#B49578]' : 'text-transparent -translate-x-5')]"
+        class="absolute z-10 bottom-[15px] cursor-default left-16 font-bold transition-all duration-500 ease-in-out md:hidden"
+        :class="[isExpanded ? 'text-transparent translate-x-72' : (hovering ? 'translate-x-5 text-[#B49578]' : 'text-transparent -translate-x-5')]"
       >
         Filtri
       </span>
@@ -252,7 +252,7 @@ export default {
     <transition name="slide">
       <div
         v-if="isExpanded"
-        class="z-0 fixed left-0 top-0 mt-[68px] md:mt-[50px] 2xl:w-2/12 h-full md:top-0 md:h-[170px] md:grid md:w-screen md:overflow-x-scroll md:h-9/12 w-[11%] bg-[#B49578] filter-bar p-4 text-white transition-all duration-500 ease-in-out slide-in"
+        class="z-0 fixed left-0 top-0 mt-[60px] md:mt-[50px] 2xl:w-2/12 h-full md:top-0 md:h-[170px] md:grid md:w-screen md:overflow-x-scroll md:h-9/12 w-[11%] bg-[#B49578] filter-bar p-4 2xl:h-[95%] text-white transition-all duration-500 ease-in-out slide-in"
       >
         <!-- Filtri per l'utente -->
         <div class="md:grid md:grid-cols-11 md:gap-x-3 md:grid-rows-2 md:w-[1200px] md:h-full md:overflow-x-auto 2xl:overflow-y-scroll">
